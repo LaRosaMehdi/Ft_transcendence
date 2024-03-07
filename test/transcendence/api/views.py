@@ -27,10 +27,10 @@ def create_user(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        user = User.objects.create_user(username=username, password=password)
-        if request.user.is_authenticated:
-            return HttpResponseRedirect('/accueil/')  # Redirect to accueil page if already authenticated
-        else:
-            return HttpResponseRedirect('/accueil/')  # Redirect to index page if not authenticated
+        # user = User.objects.create_user(username=username, password=password)
+        # if request.user.is_authenticated:
+        #     return HttpResponseRedirect('/accueil/')  # Redirect to accueil page if already authenticated
+        # else:
+        #     return HttpResponseRedirect('/accueil/')  # Redirect to index page if not authenticated
     else:
         return render(request, 'index.html')
