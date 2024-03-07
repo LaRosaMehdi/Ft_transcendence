@@ -20,7 +20,7 @@ done
 #echo "APRES start api"
 #python -m pip install Pillow
 #echo "APRES install pillow"
-python /usr/src/app/app/manage.py migrate
+python /usr/src/manage.py migrate
 #echo "APRES migrate"
 #python ./app/manage.py collectstatic --no-input
 #echo "APRES STATIC"
