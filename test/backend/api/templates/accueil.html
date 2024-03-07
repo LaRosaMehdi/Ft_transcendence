@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil Page</title>
+    <link rel="stylesheet" href="{% static 'stylesheet.css' %}">
+</head>
+<body>
+    <div class="login-box">
+        <h2 style="text-align: center;">Ft_Transcendence</h2>
+        <button type="submit" onclick="window.location.href = '{% url 'play' %}'" style="margin-right: 20px;"> <span></span>
+        <span></span>
+        <span></span>
+        <span></span>Play</button>
+        <button type="submit" onclick="window.location.href = '{% url 'tournament' %}'style="margin-right: 20px;""> <span></span>
+            <span></span>
+            <span></span>Tournament</button>
+        <button type="submit" onclick="window.location.href = '{% url 'mode' %}'style="margin-right: 20px;""> <span></span>
+                <span></span>
+                <span></span>Mode</button>
+        <button type="submit" onclick="window.location.href = '{% url 'friends' %}'style="margin-right: 20px;""> <span></span>
+                <span></span>
+                <span></span>Friends</button>
+    </div>
+    <div class="perso-button">
+        <button type="submit" onclick="window.location.href = '{% url 'perso' %}'"><span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            Espace Perso</button>
+        
+    </div>
+</body>
+</html>

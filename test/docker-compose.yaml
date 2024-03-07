@@ -5,7 +5,7 @@ services:
     image: ft_transcendence/database
     container_name: ft_transcendence_database
     build:
-      context: db/
+      context: database/
       dockerfile: Dockerfile
     ports:
       - 5432:443
@@ -24,7 +24,7 @@ services:
     image: ft_transcendence/backend
     container_name: ft_transcendence_backend
     build:
-      context: transcendence/
+      context: backend/
       dockerfile: Dockerfile
     ports:
       - 8080:443

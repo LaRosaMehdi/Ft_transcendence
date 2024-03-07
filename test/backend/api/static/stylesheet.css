@@ -1,0 +1,472 @@
+body {
+    height: 100vh;
+    display: grid;
+    place-content: center;
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    background: linear-gradient(#141e30, #243b55);
+  }
+  
+  .perso-button {
+    background-color: transparent;
+    border: none;
+    border-radius: 50%; 
+    padding: 20px;
+    position: absolute;
+    top: 5vw 20px; 
+    right: 20px; 
+    font-size: 2vw;
+  }
+  
+  .custom-button::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-image: url('votre-image.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 50%;
+  }
+  
+  .logo-box {
+    position: absolute;
+    padding: 10px 20px 10px 20px;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+    border-radius: 10px;
+    width: fit-content; 
+    text-align: center;
+    line-height: normal;
+  }
+  
+  .logo-box h2 {
+    margin: 10px auto;
+    padding: 0;
+    font-size: 80%;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #fafafa;
+    position: center;
+    overflow: hidden;
+    white-space: nowrap;
+    animation: colorLoop 5s linear infinite; /* Lance l'animation */
+  }
+  
+  .login-box {
+    width: 400px;
+    padding: 40px;
+    background: rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+    border-radius: 10px;
+  }
+  
+  .login-box h2 {
+    margin: 0 0 30px;
+    padding: 0;
+    color: #fff;
+  }
+  
+  .user-box {
+    position: relative;
+  }
+  
+  .user-box input {
+    width: 100%;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #fff;
+    margin-bottom: 30px;
+    border: none;
+    border-bottom: 1px solid #fff;
+    outline: none;
+    background: transparent;
+  }
+  
+  .user-box label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #fff;
+    pointer-events: none;
+    transition: .5s;
+  }
+  
+  .user-box input:focus ~ label,
+  .user-box input:valid ~ label {
+    top: -20px;
+    left: 0;
+    color: #03e9f4;
+    font-size: 12px;
+  }
+  
+  button[type="submit"] {
+    position: relative;
+    display: inline-block;
+    padding: 10px 20px;
+    color: #03e9f4;
+    font-size: 16px;
+    text-decoration: none;
+    text-transform: uppercase;
+    overflow: hidden;
+    transition: .5s;
+    letter-spacing: 4px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    outline: none;
+  }
+  
+  button[type="submit"]:hover {
+    color: #fff;
+  }
+  
+  button[type="submit"] span {
+    position: absolute;
+    display: block;
+  }
+  
+  button[type="submit"] span:nth-child(1) {
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #03e9f4);
+    animation: btn-anim1 1s linear infinite;
+  }
+  
+  @keyframes btn-anim1 {
+    0% {
+        left: -100%;
+    }
+    50%,100% {
+        left: 100%;
+    }
+  }
+  
+  button[type="submit"] span:nth-child(2) {
+    top: -100%;
+    right: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(180deg, transparent, #03e9f4);
+    animation: btn-anim2 1s linear infinite;
+    animation-delay: .25s;
+  }
+  
+  @keyframes btn-anim2 {
+    0% {
+        top: -100%;
+    }
+    50%,100% {
+        top: 100%;
+    }
+  }
+  
+  button[type="submit"] span:nth-child(3) {
+    bottom: 0;
+    right: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(270deg, transparent, #03e9f4);
+    animation: btn-anim3 1s linear infinite;
+    animation-delay: .5s;
+  }
+  
+  @keyframes btn-anim3 {
+    0% {
+        right: -100%;
+    }
+    50%,100% {
+        right: 100%;
+    }
+  }
+  
+  button[type="submit"] span:nth-child(4) {
+    bottom: -100%;
+    left: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(360deg, transparent, #03e9f4);
+    animation: btn-anim4 1s linear infinite;
+    animation-delay: .75s;
+  }
+  
+  @keyframes btn-anim4 {
+    0% {
+        bottom: -100%;
+    }
+    50%,100% {
+        bottom: 100%;
+    }
+  }
+  
+  ul {
+    list-style: none;
+    text-decoration: none;
+    position: absolute;
+    top: 100px;
+    right: 0;
+    display: flex;
+    justify-content: flex-end; /* Aligne les éléments à la fin du conteneur */
+    margin-top: 10px;
+  }
+  
+  ul li a{
+    text-decoration: none;
+    color:#fff;
+    padding: 10px 20px;
+    text-transform: uppercase;
+    border: 1px solid #fff;
+    margin: 10px;
+    font-weight: 500;
+    font-size: 2vw;
+    transition: 0.6s ease;
+  }
+  
+  ul li a:hover {
+    background-color: #fff;
+    color: #03e9f4; 
+  }
+  
+  .logo-box h2 span {
+    animation: colorLoop 10s infinite linear;
+  }
+  
+  @keyframes colorLoop {
+    0% {
+      color: white; /* Début de la boucle, tout est blanc */
+  }
+  5% {
+      color: #03e9f4; /* 5% du temps écoulé, première lettre devient bleue */
+      text-shadow: 
+          1px 0 0 #03e9f4, /* Ombre portée à droite */
+          -1px 0 0 #03e9f4; /* Ombre portée à gauche */
+  }
+  10%, 20% {
+      color: #03e9f4; /* 10% à 20% du temps écoulé, première lettre reste bleue */
+      text-shadow: 
+          1px 0 0 #03e9f4, /* Ombre portée à droite */
+          -1px 0 0 #03e9f4; /* Ombre portée à gauche */
+  }
+  25% {
+      color: white; /* 25% du temps écoulé, première lettre redevient blanche */
+  }
+  30% {
+      color: #03e9f4; /* 30% du temps écoulé, deuxième lettre devient bleue */
+      text-shadow: 
+          1px 0 0 #03e9f4, /* Ombre portée à droite */
+          -1px 0 0 #03e9f4; /* Ombre portée à gauche */
+  }
+  35%, 45% {
+      color: #03e9f4; /* 35% à 45% du temps écoulé, deuxième lettre reste bleue */
+      text-shadow: 
+          1px 0 0 #03e9f4, /* Ombre portée à droite */
+          -1px 0 0 #03e9f4; /* Ombre portée à gauche */
+  }
+  50% {
+      color: white; /* 50% du temps écoulé, deuxième lettre redevient blanche */
+  }
+  55% {
+      color: #03e9f4; /* 55% du temps écoulé, troisième lettre devient bleue */
+      text-shadow: 
+          1px 0 0 #03e9f4, /* Ombre portée à droite */
+          -1px 0 0 #03e9f4; /* Ombre portée à gauche */
+  }
+  60%, 70% {
+      color: #03e9f4; /* 60% à 70% du temps écoulé, troisième lettre reste bleue */
+      text-shadow: 
+          1px 0 0 #03e9f4, /* Ombre portée à droite */
+          -1px 0 0 #03e9f4; /* Ombre portée à gauche */
+  }
+  75% {
+      color: white; /* 75% du temps écoulé, troisième lettre redevient blanche */
+  }
+  75%, 85% {
+    color: #03e9f4; /* 55% du temps écoulé, troisième lettre devient bleue */
+    text-shadow: 
+        1px 0 0 #03e9f4, /* Ombre portée à droite */
+        -1px 0 0 #03e9f4;
+  }
+  90%{
+    color: white; /* 100% du temps écoulé, tout redevient blanc */
+  }
+  90%, 99% {
+    color: #03e9f4; /* 55% du temps écoulé, troisième lettre devient bleue */
+    text-shadow: 
+        1px 0 0 #03e9f4, /* Ombre portée à droite */
+        -1px 0 0 #03e9f4;
+  }
+  100% {
+      color: white; /* 100% du temps écoulé, tout redevient blanc */
+  }
+  }
+  
+  .screen {
+    width: 100%;
+    height: 400px;
+    background-color: #f2f2f2;
+  }
+  
+  .chat-bar {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    background-color: #0a5491;
+    color: #03a9f4;
+    border-radius: 20px; 
+  }
+  
+  .chat-bar input {
+    width: calc(100% - 20px); /* Laisser de la place pour le label */
+    padding: 10px;
+    font-size: 16px;
+    color: #fff !important;
+    opacity: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    text-decoration: none;
+    
+  }
+  
+  .chat-bar label {
+    position: absolute;
+    top: 50%;
+    left: 50%; /* Centre horizontalement */
+    transform: translate(-50%, -50%);
+    padding: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #03a9f4;/* Couleur initiale du label */
+    pointer-events: none;
+    transition: .5s;
+    opacity: 1; /* Rendre le label initialement visible */
+    text-decoration: none;
+  }
+  
+  .chat-bar input:focus ~ label {
+    top: 0;
+    left: 5px; /* Décalage vers la gauche */
+    color: #03e9f4; 
+    outline: none; 
+  }
+  
+  /* Placeholder pour le champ de saisie */
+  .chat-bar input::placeholder {
+    color: #fff; /* Couleur du placeholder */
+    opacity: 1;/* Opacité du placeholder */
+    outline: none; 
+  
+  }
+  
+  
+  
+  .leave-button {
+    margin-top: 10px;
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: #ff0000;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+  }
+  
+  .profile-button {
+    margin-top: 10px;
+    margin-right: 10px;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+  }
+  
+  .leave-button {
+    margin-top: 10px;
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: #ff0000;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+  }
+  
+  .profile-button {
+    margin-top: 10px;
+    margin-right: 10px;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+  }
+  
+  .player-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .player-button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    color: #fff;
+    font-size: 16px;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 5px;
+    background-color: transparent;
+    cursor: pointer;
+    outline: none;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .player-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #03e9f4;
+    z-index: -1;
+    transition: transform 0.3s ease;
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  
+  .player-button:hover::before {
+    transform: scaleX(1);
+  }
+  
+  #chrono-button {
+    background-color: #0b3861; /* Bleu foncé */
+    color: #03a9f4; /* Bleu électrique */
+    border: none;
+    border-radius: 20px; /* Coins arrondis */
+    padding: 15px 30px; /* Espacement interne */
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s; /* Transition fluide */
+  }
+  
+  #chrono-button:hover {
+    background-color: #0a5491; /* Bleu foncé plus foncé au survol */
+  }
+  
+  #chrono-button:active {
+    background-color: #0a5491; /* Bleu foncé plus foncé lors du clic */
+    color: #02a1e7; /* Bleu électrique plus clair lors du clic */
+  }
