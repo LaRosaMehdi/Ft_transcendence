@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  ft_transcendence_database:
+    image: ft_transcendence/database
+    container_name: ft_transcendence_database
+    build:
+      context: db/
+      dockerfile: Dockerfile
+    ports:
+      - 5432:443
+    networks:
+      - ft_transcendence_network
+    volumes:
+      - ft_transcendence_database-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mehdi -d ft_transcendence_database"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  backend:
+    image: ft_transcendence/backend
+    container_name: ft_transcendence_backend
+    build:
+      context: backend/
+      dockerfile: Dockerfile
+    ports:
+      - 8080:443
+    networks:
+      - ft_transcendence_network
+    volumes:
+      - ft_transcendence_database-data:/var/lib/postgresql/data
+    depends_on:
+      - ft_transcendence_database  
+
+networks:
+  ft_transcendence_network:
+
+volumes:
+  ft_transcendence_database-data:
