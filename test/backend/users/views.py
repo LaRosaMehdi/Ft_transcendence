@@ -26,7 +26,7 @@ def create_users(_login, _password, _email, _img):
     return new_user, True
 
 def oauth_callback(request):
-    logger.debug(f"DEBUG_00: Entering oauth_callback, full path: {request.get_full_path()}")
+    logger.info(f"Authentication via 42 oauth")
 
     code = request.GET.get('code')
     if not code:
@@ -68,4 +68,18 @@ def oauth_callback(request):
         logger.exception("An error occurred in oauth_callback")
         return JsonResponse({'error': str(e)}, status=500)
     
-
+def oauth_form(request):
+    try:
+        logger.info(f"Authentication via form")
+        if request.method == 'POST':
+            username = request.POST.get('username')
+            email = request.POST.get('email')
+            password = request.POST.get('password')
+            create_users(username, password, email, None)
+            return redirect('http://localhost:8080/users/accueil2/')
+        else:
+            logger.error("Invalid request method")
+            return JsonResponse({'error': 'Invalid request method'}, status=400)
+    except Exception as e:
+        logger.exception("An error occurred in oauth_callback")
+        return JsonResponse({'error': str(e)}, status=500)
