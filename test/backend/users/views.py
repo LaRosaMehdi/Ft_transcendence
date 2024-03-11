@@ -8,12 +8,23 @@ from django.contrib.auth.hashers import make_password
 import requests
 from requests import get
 import logging
+from django.contrib import messages
 
 logger = logging.getLogger(__name__)
 
-def create_users(_login, _password, _email, _img):
+# Need to handle :
+# - User can't connect with other type of account create
+# - Double username
+# - Double email
+# - Password too short (min 10 characters, 1 number, 1 uppercase, 1 lowercase, 1 special character
+# - Email not valid (2FA)
+def create_user(_login, _password, _email, _img):
     existing_user = user.objects.filter(username=_login).first()
     if existing_user:
+
+        
+
+        logger.info(f"User already exists: {existing_user}")
         return existing_user, False
     hashed_password = make_password(_password) if _password else None
     new_user = user.objects.create(
@@ -61,21 +72,26 @@ def oauth_callback(request):
 
         user_info = user_response.json()
         logger.debug(f"User info: {user_info['login']}")
-        new_user = create_users(user_info['login'], None, user_info['email'], user_info['image']['link'])
-        
+        new_user = create_user(user_info['login'], None, user_info['email'], user_info['image']['link'])
+        if new_user[1] is False and new_user[0].password is not None:
+            messages.error(request, "username already exists, please use another one")
+            return HttpResponseRedirect('http://localhost:8080/api/')
         return redirect('accueil2', username=new_user[0].username)
+    
     except Exception as e:
         logger.exception("An error occurred in oauth_callback")
         return JsonResponse({'error': str(e)}, status=500)
     
 def oauth_form(request):
     try:
-        logger.info(f"Authentication via form")
         if request.method == 'POST':
             username = request.POST.get('username')
             email = request.POST.get('email')
             password = request.POST.get('password')
-            new_user = create_users(username, password, email, None)
+            new_user = create_user(username, password, email, None)
+            if new_user[1] is False and new_user[0].password is None:
+                messages.error(request, "username already exists, please use another one")
+                return HttpResponseRedirect('http://localhost:8080/api/')
             return redirect('accueil2', username=new_user[0].username)
         else:
             logger.error("Invalid request method")

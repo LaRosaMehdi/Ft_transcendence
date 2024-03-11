@@ -9,7 +9,7 @@ from django.http import HttpResponseNotAllowed
 from . import views
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name='index.html'), name='index'),
+    path('', index, name='index'),
     path("admin/", admin.site.urls),
 	path('accueil/', oauth_callback, name='accueil'),
     #path('accueil2/', TemplateView.as_view(template_name='accueil.html'), name='accueil'),

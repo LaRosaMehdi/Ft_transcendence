@@ -27,6 +27,14 @@
             </div>  
             <button type="submit">Submit</button>
         </form>
+
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li>ERROR: {{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         
         <!-- Login Intranet -->
         <div class="login-box">
