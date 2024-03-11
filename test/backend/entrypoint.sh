@@ -13,13 +13,15 @@ done
 
 
 
-
+#psql -U mehdi -d ft_transcendence_database -h ft_transcendence_database -p 5432
 # Start the Django development server or any other necessary commands
 #python /usr/src/app/app/manage.py createsuperuser
 #echo "APRES CREATE USER"
 #echo "APRES start api"
 #python -m pip install Pillow
 #echo "APRES install pillow"
+pip install requests
+
 python /usr/src/manage.py makemigrations
 python /usr/src/manage.py migrate
 #echo "APRES migrate"
