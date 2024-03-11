@@ -27,5 +27,12 @@ python /usr/src/manage.py migrate
 #echo "APRES migrate"
 #python ./app/manage.py collectstatic --no-input
 #echo "APRES STATIC"
+
+# Check if the superuser exists, and if not, create it
+if [ -z "$(python /usr/src/manage.py shell -c 'from django.contrib.auth.models import User; print(User.objects.filter(is_superuser=True).exists())')" ]; then
+    echo "Creating superuser..."
+    echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'admin@example.com', 'admin')" | python /usr/src/manage.py shell
+fi
+
 exec python manage.py runserver 0.0.0.0:443
 #echo "APRES run server"

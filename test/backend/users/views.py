@@ -1,9 +1,5 @@
 from django.shortcuts import render
-
-# Create your views here.
-from django.shortcuts import render
 from django.http import HttpResponseRedirect
-#from django.contrib.auth.models import User
 from users.models import user
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -13,27 +9,21 @@ import requests
 from requests import get
 import logging
 
+logger = logging.getLogger(__name__)
 
-def Create_users(_login, _password, _email):
+def create_users(_login, _password, _email, _img):
     existing_user = user.objects.filter(username=_login).first()
     if existing_user:
-        # If the user exists, you can decide to return the existing user
-        # Or update the existing user's email or other details here
-        return existing_user, False  # Returning the user and False to indicate the user was not created now
-    
-    # If the user does not exist, create a new user
+        return existing_user, False
     hashed_password = make_password(_password) if _password else None
     new_user = user.objects.create(
         username=_login,
         email=_email,
-        password=hashed_password  # Use hashed password
+        password=hashed_password,  # Use hashed password
+        image=_img
     )
+    logger.info(f"New user created: {new_user}")
     return new_user, True
-
-  
-    
-
-logger = logging.getLogger(__name__)
 
 def oauth_callback(request):
     logger.debug(f"DEBUG_00: Entering oauth_callback, full path: {request.get_full_path()}")
@@ -71,10 +61,7 @@ def oauth_callback(request):
 
         user_info = user_response.json()
         logger.debug(f"User info: {user_info['login']}")
-
-        # Process user_info as needed
-        logger.debug(Create_users(user_info['login'], None, user_info['email']))
-
+        create_users(user_info['login'], None, user_info['email'], user_info['image']['link'])
         
         return redirect('http://localhost:8080/users/accueil2/')
     except Exception as e:
