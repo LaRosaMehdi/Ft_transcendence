@@ -3,8 +3,8 @@ from django.db import models
 
 # @admin.register(user)
 class user(models.Model):
-    username = models.CharField(max_length=100)
-    email = models.EmailField()
+    username = models.CharField(max_length=100, unique=True)
+    email = models.EmailField(unique=True)
     password = models.CharField(max_length=100, null=True)
     image = models.CharField(max_length=1000000, null=True)
 

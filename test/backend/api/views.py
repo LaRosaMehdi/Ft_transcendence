@@ -12,12 +12,11 @@ from requests import get
 import logging
 
 def index(request):
-    print("hey")
     return render(request, 'index.html')
 
 # @login_required
-def accueil(request):
-    return render(request, 'accueil.html')
+def accueil(request, username):
+    return render(request, 'accueil.html', {'username': username})
 
 def generate_profile_json(request):
     profile_data = {

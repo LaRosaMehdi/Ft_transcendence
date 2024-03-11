@@ -61,9 +61,9 @@ def oauth_callback(request):
 
         user_info = user_response.json()
         logger.debug(f"User info: {user_info['login']}")
-        create_users(user_info['login'], None, user_info['email'], user_info['image']['link'])
+        new_user = create_users(user_info['login'], None, user_info['email'], user_info['image']['link'])
         
-        return redirect('http://localhost:8080/users/accueil2/')
+        return redirect('accueil2', username=new_user[0].username)
     except Exception as e:
         logger.exception("An error occurred in oauth_callback")
         return JsonResponse({'error': str(e)}, status=500)
@@ -75,8 +75,8 @@ def oauth_form(request):
             username = request.POST.get('username')
             email = request.POST.get('email')
             password = request.POST.get('password')
-            create_users(username, password, email, None)
-            return redirect('http://localhost:8080/users/accueil2/')
+            new_user = create_users(username, password, email, None)
+            return redirect('accueil2', username=new_user[0].username)
         else:
             logger.error("Invalid request method")
             return JsonResponse({'error': 'Invalid request method'}, status=400)
