@@ -135,21 +135,34 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
+            'formatter': 'simple',
         },
     },
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': True,
+            'level': 'INFO',  # Increase Django's log level to reduce verbosity
+            'propagate': False,  # Prevents double logging in console
         },
-        'users': {  # Replace 'your_app_name' with the name of your Django app
+        'django.db.backends': {
+            'level': 'INFO',  # Reduce the output of database-related logs
+            'handlers': ['console'],
+            'propagate': False,
+        },
+        'users': {  # Your app
             'handlers': ['console'],
             'level': 'DEBUG',
+            'propagate': False,
         },
     },
 }

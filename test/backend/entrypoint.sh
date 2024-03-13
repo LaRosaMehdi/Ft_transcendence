@@ -10,7 +10,13 @@ done
 # Insert your code here
 #Echo creating app_folder
 
+#blockchain start
+#cd blockchain_etherum && truffle compile
+#truffle migrate --network development
+#cd ..
+pip install web3
 
+#blockchain end
 
 
 #psql -U mehdi -d ft_transcendence_database -h ft_transcendence_database -p 5432
