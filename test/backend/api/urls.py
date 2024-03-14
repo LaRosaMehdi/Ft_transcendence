@@ -10,6 +10,7 @@ from . import views
 
 urlpatterns = [
     path('', register, name='register'),
+	path('register/', register, name='register'),
     path('login/', login, name='login'),
     path("admin/", admin.site.urls),
 	path('accueil/', oauth_callback, name='accueil'),
