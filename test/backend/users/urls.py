@@ -11,5 +11,6 @@ from . import views
 urlpatterns = [
 	#path('accueil/', views.oauth_callback, name='accueil'),
     path('accueil2/<str:username>/', accueil, name='accueil2'),
-	path('oauth_form/', oauth_form, name='oauth_form'),
+	path('aouth_register_form/', aouth_register_form, name='aouth_register_form'),
+	path('aouth_login_form/', aouth_login_form, name='aouth_login_form'),
 ]

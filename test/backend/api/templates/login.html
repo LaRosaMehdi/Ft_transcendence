@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="{% static 'stylesheet.css' %}">
+    <style>
+        .container {
+            position: absolute;
+            top: 10px; /* Adjust as needed */
+            right: 10px; /* Adjust as needed */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button type="submit" onclick="window.location.href = '{% url 'register' %}'"><span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            Not Yet Registered ? Register</button>
+    </div>
+    <div class="login-box">
+        <h2>Login</h2>      
+        {% if messages %}
+            {% for message in messages %}
+                <p style="color: red;">ERROR: {{ message }}</p>
+            {% endfor %}
+        {% endif %}
+        <form action="{% url 'aouth_login_form' %}" method="post">
+            {% csrf_token %}
+            <div class="user-box">
+                <input type="text" name="user_id" required="" id="user_id">
+                <label>User ID (username or email)</label>
+            </div>
+            <div class="user-box">
+                <input type="password" name="password" required="" id="password">
+                <label>Password</label>
+            </div>  
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <h2 style="text-align: center; color: white;"> or </h2>
+    <div class="login-box">
+        <button type="submit" onclick="window.location.href = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-4e7c6c0a55a3674309f2425ad5c80ac4c98510374b1197a7eff37ce12371fb27&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fapi%2Faccueil&response_type=code'"><span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            Login with 42
+        </button>
+    </div>
+</body>
+</html>
