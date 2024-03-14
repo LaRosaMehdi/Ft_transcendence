@@ -4,7 +4,6 @@ from django.urls import path
 from django.views.generic import TemplateView
 from api.views import *
 from users.views import *
-from django.contrib import admin
 from django.http import HttpResponseNotAllowed
 from . import views
 
@@ -12,7 +11,6 @@ urlpatterns = [
     path('', register, name='register'),
 	path('register/', register, name='register'),
     path('login/', login, name='login'),
-    path("admin/", admin.site.urls),
 	path('accueil/', oauth_callback, name='accueil'),
     path('tournament/', TemplateView.as_view(template_name='tournament.html'), name='tournament'),
     path('mode/', TemplateView.as_view(template_name='mode.html'), name='mode'),
