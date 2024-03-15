@@ -17,9 +17,15 @@ def login(request):
 def register(request):
     return render(request, 'register.html')
 
-# @login_required
 def accueil(request, username):
     return render(request, 'accueil.html', {'username': username})
+
+def settings(request, username):
+    # Your view logic goes here
+    return render(request, 'settings.html', {'username': username})
+
+def perso(request, username):
+    return render(request, 'perso.html', {'username': username})
 
 def generate_profile_json(request):
     profile_data = {

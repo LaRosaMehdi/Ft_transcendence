@@ -10,32 +10,9 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.decorators import login_required
 
+from users.views import *
+
 logger = logging.getLogger(__name__)
-
-# USER MANAGEMENT
-# ---------------
-
-def get_user_by_username(_login):
-    return user.objects.filter(username=_login).first()
-
-def get_user_by_email(_email):
-    return user.objects.filter(email=_email).first()
-
-def create_user(_login, _password, _email, _img):
-    existing_user = get_user_by_username(_login)
-    if existing_user:
-        logger.info(f"User already exists: {existing_user}")
-        return existing_user, True
-    hashed_password = make_password(_password) if _password else None
-    new_user = user.objects.create(
-        username=_login,
-        email=_email,
-        password=hashed_password,  # Use hashed password
-        image=_img
-    )
-    logger.info(f"New user created: {new_user}")
-    return new_user, False
-
 
 # AOUTHENTIFICATION
 # -----------------
@@ -48,9 +25,9 @@ def aouth_login(request, _user_id, _password):
     is_email = "@" in _user_id
     errors = []
     if is_email:
-        user_instance = get_user_by_email(_user_id)
+        user_instance = user_get_by_email(_user_id)
     else:
-        user_instance = get_user_by_username(_user_id)
+        user_instance = user_get_by_username(_user_id)
     if user_instance is None:
         errors.append("User not found, please register")
     elif not check_password(_password, user_instance.password):
@@ -69,7 +46,7 @@ def aouth_login_form(request):
             user = aouth_login(request, user_id, password)
             if user is None:
                 return HttpResponseRedirect('http://localhost:8080/api/login')
-            return redirect('accueil2', username=user.username)
+            return redirect('home', username=user.username)
         else:
             logger.error("Invalid request method")
             return JsonResponse({'error': 'Invalid request method'}, status=400)
@@ -99,8 +76,8 @@ def aouth_register(request, _username, _password, _email, _image):
             return True
         return False
         
-    user_by_username = get_user_by_username(_username)
-    user_by_email = get_user_by_email(_email)
+    user_by_username = user_get_by_username(_username)
+    user_by_email = user_get_by_email(_email)
     errors = []
     if user_by_username is not None and user_by_username == user_by_email:
         errors.append("Already registered, please login")
@@ -116,7 +93,7 @@ def aouth_register(request, _username, _password, _email, _image):
         for error in errors:
             messages.error(request, error)
         return None
-    return create_user(_username, _password, _email, None)[0]
+    return user_create(_username, _password, _email, None)[0]
     
 def aouth_register_form(request):
     try:
@@ -127,7 +104,7 @@ def aouth_register_form(request):
             new_user = aouth_register(request, username, password, email, None)
             if new_user is None:
                 return HttpResponseRedirect('http://localhost:8080/api/register')
-            return redirect('accueil2', username=new_user.username)
+            return redirect('home', username=new_user.username)
         else:
             logger.error("Invalid request method")
             return JsonResponse({'error': 'Invalid request method'}, status=400)
@@ -175,8 +152,8 @@ def oauth_callback(request):
             return JsonResponse({'error': 'Failed to fetch user information'}, status=user_response.status_code)
 
         user_info = user_response.json()
-        new_user = create_user(user_info['login'], None, user_info['email'], user_info['image']['link']) 
-        return redirect('accueil2', username=new_user[0].username)
+        new_user = user_create(f"{user_info['login']}_42", None, user_info['email'], user_info['image']['link']) 
+        return redirect('home', username=new_user[0].username)
     
     except Exception as e:
         logger.exception("An error occurred in oauth_callback")

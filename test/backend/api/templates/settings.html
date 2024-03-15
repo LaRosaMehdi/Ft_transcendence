@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil Page</title>
+    <link rel="stylesheet" href="{% static 'stylesheet.css' %}">
+</head>
+<body>
+    <h2>Settings</h2>
+    <!-- <div class="login-box">
+        <h2>Change Username</h2>
+        <form action="{% url 'setting_change_username' %}" method="post">
+            {% csrf_token %}
+            <label for="new_login_name">New Username:</label>
+            <input type="text" id="new_username" name="new_username">
+            <button type="submit">Change</button>
+        </form>
+    </div> -->
+</body>
+</html>

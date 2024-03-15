@@ -7,10 +7,16 @@ from users.views import *
 from django.contrib import admin
 from django.http import HttpResponseNotAllowed
 from . import views
+from api.views import *
+from users.views import *
 
 urlpatterns = [
-	#path('accueil/', views.oauth_callback, name='accueil'),
-    path('accueil2/<str:username>/', accueil, name='accueil2'),
+    path('<str:username>/home/', accueil, name='home'),
+    path('<str:username>/perso/', perso, name='perso'),
+    path('<str:username>/settings/', settings, name='settings'),
+	
 	path('aouth_register_form/', aouth_register_form, name='aouth_register_form'),
 	path('aouth_login_form/', aouth_login_form, name='aouth_login_form'),
+
+    path('setting_change_username/', setting_change_username, name='setting_change_username'),
 ]
