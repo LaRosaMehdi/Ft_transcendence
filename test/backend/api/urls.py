@@ -10,7 +10,7 @@ from users.views import *
 urlpatterns = [
     path('', register, name='register'),
 	path('register/', register, name='register'),
-    path('login/', login, name='login'),
+    path('login/', login2, name='login'),
     path('accueil/', oauth_callback, name='accueil'),
     path('tournament/', TemplateView.as_view(template_name='tournament.html'), name='tournament'),
     path('mode/', TemplateView.as_view(template_name='mode.html'), name='mode'),

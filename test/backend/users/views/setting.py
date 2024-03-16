@@ -1,6 +1,6 @@
 import requests, re, logging
 from requests import get
-from users.models import user
+from users.models import User
 from django.http import JsonResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
@@ -9,8 +9,6 @@ from django.contrib import messages
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.decorators import login_required
-
-
 from users.views import *
 
 logger = logging.getLogger(__name__)

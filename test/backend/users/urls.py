@@ -11,9 +11,9 @@ from api.views import *
 from users.views import *
 
 urlpatterns = [
-    path('<str:username>/home/', accueil, name='home'),
-    path('<str:username>/perso/', perso, name='perso'),
-    path('<str:username>/settings/', settings, name='settings'),
+    path('home/', accueil, name='home'),
+    path('perso/', perso, name='perso'),
+    path('ettings/', settings, name='settings'),
 	
 	path('aouth_register_form/', aouth_register_form, name='aouth_register_form'),
 	path('aouth_login_form/', aouth_login_form, name='aouth_login_form'),

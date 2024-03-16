@@ -10,28 +10,37 @@ from django.shortcuts import redirect
 import requests
 from requests import get
 import logging
+from users.views import *
 
-def login(request):
-    return render(request, 'login.html')
+from django.shortcuts import get_object_or_404
+from users.models import User  
+
+logger = logging.getLogger(__name__)
+
+def login2(request):
+    return render(request, 'login.html', {'form': LoginForm() })
 
 def register(request):
-    return render(request, 'register.html')
+    return render(request, 'register.html', {'form': RegistrationForm() })
 
-def accueil(request, username):
-    return render(request, 'accueil.html', {'username': username})
+def accueil(request):
+    return render(request, 'accueil.html', {'current_user': request.user})
 
-def settings(request, username):
+def settings(request):
     # Your view logic goes here
-    return render(request, 'settings.html', {'username': username})
+    return render(request, 'settings.html')
 
-def perso(request, username):
-    return render(request, 'perso.html', {'username': username})
+def perso(request):
+    return render(request, 'perso.html')
+
 
 def generate_profile_json(request):
+    profile_instance = get_object_or_404(User, username=request.user.username)
     profile_data = {
-        "username": "testdb",
-        "elo_tst": 10,
-        "ce que tu veux": "test test"
+        'username': profile_instance.username,
+        'email': profile_instance.email,
+        'elo': profile_instance.elo,
+        'image': profile_instance.image
     }
     return JsonResponse(profile_data)
 

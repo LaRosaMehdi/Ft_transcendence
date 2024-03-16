@@ -1,15 +1,17 @@
 import requests, re, logging
 from requests import get
-from users.models import user
+from users.models import User
+from django.urls import reverse
 from django.http import JsonResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.contrib import messages
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.decorators import login_required
-
+from django.contrib.auth.backends import ModelBackend
 from users.views import *
 
 logger = logging.getLogger(__name__)
@@ -17,113 +19,77 @@ logger = logging.getLogger(__name__)
 # AOUTHENTIFICATION
 # -----------------
 
-# * Login
-# -------
+class AouthUser(ModelBackend):
+    def authenticate(self, request, username=None, password=None, **kwargs):
+        try:
+            user_obj = User.objects.get(username=username)
+            if user_obj.check_password(password):
+                return user_obj
+        except User.DoesNotExist:
+            return None
 
-def aouth_login(request, _user_id, _password):
-
-    is_email = "@" in _user_id
-    errors = []
-    if is_email:
-        user_instance = user_get_by_email(_user_id)
-    else:
-        user_instance = user_get_by_username(_user_id)
-    if user_instance is None:
-        errors.append("User not found, please register")
-    elif not check_password(_password, user_instance.password):
-        errors.append("Password incorrect")
-    if errors:
-        for error in errors:
-            messages.error(request, error)
-        return None
-    return user_instance
-
-def aouth_login_form(request):
-    try:
-        if request.method == 'POST':
-            user_id = request.POST.get('user_id')
-            password = request.POST.get('password')
-            user = aouth_login(request, user_id, password)
-            if user is None:
-                return HttpResponseRedirect('http://localhost:8080/api/login')
-            return redirect('home', username=user.username)
-        else:
-            logger.error("Invalid request method")
-            return JsonResponse({'error': 'Invalid request method'}, status=400)
-    except Exception as e:
-        logger.exception("An error occurred in oauth_callback")
-        return JsonResponse({'error': str(e)}, status=500)
-
-# * Registration
-# --------------
-
-def aouth_register(request, _username, _password, _email, _image):
-
-    def is_valid_password(password):
-        if len(password) < 8:
-            return False
-        if not re.search(r"[a-zA-Z]", password):
-            return False
-        if not re.search(r"\d", password):
-            return False
-        if not re.search(r"[!@#$%^&*()-_+=]", password):
-            return False
-        return True
-    
-    def is_valid_email(email):
-        email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-        if re.match(email_regex, email):
-            return True
-        return False
+# LOGIN
+# -----
         
-    user_by_username = user_get_by_username(_username)
-    user_by_email = user_get_by_email(_email)
-    errors = []
-    if user_by_username is not None and user_by_username == user_by_email:
-        errors.append("Already registered, please login")
-    if user_by_username is not None:
-        errors.append("Username already used")
-    if user_by_email is not None:
-        errors.append("Email already used")
-    if not is_valid_password(_password):
-        errors.append("Password invalid (min 8 characters, 1 letter, 1 number, 1 special character)")
-    if not is_valid_email(_email):
-        errors.append("Email invalid")
-    if errors:
-        for error in errors:
-            messages.error(request, error)
-        return None
-    return user_create(_username, _password, _email, None)[0]
-    
+def aouth_login_form(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            user_id = form.cleaned_data['user_id']
+            password = form.cleaned_data['password']
+            if '@' in user_id:
+                user = authenticate(request, email=user_id, password=password)
+            else:
+                user = authenticate(request, username=user_id, password=password)
+                
+            if user is not None:
+                login(request, user)
+                return redirect('home')
+            else:
+                messages.error(request, "Invalid username or password", extra_tags='aouth_login_tag')
+    return render(request, 'login.html', {'form': LoginForm()})
+
+# REGISTRATION
+# ------------
+
 def aouth_register_form(request):
-    try:
-        if request.method == 'POST':
-            username = request.POST.get('username')
-            email = request.POST.get('email')
-            password = request.POST.get('password')
-            new_user = aouth_register(request, username, password, email, None)
-            if new_user is None:
-                return HttpResponseRedirect('http://localhost:8080/api/register')
-            return redirect('home', username=new_user.username)
+    errors = []
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password1')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                logger.info(f"User {username} registered and authenticated")
+                return redirect('home')
+            else:
+                errors.append("Failed to authenticate user after registration")
+                logger.error("Failed to authenticate user after registration")
         else:
-            logger.error("Invalid request method")
-            return JsonResponse({'error': 'Invalid request method'}, status=400)
-    except Exception as e:
-        logger.exception("An error occurred in oauth_callback")
-        return JsonResponse({'error': str(e)}, status=500)
+            errors.append("Invalid registration form")
+            logger.error("Invalid registration form")
+    if errors != []:
+        for error in errors:
+            messages.error(request, error, extra_tags='aouth_register_tag')
+    return render(request, 'register.html', {'form': form})
 
-# * 42 Oauth
-# ----------
 
-# May need to Intranet application (one to register and one to login)
+# 42 OAUTH
+# --------
+
+from django.contrib.auth import get_user_model
 
 def oauth_callback(request):
-    logger.info(f"Authentication via 42 oauth")
+    logger.info("Authentication via 42 oauth")
 
     code = request.GET.get('code')
     if not code:
         logger.error("No code provided in request")
-        return JsonResponse({'error': 'Code not provided'}, status=400)
+        messages.error(request, "Code not provided")
+        return render(request, 'register.html')
 
     logger.debug(f"Code received: {code}")
 
@@ -138,7 +104,8 @@ def oauth_callback(request):
 
         if token_response.status_code != 200:
             logger.error(f"Failed to fetch access token: {token_response.json()}")
-            return JsonResponse({'error': 'Failed to fetch access token'}, status=token_response.status_code)
+            messages.error(request, "Failed to fetch access token")
+            return render(request, 'register.html')
 
         access_token = token_response.json().get('access_token')
         logger.debug(f"Access token: {access_token}")
@@ -149,12 +116,21 @@ def oauth_callback(request):
 
         if user_response.status_code != 200:
             logger.error(f"Failed to fetch user information: {user_response.json()}")
-            return JsonResponse({'error': 'Failed to fetch user information'}, status=user_response.status_code)
+            messages.error(request, "Failed to fetch user information")
+            return render(request, 'register.html')
 
         user_info = user_response.json()
-        new_user = user_create(f"{user_info['login']}_42", None, user_info['email'], user_info['image']['link']) 
-        return redirect('home', username=new_user[0].username)
-    
+
+        User = get_user_model()
+        user = User.objects.filter(username=f"{user_info['login']}_42").first()
+        logger.debug(f"User: {user_info['image']['link']}")
+        if not user:
+            user = User.objects.create_user(username=f"{user_info['login']}_42", email=user_info['email'], image_url=user_info['image']['link'])
+        user.backend = f'{ModelBackend.__module__}.{ModelBackend.__qualname__}'
+        login(request, user)
+        return redirect('home')
+
     except Exception as e:
         logger.exception("An error occurred in oauth_callback")
-        return JsonResponse({'error': str(e)}, status=500)
+        messages.error(request, "An error occurred")
+        return render(request, 'register.html', {'form': RegistrationForm()})

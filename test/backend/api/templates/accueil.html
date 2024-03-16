@@ -8,8 +8,9 @@
     <link rel="stylesheet" href="{% static 'stylesheet.css' %}">
 </head>
 <body>
+    <img src="{{ current_user.image }}" style="width: 100px; height: 100px; margin-left: 20px;">
     <div class="login-box">
-        <h2 style="text-align: center;">Hello, {{ username }}</h1>
+        <h2 style="text-align: center;">Welcome, {{ current_user.username }}</h1>
         <h2 style="text-align: center;">Ft_Transcendence</h2>
         <button type="submit" onclick="window.location.href = '{% url 'play' %}'" style="margin-right: 20px;"> <span></span>
         <span></span>
@@ -27,7 +28,7 @@
     </div>
     
     <div class="perso-button">
-        <button type="submit" onclick="window.location.href = '{% url 'perso' username=username %}'">
+        <button type="submit" onclick="window.location.href = '{% url 'perso' %}'">
             <span></span>
             <span></span>
             <span></span>

@@ -25,10 +25,12 @@
     <div class="login-box">
         <h2>Login</h2>      
         {% if messages %}
-            {% for message in messages %}
+        {% for message in messages %}
+            {% if message.tags == 'aouth_login_tag error' %}
                 <p style="color: red;">ERROR: {{ message }}</p>
-            {% endfor %}
-        {% endif %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
         <form action="{% url 'aouth_login_form' %}" method="post">
             {% csrf_token %}
             <div class="user-box">
@@ -44,6 +46,13 @@
     </div>
     <h2 style="text-align: center; color: white;"> or </h2>
     <div class="login-box">
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'aouth_tag error' %}
+                    <p style="color: red;">ERROR: {{ message }}</p>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
         <button type="submit" onclick="window.location.href = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-4e7c6c0a55a3674309f2425ad5c80ac4c98510374b1197a7eff37ce12371fb27&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fapi%2Faccueil&response_type=code'"><span></span>
             <span></span>
             <span></span>
