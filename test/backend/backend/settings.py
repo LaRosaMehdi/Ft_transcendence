@@ -181,5 +181,5 @@ AUTH_USER_MODEL = 'users.User'
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = True
 
-
-import os
+MEDIA_URL = '/users/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

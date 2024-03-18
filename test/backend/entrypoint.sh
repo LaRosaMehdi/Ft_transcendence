@@ -12,6 +12,7 @@ python -m pip install Pillow
 python /usr/src/manage.py makemigrations
 python /usr/src/manage.py migrate
 
+# python manage.py runserver 
 #psql -U mehdi -d ft_transcendence_database -h ft_transcendence_database -p 5432
 
 # if ! python /usr/src/manage.py shell -c "from users.models import User; print(User.objects.filter(is_superuser=True).exists())"; then

@@ -20,4 +20,5 @@ urlpatterns = [
 
     path('settings/', settings, name='settings'),
     path('setting_change_username/', setting_change_username, name='setting_change_username'),
+    path('setting_change_image/', setting_change_image, name='setting_change_image'),
 ]

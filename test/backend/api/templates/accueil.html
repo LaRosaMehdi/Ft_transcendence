@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{% static 'stylesheet.css' %}">
 </head>
 <body>
-    <img src="{{ current_user.image }}" style="width: 100px; height: 100px; margin-left: 20px;">
+    <img src="{{ current_user.image.url }}" style="width: 100px; height: 100px; margin-left: 20px;">
     <div class="login-box">
         <h2 style="text-align: center;">Welcome, {{ current_user.username }}</h1>
         <h2 style="text-align: center;">Ft_Transcendence</h2>

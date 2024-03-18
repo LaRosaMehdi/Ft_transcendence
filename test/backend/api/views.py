@@ -28,7 +28,8 @@ def accueil(request):
 
 def settings(request):
     return render(request, 'settings.html', {
-        'change_username_form': ChangeUsernameForm(instance=request.user)
+        'change_username_form': ChangeUsernameForm(instance=request.user),
+        'change_image_form': ChangeImageForm(instance=request.user),
     })
 
 def perso(request):

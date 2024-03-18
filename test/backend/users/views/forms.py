@@ -4,7 +4,6 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserChangeForm
 from django.contrib.auth.forms import UserCreationForm
 
-
 # User Registration
 # -----------------
 class RegistrationForm(forms.Form):
@@ -53,4 +52,7 @@ class ChangeUsernameForm(UserChangeForm):
             raise forms.ValidationError("This username is already taken.")
         return new_username
 
-   
+class ChangeImageForm(forms.ModelForm):
+    class Meta:
+        model = get_user_model()
+        fields = ['image']

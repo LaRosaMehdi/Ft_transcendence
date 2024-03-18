@@ -16,8 +16,6 @@ logger = logging.getLogger(__name__)
 # SETTINGS
 # --------
 
-# CHANGE AOUHT 42 TO LOGIN WIHT ADDRESS
-
 from django.contrib import messages
 
 def setting_change_username(request):
@@ -39,4 +37,17 @@ def setting_change_username(request):
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f'{field}: {error}', extra_tags='change_username_tag')
+    return redirect('settings')
+
+def setting_change_image(request):
+    if request.method == 'POST':
+        form = ChangeImageForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Image changed successfully.', extra_tags='change_image_tag')
+            return redirect('settings')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'{field}: {error}', extra_tags='change_image_tag')
     return redirect('settings')

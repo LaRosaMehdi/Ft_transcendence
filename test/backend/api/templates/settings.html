@@ -30,5 +30,23 @@
             {% endfor %}
         {% endif %}
     </div>
+    <div class="login-box">
+        <h2>Change Image</h2>
+        <form method="post" enctype="multipart/form-data" action="{% url 'setting_change_image' %}">
+            {% csrf_token %}
+            {{ change_image_form.as_p }}
+            <button type="submit">Upload</button>
+        </form>
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'change_image_tag error' %}
+                    <p style="color: red;">ERROR: {{ message }}</p>
+                {% endif %}
+                {% if message.tags == 'change_image_tag success' %}
+                    <p style="color: orange;">SUCCESS: {{ message }}</p>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
 </body>
 </html>

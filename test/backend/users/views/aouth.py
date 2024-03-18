@@ -89,8 +89,6 @@ def aouth_register_form(request):
     return redirect('register')
 
 
-
-
 # 42 OAUTH
 # --------
 
