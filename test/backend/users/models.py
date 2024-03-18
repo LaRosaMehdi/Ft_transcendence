@@ -25,8 +25,6 @@ class UserManager(BaseUserManager):
         return user
     
     def create_superuser(self, username, email=None, password=None, **extra_fields):
-        if password is None:
-            raise ValueError('Superuser must have a password')
         email = self.normalize_email(email) if email else 'default@student.42nice.fr'
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
