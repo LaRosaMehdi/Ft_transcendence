@@ -1,11 +1,14 @@
 import requests, re, logging
 from requests import get
 from users.models import User
+from django.db import models
+from django.conf import settings
 from django.http import JsonResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.decorators import login_required
@@ -35,3 +38,7 @@ def user_create(_login, _password, _email, _img):
     )
     logger.info(f"New user created: {new_user}")
     return new_user, False
+
+def user_set_is_connected(user, connected=True):
+    user.is_connected = connected
+    user.save(update_fields=['is_connected'])

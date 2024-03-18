@@ -191,9 +191,12 @@ MEDIA_URL = '/users/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 MIDDLEWARE_EXEMPT_URLS = [
+    '/admin/',
     '/api/register/',
     '/api/login/',
     '/api/accueil/',
     '/users/aouth_register_form/',
     '/users/aouth_login_form/',
 ]
+
+# AUTO_LOGOUT_TIME = 1800

@@ -16,6 +16,7 @@ urlpatterns = [
 	
 	path('aouth_register_form/', aouth_register_form, name='aouth_register_form'),
 	path('aouth_login_form/', aouth_login_form, name='aouth_login_form'),
+    path('aouth_logout', aouth_logout, name='aouth_logout'),
 
     path('settings/', setting_view, name='settings'),
     path('setting_change_username/', setting_change_username, name='setting_change_username'),

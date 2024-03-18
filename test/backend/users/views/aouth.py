@@ -10,7 +10,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.decorators import login_required
@@ -60,6 +60,7 @@ def aouth_login_form(request):
                 user = authenticate(request, username=user_id, password=password)
                 
             if user is not None:
+                user_set_is_connected(user)
                 login(request, user)
                 return redirect('home')
             else:
@@ -68,6 +69,7 @@ def aouth_login_form(request):
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{field}: {error}", extra_tags='aouth_login_tag')
+    user_set_is_connected(user, False)
     return redirect('login')
 
 
@@ -86,6 +88,7 @@ def aouth_register_form(request):
                 user = authenticate(request, username=username, password=password)
                 
                 if user is not None:
+                    user_set_is_connected(user)
                     login(request, user)
                     return redirect('home')
                 else:
@@ -101,6 +104,7 @@ def aouth_register_form(request):
             for field, field_errors in form.errors.items():
                 for error in field_errors:
                     messages.error(request, f"{field}: {error}", extra_tags='aouth_register_tag')
+    user_set_is_connected(user, True)
     return redirect('register')
 
 
@@ -111,6 +115,7 @@ def oauth_callback(request):
     logger.info("Authentication via 42 oauth")
 
     code = request.GET.get('code')
+    user = None
     if not code:
         logger.error("No code provided in request")
         messages.error(request, "Code not provided")
@@ -148,11 +153,23 @@ def oauth_callback(request):
         if not user:
             user = User.objects.create_user(username=f"{user_info['login']}_42", email=user_email, image_url=user_info['image']['link'])
         user.backend = f'{ModelBackend.__module__}.{ModelBackend.__qualname__}'
+        user_set_is_connected(user)
         login(request, user)
         return redirect('home')
 
     except Exception as e:
         logger.exception("An error occurred in oauth_callback")
         messages.error(request, "An error occurred")
+        if user is not None:
+            user_set_is_connected(user, False)
         return redirect('register')
 
+# Lougout
+# -------
+    
+def aouth_logout(request):
+    if request.user.is_authenticated:
+        user_set_is_connected(request.user, False)
+        logout(request)
+    return redirect('login')
+    

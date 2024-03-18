@@ -8,7 +8,28 @@
     <link rel="stylesheet" href="{% static 'stylesheet.css' %}">
 </head>
 <body>
-    <img src="{{ current_user.image.url }}" style="width: 100px; height: 100px; margin-left: 20px;">
+    <div>
+        <div style="position: fixed; top: 20px; left: 20px;">
+            <img src="{{ current_user.image.url }}" style="width: 50px; height: 50px;">
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: flex-end; position: fixed; top: 10px; right: 10px;">
+            <div class="perso-button" style="position: relative;">
+                <button type="submit" onclick="window.location.href = '{% url 'perso' %}'">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    Espace Perso</button>
+            </div>
+            <div class="perso-button" style="position: relative;">
+                <button type="submit" onclick="window.location.href = '{% url 'aouth_logout' %}'"><span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    Log out</button>
+            </div>
+        </div>
+    </div>
+
     <div class="login-box">
         <h2 style="text-align: center;">Welcome, {{ current_user.username }}</h1>
         <h2 style="text-align: center;">Ft_Transcendence</h2>
@@ -27,13 +48,6 @@
                 <span></span>Friends</button>
     </div>
     
-    <div class="perso-button">
-        <button type="submit" onclick="window.location.href = '{% url 'perso' %}'">
-            <span></span>
-            <span></span>
-            <span></span>
-            Espace Perso</button>
-        
-    </div>
+    
 </body>
 </html>
