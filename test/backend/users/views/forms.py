@@ -56,3 +56,8 @@ class ChangeImageForm(forms.ModelForm):
     class Meta:
         model = get_user_model()
         fields = ['image']
+
+class ChangePasswordForm(forms.Form):
+    old_password = forms.CharField(label='Old Password', widget=forms.PasswordInput)
+    new_password = forms.CharField(label='New Password', widget=forms.PasswordInput)
+    confirm_password = forms.CharField(label='Confirm New Password', widget=forms.PasswordInput)

@@ -2,6 +2,7 @@ import requests, re, logging
 from requests import get
 from users.models import User
 from django.urls import reverse
+from django.conf import settings
 from django.db import IntegrityError
 from django.http import JsonResponse
 from django.http import HttpResponseRedirect
@@ -29,6 +30,20 @@ class AouthUser(ModelBackend):
                 return user_obj
         except User.DoesNotExist:
             return None
+
+
+# MIDDLWARE
+# ---------
+
+# class AouthRequiredMiddleware:
+#     def __init__(self, get_response):
+#         self.get_response = get_response
+
+#     def __call__(self, request):
+#         if not request.user.is_authenticated and not request.path.startswith(settings.LOGIN_URL):
+#             messages.warning(request, "You need to log in to access this page.", extra_tags="aouth_required_middleware_tag")
+#             return redirect('login')
+#         return self.get_response(request)
 
 # LOGIN
 # -----

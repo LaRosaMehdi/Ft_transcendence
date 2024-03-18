@@ -52,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    # 'users.views.aouth.AouthRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -162,6 +163,11 @@ LOGGING = {
             'propagate': False,
         },
         'users': {  # Your app
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'api': {  # Your app
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': False,
