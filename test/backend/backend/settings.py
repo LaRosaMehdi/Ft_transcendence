@@ -52,7 +52,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    # 'users.views.aouth.AouthRequiredMiddleware',
+    'users.views.aouth.AouthRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -189,3 +189,11 @@ CSRF_COOKIE_HTTPONLY = True
 
 MEDIA_URL = '/users/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+MIDDLEWARE_EXEMPT_URLS = [
+    '/api/register/',
+    '/api/login/',
+    '/api/accueil/',
+    '/users/aouth_register_form/',
+    '/users/aouth_login_form/',
+]

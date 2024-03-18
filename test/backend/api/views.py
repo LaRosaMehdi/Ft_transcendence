@@ -23,9 +23,11 @@ def view_login(request):
 def view_register(request):
     return render(request, 'register.html', {'form': RegistrationForm() })
 
+@login_required
 def view_accueil(request):
     return render(request, 'accueil.html', {'current_user': request.user})
 
+@login_required
 def setting_view(request):
     if request.user.password is not None:
         return render(request, 'settings.html', {
@@ -38,10 +40,11 @@ def setting_view(request):
         'change_image_form': ChangeImageForm(instance=request.user),
     })
 
+@login_required
 def view_perso(request):
     return render(request, 'perso.html')
 
-
+@login_required
 def generate_profile_json(request):
     profile_instance = get_object_or_404(User, username=request.user.username)
     profile_data = {

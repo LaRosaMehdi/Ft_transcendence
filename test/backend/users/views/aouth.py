@@ -35,15 +35,15 @@ class AouthUser(ModelBackend):
 # MIDDLWARE
 # ---------
 
-# class AouthRequiredMiddleware:
-#     def __init__(self, get_response):
-#         self.get_response = get_response
+class AouthRequiredMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
 
-#     def __call__(self, request):
-#         if not request.user.is_authenticated and not request.path.startswith(settings.LOGIN_URL):
-#             messages.warning(request, "You need to log in to access this page.", extra_tags="aouth_required_middleware_tag")
-#             return redirect('login')
-#         return self.get_response(request)
+    def __call__(self, request):
+        if not request.user.is_authenticated and not any(request.path.startswith(url) for url in settings.MIDDLEWARE_EXEMPT_URLS):
+            messages.warning(request, "You need to log in to access this page.", extra_tags="aouth_required_middleware_tag")
+            return redirect('login')
+        return self.get_response(request)
 
 # LOGIN
 # -----
