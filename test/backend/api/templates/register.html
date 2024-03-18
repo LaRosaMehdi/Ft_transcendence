@@ -26,14 +26,12 @@
     
     <div class="login-box">
         <h2>Register</h2>      
-        {% if form.errors %}
-            <div style="color: red;">
-            {% for field, errors in form.errors.items %}
-                {% for error in errors %}
-                    {{ field }}: {{ error }}
-                {% endfor %}
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'aouth_register_tag error' %}
+                    <p style="color: red;">ERROR: {{ message }}</p>
+                {% endif %}
             {% endfor %}
-            </div>
         {% endif %}
         <form action="{% url 'aouth_register_form' %}" method="post">
             {% csrf_token %}

@@ -16,28 +16,27 @@ logger = logging.getLogger(__name__)
 # SETTINGS
 # --------
 
-from django.http import JsonResponse
+# CHANGE AOUHT 42 TO LOGIN WIHT ADDRESS
+
+from django.contrib import messages
 
 def setting_change_username(request):
-    try:
-        if request.method == 'POST':
-            new_username = request.POST.get('new_username')
-            logger.debug("->> new_username: " + new_username)
-            
-            # Get the username from the URL
-            username = request.user.username
-            
-            user = user_get_by_username(username)
-            logger.debug("->> user: " + str(user))
-            
-            # Update the username
-            user.username = new_username
-            user.save()
-            
-            return JsonResponse({'success': True})  # Return a success response
+    if request.method == 'POST':
+        form = ChangeUsernameForm(request.POST, instance=request.user)
+        if form.is_valid():
+            new_username = form.cleaned_data['username']
+            if User.objects.filter(username=new_username).exists():
+                messages.error(request, 'Username already taken.', extra_tags='change_username_tag')
+            else:
+                if request.user.password is None:
+                    messages.warning(request, f'As a 42 user, your username will be changed to {new_username}_42', extra_tags='change_username_tag')
+                    new_username += "_42"
+                request.user.username = new_username
+                request.user.save()
+                messages.success(request, 'Username changed successfully.', extra_tags='change_username_tag')
+                return redirect('settings') 
         else:
-            logger.error("Invalid request method")
-            return JsonResponse({'error': 'Invalid request method'}, status=400)
-    except Exception as e:
-        logger.exception("An error occurred in change_username")
-        return JsonResponse({'error': str(e)}, status=500)
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'{field}: {error}', extra_tags='change_username_tag')
+    return redirect('settings')

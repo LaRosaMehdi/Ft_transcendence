@@ -27,8 +27,9 @@ def accueil(request):
     return render(request, 'accueil.html', {'current_user': request.user})
 
 def settings(request):
-    # Your view logic goes here
-    return render(request, 'settings.html')
+    return render(request, 'settings.html', {
+        'change_username_form': ChangeUsernameForm(instance=request.user)
+    })
 
 def perso(request):
     return render(request, 'perso.html')
