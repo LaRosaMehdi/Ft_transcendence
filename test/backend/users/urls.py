@@ -1,14 +1,11 @@
+from api.views import *
+from users.views import *
+from django.urls import path
+from django.contrib import admin
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.urls import path
-from django.views.generic import TemplateView
-from api.views import *
-from users.views import *
-from django.contrib import admin
 from django.http import HttpResponseNotAllowed
-from . import views
-from api.views import *
-from users.views import *
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('home/', view_accueil, name='home'),
