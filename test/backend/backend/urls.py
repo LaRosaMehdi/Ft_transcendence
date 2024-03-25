@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
 	path('users/', include('users.urls')),
+    # path('smtp/', include('smtp.urls')),
 ]
 
 if settings.DEBUG:

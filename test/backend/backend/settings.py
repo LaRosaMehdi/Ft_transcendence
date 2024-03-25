@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'api',
+    # 'smtp',
     'users',
     'games',
     'tournaments',
@@ -174,6 +175,11 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': False,
         },
+        # 'smtp': {
+        #     'handlers': ['console'],
+        #     'level': 'DEBUG',
+        #     'propagate': False,
+        # },
     },
 }
 
@@ -197,8 +203,10 @@ MIDDLEWARE_EXEMPT_URLS = [
     '/api/register/',
     '/api/login/',
     '/api/accueil/',
+    '/api/twofactor/',
     '/users/aouth_register_form/',
     '/users/aouth_login_form/',
+    '/users/twofactor_oauth/',
 ]
 
 # AUTO_LOGOUT_TIME = 1800

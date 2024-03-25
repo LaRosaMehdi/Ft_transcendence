@@ -15,7 +15,12 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.backends import ModelBackend
+
 from users.views import *
+from users.views.smtp import *
+from users.views.twofactor import *
+
+# from smtp import *
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +46,8 @@ class AouthRequiredMiddleware:
 
     def __call__(self, request):
         if not request.user.is_authenticated and not any(request.path.startswith(url) for url in settings.MIDDLEWARE_EXEMPT_URLS):
-            messages.warning(request, "You need to log in to access this page.", extra_tags="aouth_required_middleware_tag")
+            unauthorized_url = request.path
+            messages.warning(request, f"You need to log in to access this page. {unauthorized_url}", extra_tags="aouth_required_middleware_tag")
             return redirect('login')
         return self.get_response(request)
 
@@ -60,9 +66,13 @@ def aouth_login_form(request):
                 user = authenticate(request, username=user_id, password=password)
                 
             if user is not None:
-                user_set_is_connected(user)
-                login(request, user)
-                return redirect('home')
+                validation_code = smtp_generate_code()
+                user.validation_code = validation_code
+                user.save()
+                smtp_register_validation(user, validation_code)    
+                request.session['user_id'] = user.id
+                return redirect('twofactor')
+        
             else:
                 messages.error(request, "Invalid username or password", extra_tags='aouth_login_tag')
         else:
@@ -85,12 +95,17 @@ def aouth_register_form(request):
                 user = form.save()
                 username = form.cleaned_data.get('username')
                 password = form.cleaned_data.get('password1')
-                user = authenticate(request, username=username, password=password)
-                
+                user = authenticate(request, username=username, password=password)      
                 if user is not None:
-                    user_set_is_connected(user)
-                    login(request, user)
-                    return redirect('home')
+                    
+                    validation_code = smtp_generate_code()
+                    user.validation_code = validation_code
+                    user.save()
+                    smtp_register_validation(user, validation_code)    
+
+                    request.session['user_id'] = user.id
+                    return redirect('twofactor')
+                
                 else:
                     messages.error(request, "Failed to authenticate user after registration", extra_tags='aouth_register_tag')
             
@@ -104,7 +119,6 @@ def aouth_register_form(request):
             for field, field_errors in form.errors.items():
                 for error in field_errors:
                     messages.error(request, f"{field}: {error}", extra_tags='aouth_register_tag')
-    user_set_is_connected(user, True)
     return redirect('register')
 
 
@@ -152,10 +166,14 @@ def oauth_callback(request):
         user = User.objects.filter(email=user_email).first()
         if not user:
             user = User.objects.create_user(username=f"{user_info['login']}_42", email=user_email, image_url=user_info['image']['link'])
+        
         user.backend = f'{ModelBackend.__module__}.{ModelBackend.__qualname__}'
-        user_set_is_connected(user)
-        login(request, user)
-        return redirect('home')
+        validation_code = smtp_generate_code()
+        user.validation_code = validation_code
+        user.save()
+        smtp_register_validation(user, validation_code)    
+        request.session['user_id'] = user.id
+        return redirect('twofactor')
 
     except Exception as e:
         logger.exception("An error occurred in oauth_callback")

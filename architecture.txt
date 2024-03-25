@@ -1,0 +1,44 @@
+User Model:
+-----------
+    Fields:
+        username
+        email
+        elo (rating)
+        password
+        image
+        is_active (whether the user account is active)
+        is_staff (whether the user is staff)
+        is_superuser (whether the user is a superuser)
+        last_login (timestamp of the last login)
+        Number of Wins - NEED TO IMPLEMENT
+        Number of Losses - NEED TO IMPLEMENT
+        List of Matches Played (many-to-many relationship with the Game) - NEED TO IMPLEMENT
+        Alias - NEED TO IMPLEMENT
+    This model represents users in the system and includes fields for user profile information such as wins, losses, and match history.
+
+Game Model: - NEED TO IMPLEMENT
+-----------
+    Fields:
+        Player 1 (Foreign Key to User model)
+        Player 2 (Foreign Key to User model)
+        Player 1 Score
+        Player 2 Score
+        Winner (Foreign Key to User model, nullable)
+        Date and Time of the game
+        Tournament (Foreign Key to Tournament model, nullable)
+    This model represents individual games. For games within a tournament, the Tournament field will be populated to link the game to the tournament it belongs to. For regular games, this field will be null.
+
+Tournament Model: - NEED TO IMPLEMENT
+-----------------
+    Fields:
+        Tournament Name
+        Participants (Many-to-Many relationship with User model)
+        Games (One-to-Many relationship with Game model)
+    This model represents tournaments consisting of multiple players. It records the tournament name, the list of participants, and the list of games associated with the tournament.
+    Combining the user profile into the existing user model simplifies the architecture by consolidating all user-related information into a single entity, making it easier to manage and query user data.
+
+MatchMaking Model: - NEED TO IMPLEMENT
+-------------------
+    Fields:
+        players (Many-to-Many relationship with User model)
+    This model represents match-making between two players. It records the players involved, the date and time of the match, and the status of the match (pending, in progress, completed). This model can be used to facilitate matchmaking and scheduling of games between players.
