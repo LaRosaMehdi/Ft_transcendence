@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpResponseNotAllowed
 from django.views.generic import TemplateView
+from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
 urlpatterns = [
     path('home/', view_accueil, name='home'),
@@ -21,6 +22,8 @@ urlpatterns = [
     path('setting_change_username/', setting_change_username, name='setting_change_username'),
     path('setting_change_image/', setting_change_image, name='setting_change_image'),
     path('setting_change_password/', setting_change_password, name='setting_change_password'),
+	path('api-token-auth/', obtain_jwt_token),
+    path('api-token-refresh/', refresh_jwt_token),
 
     
 ]

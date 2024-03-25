@@ -20,6 +20,10 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install psycopg2
 RUN pip install requests
+RUN pip install djangorestframework
+RUN pip install djangorestframework-jwt
+
+
 COPY . .
 
 EXPOSE 443
