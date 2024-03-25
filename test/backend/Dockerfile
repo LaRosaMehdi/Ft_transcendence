@@ -15,6 +15,7 @@ RUN apt-get update \
 WORKDIR /usr/src/
 
 RUN pip install --upgrade pip  
+RUN pip install channels
 RUN pip install django-bootstrap-toolkit
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt

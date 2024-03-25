@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perso Page</title>
     <link rel="stylesheet" href="{% static 'stylesheet.css' %}">
+    <link rel="stylesheet" href="{% static 'buttons.css' %}">
+    <link rel="stylesheet" href="{% static 'animations.css' %}">
+    <link rel="stylesheet" href="{% static 'logos.css' %}">
+    <link rel="stylesheet" href="{% static 'perso.css' %}">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -33,7 +37,19 @@
         <li><a href="#">Stats</a></li>
         <li><a href="{% url 'settings' %}">Setting</a></li>
     </ul>
-    <div id="profileData"></div>
+    <button type="submit" onclick="javascript:history.go(-1);" class="button back-button">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        Back
+    </button>
+    <div id="profileData">
+        <div id="username"></div>
+        <div id="email"></div>
+        <div id="age"></div>
+    <!-- Ajoutez d'autres compartiments pour d'autres informations -->
+    </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
@@ -43,6 +59,10 @@
                     url: '{% url "generate_profile_json" %}',
                     type: 'GET',
                     success: function(data) {
+                        var profileDiv = $('<div>').addClass('profile-section');
+                        profileDiv.append('<h3>Username</h3><div class="profile-data">' + data.username + '</div>');
+                        profileDiv.append('<h3>Email</h3><div class="profile-data">' + data.email + '</div>');
+                        profileDiv.append('<h3>Age</h3><div class="profile-data">' + data.age + '</div>');
                         $('#profileData').html('<pre>' + JSON.stringify(data, null, 2) + '</pre>');
                     },
                     error: function(xhr, status, error) {

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'tournaments',
     'matchmaking',
     'rest_framework',
+    'channels',
 	
 ]
 
@@ -210,5 +211,8 @@ MIDDLEWARE_EXEMPT_URLS = [
     '/users/aouth_login_form/',
     '/users/twofactor_oauth/',
 ]
+
+ASGI_APPLICATION = 'matchmaking.routing.application'
+
 
 # AUTO_LOGOUT_TIME = 1800

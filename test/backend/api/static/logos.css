@@ -1,0 +1,31 @@
+.logo-box {
+    position: absolute;
+    padding: 10px 20px 10px 20px;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+    border-radius: 10px;
+    width: fit-content; 
+    text-align: center;
+    line-height: normal;
+}
+
+.logo-box h2 {
+    margin: 10px auto;
+    padding: 0;
+    font-size: 80%;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #fafafa;
+    position: center;
+    overflow: hidden;
+    white-space: nowrap;
+    animation: colorLoop 5s linear infinite; /* Lance l'animation */
+}
+
+.logo-box h2 span {
+    animation: colorLoop 10s infinite linear;
+}

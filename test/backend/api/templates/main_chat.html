@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Chat Page</title>
+    <link rel="stylesheet" href="chats.css">
+    <link rel="stylesheet" href="animations.css">
+    <link rel="stylesheet" href="buttons.css">
+    <link rel="stylesheet" href="logos.css">
+    <link rel="stylesheet" href="stylesheet.css">
+
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="profile">
+                <img src="profile_picture.jpg" alt="Profile Picture">
+                <h2>Username</h2>
+            </div>
+            <div class="channels">
+                <h3>Channels</h3>
+                <ul>
+                    <li># General</li>
+                    <li># Random</li>
+                    <!-- Add more channels here -->
+                </ul>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="header">
+                <h1>Direct Messages</h1>
+            </div>
+            <div class="direct-messages">
+                <ul>
+                    <li>User 1</li>
+                    <li>User 2</li>
+                    <!-- Add more direct messages here -->
+                </ul>
+            </div>
+            <div class="messages">
+                <div class="message">
+                    <div class="user">User 1</div>
+                    <div class="content">Hello!</div>
+                </div>
+                <!-- Add more messages here -->
+            </div>
+            <div class="input">
+                <input type="text" placeholder="Type your message...">
+                <button>Send</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

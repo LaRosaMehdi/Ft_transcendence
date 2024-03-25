@@ -6,48 +6,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accueil Page</title>
     <link rel="stylesheet" href="{% static 'stylesheet.css' %}">
+    <link rel="stylesheet" href="{% static 'buttons.css' %}">
+    <link rel="stylesheet" href="{% static 'animations.css' %}">
+    <link rel="stylesheet" href="{% static 'logos.css' %}">
+    <link rel="stylesheet" href="{% static 'perso.css' %}">
 </head>
 <body>
-    <div>
-        <div style="position: fixed; top: 20px; left: 20px;">
-            <img src="{{ current_user.image.url }}" style="width: 50px; height: 50px;">
+    <div class="logo-box">
+        <h2>FT-tRaNsCeNdEnCe</h2>
+    </div>
+    <img src="{{ current_user.image }}" class="user-image">
+    <div style="display: flex; gap: 10px; justify-content: flex-end; position: fixed; top: 10px; right: 10px;">
+        <div class="perso-button" style="position: relative;">
+            <button type="submit" onclick="window.location.href = '{% url 'perso' %}'">
+                <span></span>
+                <span></span>
+                <span></span>
+                Espace Perso</button>
         </div>
-        <div style="display: flex; gap: 10px; justify-content: flex-end; position: fixed; top: 10px; right: 10px;">
-            <div class="perso-button" style="position: relative;">
-                <button type="submit" onclick="window.location.href = '{% url 'perso' %}'">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    Espace Perso</button>
-            </div>
-            <div class="perso-button" style="position: relative;">
-                <button type="submit" onclick="window.location.href = '{% url 'aouth_logout' %}'"><span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    Log out</button>
-            </div>
+        <div class="perso-button" style="position: relative;">
+            <button type="submit" onclick="window.location.href = '{% url 'aouth_logout' %}'"><span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                Log out</button>
         </div>
     </div>
-
-    <div class="login-box">
+    <div class="accueil-box">
         <h2 style="text-align: center;">Welcome, {{ current_user.username }}</h1>
-        <h2 style="text-align: center;">Ft_Transcendence</h2>
-        <button type="submit" onclick="window.location.href = '{% url 'play' %}'" style="margin-right: 20px;"> <span></span>
-        <span></span>
+        <button type="submit" onclick="window.location.href = '{% url 'play' %}'" style=""> <span></span>
         <span></span>
         <span></span>Play</button>
-        <button type="submit" onclick="window.location.href = '{% url 'tournament' %}'style="margin-right: 20px;""> <span></span>
+        <button type="submit" onclick="window.location.href = '{% url 'tournament' %}'"style=""> <span></span>
             <span></span>
             <span></span>Tournament</button>
-        <button type="submit" onclick="window.location.href = '{% url 'mode' %}'style="margin-right: 20px;""> <span></span>
+        <button type="submit" onclick="window.location.href = '{% url 'mode' %}'" style=""> <span></span>
                 <span></span>
                 <span></span>Mode</button>
-        <button type="submit" onclick="window.location.href = '{% url 'friends' %}'style="margin-right: 20px;""> <span></span>
+        <button type="submit" onclick="window.location.href = '{% url 'main_chat' %}'" style=""> <span></span>
                 <span></span>
                 <span></span>Friends</button>
     </div>
-    
-    
 </body>
 </html>

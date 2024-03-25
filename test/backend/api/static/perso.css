@@ -1,0 +1,33 @@
+/* Style des compartiments de profil */
+.profile-section {
+    margin-bottom: 20px; /* Marge en bas de chaque section */
+    padding: 10px; /* Espacement interne des sections */
+    border: 1px solid #ccc; /* Bordure grise */
+    border-radius: 5px; /* Coins arrondis */
+}
+
+/* Style du titre de chaque section */
+.profile-section h3 {
+    margin-top: 0; /* Supprime la marge en haut */
+    color: #333; /* Couleur du texte */
+}
+
+/* Style des données du profil */
+.profile-data {
+    font-weight: bold; /* Texte en gras */
+}
+
+img {
+    width: 100px;
+    height: 100px;
+}
+
+.user-image {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    right: 0;
+    top: 0;
+    border-radius: 28%; /* Pour arrondir les coins */
+    margin-right: 10px; /* Marge à droite pour l'espacement entre les images */
+}

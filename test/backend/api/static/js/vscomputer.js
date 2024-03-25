@@ -34,11 +34,19 @@ let currentPlayer = null; // Le joueur actuellement sélectionné
 
 // Fonction pour choisir le joueur
 function choosePlayer(player) {
-    currentPlayer = player;
-    console.log('Player selected:', currentPlayer);
+   currentPlayer = player;
+   console.log('Player selected:', currentPlayer);
+   
+   // Si le joueur actuel n'est pas l'IA, définissez currentPlayerAI en conséquence
+   if (currentPlayer != player2) {
+       currentPlayerAI = player2;
+       console.log('AI selected:', currentPlayerAI);
+    } else {
+        currentPlayerAI = player1;
+        console.log('AI selected:', currentPlayerAI);
+    }
     startGame();
     canvas.style.visibility = 'visible';
-    sendPlayerChoice(player);
 }
 
 // Gestion de la sélection du joueur
@@ -177,13 +185,13 @@ function endGame() {
 }
 
 function handleCollision() {
-    if (ball.x - ball.radius <= 1) {
+    if (ball.x - ball.radius <= 0) {
         // La balle a atteint le mur gauche, le joueur 2 marque un point
         scorePlayer2++;
         resetBall(); // Réinitialiser la position de la balle
         return; // Sortir de la fonction après la gestion de la collision
     }
-    if (ball.x + ball.radius >= canvas.width - 1) {
+    if (ball.x + ball.radius >= canvas.width) {
         // La balle a atteint le mur droit, le joueur 1 marque un point
         scorePlayer1++;
         resetBall(); // Réinitialiser la position de la balle
@@ -200,6 +208,28 @@ function handleCollision() {
         ball.y >= player2.y && ball.y <= player2.y + player2.height) {
         ball.dx = -ball.dx; // Inverser la direction horizontale de la balle
     }
+
+    
+    // Collision avec le joueur 2 (à implémenter de manière similaire)
+
+    // Collision avec les bords du terrain (à implémenter de manière similaire)
+}
+
+function moveAI() {
+    // Ajustez ici la vitesse de réaction de l'IA en fonction de la difficulté
+    let difficulty = 0.2; // Valeur entre 0 et 1, où 0 signifie pas de mouvement et 1 signifie mouvement immédiat
+
+    // Si la balle se dirige vers la plateforme automatique
+    if (ball.dx > 0) {
+        // Si la balle est plus haut que la plateforme automatique, déplacez la plateforme vers le haut
+        if (ball.y < currentPlayerAI.y + currentPlayerAI.height / 2) {
+            currentPlayerAI.y -= currentPlayerAI.speed * difficulty;
+        }
+        // Si la balle est plus basse que la plateforme automatique, déplacez la plateforme vers le bas
+        else if (ball.y > currentPlayerAI.y + currentPlayerAI.height / 2) {
+            currentPlayerAI.y += currentPlayerAI.speed * difficulty;
+        }
+    }
 }
 
 // Mettez en place un système de points
@@ -207,11 +237,12 @@ let scorePlayer1 = 0;
 let scorePlayer2 = 0;
 
 function drawScores() {
-    ctx.font = '3% Arial';
+    ctx.font = '24px Arial';
     ctx.fillStyle = 'white';
     ctx.fillText('Player 1: ' + scorePlayer1, 20, 30);
     ctx.fillText('Player 2: ' + scorePlayer2, canvas.width - 150, 30);
 }
+
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -227,6 +258,7 @@ function draw() {
     drawBall();
     drawScores();
     drawPlayers();
+    moveAI();
     ball.x += ball.dx;
     ball.y += ball.dy;
 
@@ -255,102 +287,45 @@ console.log(player2);
 window.onload = function() {
     setInterval(update, 16);
     updateTimerDisplay();
-
-    const input = document.getElementById('chat-input');
-
-    // input.addEventListener('focus', function() {
-    //     input.setAttribute('placeholder', 'Type your message here...');
-    //     input.style.color = '#fff'; // Change la couleur du texte de l'input
-    //     input.style.opacity = '0.5'; // Rend le texte de l'input complètement opaque
-    // });
-    input.setAttribute('placeholder', 'Type your message here...');
-    input.style.color = '#fff'; // Change la couleur du texte de l'input
-    input.style.opacity = '0.5'
-
-    input.addEventListener('input', function() {
-        if (input.value === '') {
-            input.setAttribute('placeholder', 'Type your message here...');
-            input.style.color = '#fff'; // Change la couleur du texte de l'input
-            input.style.opacity = '0.5'; // Rend le texte de l'input complètement opaque
-        } else {
-            input.removeAttribute('placeholder');
-            input.style.color = 'initial'; // Rétablit la couleur par défaut du texte de l'input
-            input.style.opacity = '1'; // Rend le texte de l'input complètement opaque
-        }
-        // if (input.value !== '') {
-        //     label.style.display = 'none';
-        // } else {
-        //     label.style.display = 'block';
-        // }
-    });
-
-    input.addEventListener('blur', function() {
-        if (input.value === '') {
-            input.setAttribute('placeholder', 'Type your message here...');
-            // input.removeAttribute('placeholder');
-            input.style.color = '#fff'; // Rend le texte de l'input transparent
-            input.style.opacity = '0.5'; // Rend le texte de l'input complètement transparent
-        }
-        else if (input.value) {
-            input.removeAttribute('placeholder');
-            input.style.color = 'initial'; // Rend le texte de l'input transparent
-            input.style.opacity = '0.2'; // Rend le texte de l'input complètement transparent
-        }
-    });
-
-
     document.addEventListener('keydown', function(event) {
-        // Si une flèche est pressée et qu'un joueur est sélectionné
-        if (!currentPlayer && (event.key === 'ArrowUp' || event.key === 'ArrowDown')) {
-            // Empêcher le défilement de la page lorsque les touches de déplacement sont utilisées
-            event.preventDefault();
-        }
-        else if (currentPlayer) {
-            event.preventDefault();
 
-            // Gérer le mouvement du joueur sélectionné
-            if (event.key === 'ArrowUp' && currentPlayer.y > 0) {
-                currentPlayer.y -= currentPlayer.speed; // Déplacer vers le haut
-            } else if (event.key === 'ArrowDown' && currentPlayer.y + currentPlayer.height < canvas.height) {
-                currentPlayer.y += currentPlayer.speed; // Déplacer vers le bas
+               // Si une flèche est pressée et qu'un joueur est sélectionné
+            if (!currentPlayer && (event.key === 'ArrowUp' || event.key === 'ArrowDown')) {
+                // Empêcher le défilement de la page lorsque les touches de déplacement sont utilisées
+                event.preventDefault();
             }
-        }
-    });
+            else if (currentPlayer) {
+                event.preventDefault();
+    
+                // Gérer le mouvement du joueur sélectionné
+                if (event.key === 'ArrowUp' && currentPlayer.y > 0) {
+                    currentPlayer.y -= currentPlayer.speed; // Déplacer vers le haut
+                } else if (event.key === 'ArrowDown' && currentPlayer.y + currentPlayer.height < canvas.height) {
+                    currentPlayer.y += currentPlayer.speed; // Déplacer vers le bas
+                }
+            }
+        });
+        // Si une flèche est pressée et qu'un joueur est sélectionné
+    //     if (currentPlayer) {
+    //         event.preventDefault();
+    
+    //         // Gérer le mouvement du joueur sélectionné
+    //         if (currentPlayer === player1) {
+    //             if (event.key === 'ArrowUp' && currentPlayer.y > 0) {
+    //                 currentPlayer.y -= currentPlayer.speed; // Déplacer vers le haut
+    //             } else if (event.key === 'ArrowDown' && currentPlayer.y + currentPlayer.height < canvas.height) {
+    //                 currentPlayer.y += currentPlayer.speed; // Déplacer vers le bas
+    //             }
+    //         } else if (currentPlayer === player2) {
+    //             // Le joueur 2 est contrôlé par l'IA, donc pas besoin de gérer ses mouvements ici
+    //         }
+    //     } else {
+    //         // Si aucun joueur n'est sélectionné, traiter la sélection du joueur
+    //         if (event.key === '1') {
+    //             choosePlayer(player1);
+    //         } else if (event.key === '2') {
+    //             choosePlayer(player2);
+    //         }
+    //     }
+    // });
 };
-
-// Établir une connexion WebSocket
-const socket = new WebSocket('ws://localhost:8080'); // Adresse de votre serveur WebSocket
-
-function sendPlayerChoice(player) {
-    socket.send(JSON.stringify({ playerChoice: player }));
-}
-
-// Gérer les entrées de déplacement du joueur local et recevoir les entrées de déplacement de l'autre joueur du serveur
-document.addEventListener('keydown', function(event) {
-    if (currentPlayer && currentPlayer === player1) {
-        socket.send(JSON.stringify({ player: 'player1', key: event.key }));
-    } else if (currentPlayer && currentPlayer === player2) {
-        socket.send(JSON.stringify({ player: 'player2', key: event.key }));
-    }
-});
-
-// Mettre à jour les positions des plateformes des joueurs en fonction des entrées reçues
-socket.addEventListener('message', function(event) {
-    const data = JSON.parse(event.data);
-    const player = data.player;
-    const key = data.key;
-
-    if (player === 'player1') {
-        handleMovement(player1, key);
-    } else if (player === 'player2') {
-        handleMovement(player2, key);
-    }
-});
-
-function handleMovement(player, key) {
-    if (key === 'w' && player.y > 0) {
-        player.y -= player.speed;
-    } else if (key === 's' && player.y + player.height < canvas.height) {
-        player.y += player.speed;
-    }
-}

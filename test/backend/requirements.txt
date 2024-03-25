@@ -5,3 +5,4 @@ typing-extensions==4.0.1
 psycopg2-binary==2.9.9
 djangorestframework==3.13.1
 djangorestframework-simplejwt==5.2.2
+channels==3.0.4
