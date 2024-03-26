@@ -1,0 +1,25 @@
+<!-- templates/tournaments_list.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tournament List</title>
+</head>
+<body>
+    <h1>Tournament List</h1>
+    {% for tournament in tournaments %}
+        <div>
+            <h2>Tournament ID: {{ tournament.id }}</h2>
+            <p>Status: {{ tournament.status }}</p>
+            <h3>Players</h3>
+            <ul>
+                {% for player in tournament.players %}
+                    <li>{{ player.name }} - Elo Score: {{ player.eloScore }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% empty %}
+        <p>No tournaments found.</p>
+    {% endfor %}
+</body>
+</html>

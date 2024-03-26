@@ -26,6 +26,7 @@ urlpatterns = [
     path('api/', include('api.urls')),
 	path('users/', include('users.urls')),
     path('matchmaking/', include('matchmaking.urls')),
+    path('blockchain/', include('blockchain.urls')),
     # path('smtp/', include('smtp.urls')),
 ]
 

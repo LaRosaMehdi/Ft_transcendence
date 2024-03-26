@@ -11,7 +11,7 @@ services:
     ports:
       - 8545:8545
     volumes:
-      - ganache-data:/ganache
+      - ganache-data:/ganache/data
     networks:
       - ft_transcendence_network
 

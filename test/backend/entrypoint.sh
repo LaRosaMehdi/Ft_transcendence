@@ -5,6 +5,10 @@ until pg_isready -U mehdi -d ft_transcendence_database -h ft_transcendence_datab
   sleep 1
 done
 
+cd blockchain_etherum
+truffle migrate --network development
+cd ..
+pip install django-sslserver
 pip install web3
 
 python -m pip install Pillow
@@ -28,4 +32,4 @@ else
 fi
 
 
-exec python manage.py runserver 0.0.0.0:443
+exec python /usr/src/manage.py runsslserver --certificate /usr/src/ssl/cert.pem --key /usr/src/ssl/key.pem 0.0.0.0:443
