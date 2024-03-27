@@ -138,10 +138,10 @@ def oauth_callback(request):
     try:
         token_response = requests.post('https://api.intra.42.fr/oauth/token', data={
             'grant_type': 'authorization_code',
-            'client_id': 'u-s4t2ud-4e7c6c0a55a3674309f2425ad5c80ac4c98510374b1197a7eff37ce12371fb27',
-            'client_secret': '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',
+            'client_id': 'u-s4t2ud-c6a0d5681263231d316e3dffa538f2953c09f9675abddc38c67d043ba8c3e3d4',
+            'client_secret': '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',
             'code': code,
-            'redirect_uri': 'http://localhost:8080/api/accueil',
+            'redirect_uri': 'https://localhost:8080/api/accueil',
         })
 
         if token_response.status_code != 200:
