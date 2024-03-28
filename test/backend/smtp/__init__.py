@@ -1,1 +1,1 @@
-from smtp.views import *
+# from smtp.views import *

@@ -58,12 +58,12 @@
     <div class="login-box">
         {% if messages %}
             {% for message in messages %}
-                {% if message.tags == 'aouth_tag error' %}
+                {% if message.tags == 'aouth_callback_login error' %}
                     <p style="color: red;">ERROR: {{ message }}</p>
                 {% endif %}
             {% endfor %}
         {% endif %}
-        <button type="submit" onclick="window.location.href = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-c6a0d5681263231d316e3dffa538f2953c09f9675abddc38c67d043ba8c3e3d4&redirect_uri=https%3A%2F%2Flocalhost%3A8080%2Fapi%2Faccueil&response_type=code'"><span></span>
+        <button type="submit" onclick="window.location.href = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-6e9fbb1976d031cd23a0474ef53b45b8a5912e8bd44198d1393b3ca454785709&redirect_uri=https%3A%2F%2Flocalhost%3A8080%2Fusers%2Faouth_callback_login&response_type=code'"><span></span>
             <span></span>
             <span></span>
             <span></span>

@@ -53,8 +53,7 @@ class User(AbstractBaseUser):
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'
 
-    validation_code = models.CharField(max_length=6, null=True, blank=True)
-
+    validation_code = models.CharField(max_length=64, null=True, blank=True)
     objects = UserManager()
 
     def __str__(self):

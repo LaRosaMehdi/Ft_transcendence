@@ -17,10 +17,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.backends import ModelBackend
 
 from users.views import *
-from users.views.smtp import *
-from users.views.twofactor import *
-
-# from smtp import *
+from users.views.users import user_set_is_connected
+from smtp.views.twofactor import twofactor_oauth_send
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +33,6 @@ class AouthUser(ModelBackend):
                 return user_obj
         except User.DoesNotExist:
             return None
-
 
 # MIDDLWARE
 # ---------
@@ -66,20 +63,14 @@ def aouth_login_form(request):
                 user = authenticate(request, username=user_id, password=password)
                 
             if user is not None:
-                validation_code = smtp_generate_code()
-                user.validation_code = validation_code
-                user.save()
-                smtp_register_validation(user, validation_code)    
-                request.session['user_id'] = user.id
-                return redirect('twofactor')
-        
+                return twofactor_oauth_send(request, user)
             else:
                 messages.error(request, "Invalid username or password", extra_tags='aouth_login_tag')
         else:
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{field}: {error}", extra_tags='aouth_login_tag')
-    user_set_is_connected(user, False)
+    
     return redirect('login')
 
 
@@ -97,15 +88,7 @@ def aouth_register_form(request):
                 password = form.cleaned_data.get('password1')
                 user = authenticate(request, username=username, password=password)      
                 if user is not None:
-                    
-                    validation_code = smtp_generate_code()
-                    user.validation_code = validation_code
-                    user.save()
-                    smtp_register_validation(user, validation_code)    
-
-                    request.session['user_id'] = user.id
-                    return redirect('twofactor')
-                
+                    return twofactor_oauth_send(request, user)
                 else:
                     messages.error(request, "Failed to authenticate user after registration", extra_tags='aouth_register_tag')
             
@@ -121,32 +104,30 @@ def aouth_register_form(request):
                     messages.error(request, f"{field}: {error}", extra_tags='aouth_register_tag')
     return redirect('register')
 
+# 42 OAUTH REGISTRATION
+# ---------------------
 
-# 42 OAUTH
-# --------
-
-def oauth_callback(request):
+def aouth_callback_register(request):
     logger.info("Authentication via 42 oauth")
 
     code = request.GET.get('code')
-    user = None
     if not code:
         logger.error("No code provided in request")
-        messages.error(request, "Code not provided")
+        messages.error(request, "Code not provided", extra_tags='aouth_callback_register')
         return redirect('register')
-    
+
     try:
         token_response = requests.post('https://api.intra.42.fr/oauth/token', data={
             'grant_type': 'authorization_code',
-            'client_id': 'u-s4t2ud-c6a0d5681263231d316e3dffa538f2953c09f9675abddc38c67d043ba8c3e3d4',
-            'client_secret': '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',
+            'client_id': settings.OAUTH_REGISTER_CLIENT_ID,
+            'client_secret': settings.OAUTH_REGISTER_CLIENT_SECRET,
             'code': code,
-            'redirect_uri': 'https://localhost:8080/api/accueil',
+            'redirect_uri': settings.OAUTH_REGISTER_REDIRECT_URI,
         })
 
         if token_response.status_code != 200:
             logger.error(f"Failed to fetch access token: {token_response.json()}")
-            messages.error(request, "Failed to fetch access token")
+            messages.error(request, "Failed to fetch access token", extra_tags='aouth_callback_register')
             return redirect('register')
 
         access_token = token_response.json().get('access_token')
@@ -157,32 +138,78 @@ def oauth_callback(request):
 
         if user_response.status_code != 200:
             logger.error(f"Failed to fetch user information: {user_response.json()}")
-            messages.error(request, "Failed to fetch user information")
+            messages.error(request, "Failed to fetch user information", extra_tags='aouth_callback_register')
             return redirect('register')
 
         user_info = user_response.json()
         User = get_user_model()
         user_email = user_info['email']
         user = User.objects.filter(email=user_email).first()
-        if not user:
-            user = User.objects.create_user(username=f"{user_info['login']}_42", email=user_email, image_url=user_info['image']['link'])
-        
-        user.backend = f'{ModelBackend.__module__}.{ModelBackend.__qualname__}'
-        validation_code = smtp_generate_code()
-        user.validation_code = validation_code
-        user.save()
-        smtp_register_validation(user, validation_code)    
-        request.session['user_id'] = user.id
-        return redirect('twofactor')
+        if user:
+            user_set_is_connected(user, False)
+            messages.error(request, "You are already registered.", extra_tags='aouth_callback_register')
+            return redirect('register')
+
+        user = User.objects.create_user(username=f"{user_info['login']}_42", email=user_email, image_url=user_info['image']['link'])
+        return twofactor_oauth_send(request, user)
 
     except Exception as e:
-        logger.exception("An error occurred in oauth_callback")
-        messages.error(request, "An error occurred")
-        if user is not None:
-            user_set_is_connected(user, False)
+        logger.exception("An error occurred in oauth_callback_register")
+        messages.error(request, "An error occurred during registration", extra_tags='aouth_callback_register')
         return redirect('register')
 
-# Lougout
+# 42 OAUTH LOGIN
+# --------------
+
+def aouth_callback_login(request):
+    logger.info("Authentication via 42 oauth")
+
+    code = request.GET.get('code')
+    if not code:
+        logger.error("No code provided in request")
+        messages.error(request, "Code not provided", extra_tags='aouth_callback_login')
+        return redirect('login')
+
+    try:
+        token_response = requests.post('https://api.intra.42.fr/oauth/token', data={
+            'grant_type': 'authorization_code',
+            'client_id': settings.AOUTH_LOGIN_CLIENT_ID,
+            'client_secret': settings.OAUTH_LOGIN_CLIENT_SECRET,
+            'code': code,
+            'redirect_uri': settings.AOUTH_LOGIN_REDIRECT_URI,
+        })
+
+        if token_response.status_code != 200:
+            logger.error(f"Failed to fetch access token: {token_response.json()}")
+            messages.error(request, "Failed to fetch access token", extra_tags='aouth_callback_login')
+            return redirect('login')
+
+        access_token = token_response.json().get('access_token')
+
+        user_response = requests.get('https://api.intra.42.fr/v2/me', headers={
+            'Authorization': f'Bearer {access_token}',
+        })
+
+        if user_response.status_code != 200:
+            logger.error(f"Failed to fetch user information: {user_response.json()}")
+            messages.error(request, "Failed to fetch user information", extra_tags='aouth_callback_login')
+            return redirect('login')
+
+        user_info = user_response.json()
+        User = get_user_model()
+        user_email = user_info['email']
+        user = User.objects.filter(email=user_email).first()
+        if not user:
+            messages.error(request, "You are not registered. Please register first.", extra_tags='aouth_callback_login')
+            return redirect('login')
+        return twofactor_oauth_send(request, user)
+
+    except Exception as e:
+        logger.exception("An error occurred in aouth_callback_login")
+        messages.error(request, "An error occurred during login", extra_tags='aouth_callback_login')
+        return redirect('login')
+
+# LOUGOUT
 # -------
     
 def aouth_logout(request):
@@ -190,4 +217,5 @@ def aouth_logout(request):
         user_set_is_connected(request.user, False)
         logout(request)
     return redirect('login')
+    
     

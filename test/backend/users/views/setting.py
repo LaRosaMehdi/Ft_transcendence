@@ -12,6 +12,7 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from users.views import *
+from smtp.views.twofactor import twofactor_setting_send
 
 logger = logging.getLogger(__name__)
 
@@ -73,11 +74,8 @@ def setting_change_password(request):
 
             if user.check_password(old_password):
                 if new_password == confirm_password:
-                    user.set_password(new_password)
-                    user.save()
-                    update_session_auth_hash(request, user)  # Important!
-                    messages.success(request, 'Your password was successfully updated!', extra_tags='change_password_tag')
-                    return redirect('settings')
+                    hashed_new_password = make_password(new_password)  # Hash the new password
+                    return twofactor_setting_send(request, user, hashed_new_password)  # Pass hashed password to the function
                 else:
                     errors.append('New passwords do not match!')
             else:

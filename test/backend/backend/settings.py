@@ -41,13 +41,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api',
     'blockchain',
-    # 'smtp',
     'users',
     'games',
     'tournaments',
     'matchmaking',
+    'smtp',
     'rest_framework',
-    'channels',
+    # 'channels',
 	
 ]
 
@@ -180,11 +180,21 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': False,
         },
-        # 'smtp': {
-        #     'handlers': ['console'],
-        #     'level': 'DEBUG',
-        #     'propagate': False,
-        # },
+        'smtp': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'matchmaking': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'games': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
     },
 }
 
@@ -218,10 +228,25 @@ MIDDLEWARE_EXEMPT_URLS = [
     '/api/twofactor/',
     '/users/aouth_register_form/',
     '/users/aouth_login_form/',
-    '/users/twofactor_oauth/',
+    '/users/aouth_callback_login/',
+    '/users/aouth_callback_register/',
+    '/smtp/twofactor_oauth/',
 ]
 
-ASGI_APPLICATION = 'matchmaking.routing.application'
+# 42 OAUTH REGISTRATION
+# ---------------------
 
+OAUTH_REGISTER_CLIENT_ID = 'u-s4t2ud-b3c3aab2fe7f2180e74044806b9cbae551124bde9e7364970c26bf3810041aab'
+OAUTH_REGISTER_CLIENT_SECRET = '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'
+OAUTH_REGISTER_REDIRECT_URI = 'https://localhost:8080/users/aouth_callback_register'
+
+# 42 OAUTH LOGIN
+# --------------
+
+AOUTH_LOGIN_CLIENT_ID = 'u-s4t2ud-6e9fbb1976d031cd23a0474ef53b45b8a5912e8bd44198d1393b3ca454785709'
+OAUTH_LOGIN_CLIENT_SECRET = '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'
+AOUTH_LOGIN_REDIRECT_URI = 'https://localhost:8080/users/aouth_callback_login'
+
+# ASGI_APPLICATION = 'matchmaking.routing.application'
 
 # AUTO_LOGOUT_TIME = 1800

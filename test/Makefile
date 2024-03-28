@@ -15,5 +15,6 @@ fclean:
 	@docker system prune -a -f --volumes
 	@docker system prune -a -f --volumes
 	@docker network prune -f
-	@docker volume rm current_ft_transcendence_database-data
+	@docker volume rm test_ft_transcendence_database-data
+
 

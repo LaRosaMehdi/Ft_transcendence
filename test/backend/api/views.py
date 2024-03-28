@@ -7,10 +7,11 @@ from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
-
-
+from matchmaking.views.queue import queue_add_to_default
+from matchmaking.views.manager import matchmaking_manager
 from users.views import *
 from users.models import User  
+from smtp.views.forms import TwoFactorForm
 
 logger = logging.getLogger(__name__)
 
@@ -19,6 +20,12 @@ def view_login(request):
 
 def view_register(request):
     return render(request, 'register.html', {'form': RegistrationForm() })
+
+@login_required
+def view_play(request):
+    queue_add_to_default(request)
+    matchmaking_manager(request)
+    return render(request, 'play.html', {'current_user': request.user})
 
 @login_required
 def view_accueil(request):
@@ -53,4 +60,5 @@ def generate_profile_json(request):
     return JsonResponse(profile_data)
 
 def view_twofactor(request):
-    return render(request, 'twofactor.html', {'form': TwoFactorForm(), 'current_user': request.user })
+    context = request.GET.get('context', '')
+    return render(request, 'twofactor.html', {'form': TwoFactorForm(), 'context': context})

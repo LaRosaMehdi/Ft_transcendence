@@ -11,4 +11,4 @@ class Game(models.Model):
     # tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='games', null=True, blank=True)
 
     def __str__(self):
-        return f"{self.player1.username} vs {self.player2.username} ({self.date_time}) : {self.player1_score} - {self.player2_score}"
+        return f"{self.player1.username} vs {self.player2.username} : {self.player1_score} - {self.player2_score}"
