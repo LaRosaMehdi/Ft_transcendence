@@ -1,17 +1,15 @@
 import requests, logging
 from requests import get
-from django.shortcuts import render
-from django.http import JsonResponse
-from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponseRedirect, HttpResponseBadRequest, JsonResponse
 from django.contrib.auth.models import User
-from django.shortcuts import redirect
-from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from matchmaking.views.queue import queue_add_to_default
 from matchmaking.views.manager import matchmaking_manager
 from users.views import *
 from users.models import User  
 from smtp.views.forms import TwoFactorForm
+from django.template.loader import render_to_string
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +44,11 @@ def view_setting(request):
 
 @login_required
 def view_perso(request):
-    return render(request, 'perso.html')
+    if request.is_ajax():
+        html = render_to_string('perso.html', {'current_user': request.user}, request=request)
+        return JsonResponse({'html': html})
+    else:
+        return HttpResponseBadRequest("This endpoint require an AJAX request.")
 
 @login_required
 def generate_profile_json(request):

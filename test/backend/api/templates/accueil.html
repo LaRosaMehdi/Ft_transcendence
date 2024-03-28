@@ -10,15 +10,19 @@
     <link rel="stylesheet" href="{% static 'animations.css' %}">
     <link rel="stylesheet" href="{% static 'logos.css' %}">
     <link rel="stylesheet" href="{% static 'perso.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="logo-box">
         <h2>FT-tRaNsCeNdEnCe</h2>
     </div>
     <img src="{{ current_user.image }}" class="user-image">
+    
+    <div id="app-content">
     <div style="display: flex; gap: 10px; justify-content: flex-end; position: fixed; top: 10px; right: 10px;">
         <div class="perso-button" style="position: relative;">
-            <button type="submit" onclick="window.location.href = '{% url 'perso' %}'">
+            <button type="submit" onclick="loadPersoPage()">
+           <!-- <button type="submit" onclick="window.location.href = '{% url 'perso' %}'"> -->
                 <span></span>
                 <span></span>
                 <span></span>
@@ -32,6 +36,9 @@
                 Log out</button>
         </div>
     </div>
+    
+        <!-- Initially empty; content is loaded here by your JavaScript -->
+    
     <div class="accueil-box">
         <h2 style="text-align: center;">Welcome, {{ current_user.username }}</h1>
         <button type="submit" onclick="window.location.href = '{% url 'play' %}'" style=""> <span></span>
@@ -47,5 +54,7 @@
                 <span></span>
                 <span></span>Friends</button>
     </div>
+    </div>
+    <script src="{% static 'js/router.js' %}"></script>
 </body>
 </html>
