@@ -4,27 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mode Page</title>
+    <title>Tournament4 Page</title>
     <link rel="stylesheet" href="{% static 'stylesheet.css' %}">
     <link rel="stylesheet" href="{% static 'buttons.css' %}">
     <link rel="stylesheet" href="{% static 'animations.css' %}">
     <link rel="stylesheet" href="{% static 'logos.css' %}">
     <link rel="stylesheet" href="{% static 'perso.css' %}">
+    <link rel="stylesheet" href="{% static 'tournament.css' %}">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="logo-box">
-        <h2>Mode</h2>
+        <h2>Tournament</h2>
     </div>
-    <button type="submit" onclick="window.location.href = '{% url 'vscomputer' %}'" style="margin-right: 20px;"> <span></span>
+    <div class="tournament-box">
+        <button type="submit" onclick="window.location.href = '{% url 'create_tournoi' %}'" style=""> <span></span>
         <span></span>
-        <span></span>1VSCOMPUTER</button>
-    <button type="submit" onclick="window.location.href = '{% url 'remote' %}'" style="margin-right: 20px;"> <span></span>
+        <span></span>Create Tournament</button>
+    </div>
+    <div class="tournament-box">
+        <button type="submit" onclick="window.location.href = '{% url 'join_tournoi' %}'" style=""> <span></span>
         <span></span>
-        <span></span>REMOTE</button>
-    <button type="submit" onclick="window.location.href = '{% url 'hard' %}'" style="margin-right: 20px;"> <span></span>
-        <span></span>
-        <span></span>HARD</button>
+        <span></span>Join Tournament</button>
+    </div>
     <button type="submit" onclick="javascript:history.go(-1);" class="button back-button"><span></span>
         <span></span>
         <span></span>Back

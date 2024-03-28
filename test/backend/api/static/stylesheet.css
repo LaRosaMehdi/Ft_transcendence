@@ -58,6 +58,14 @@ body {
   font-size: 12px;
 }
 
+.user-box input:not(:placeholder-shown) + label {
+  display: none;
+  top: -20px;
+  left: 0;
+  color: #03e9f4;
+  font-size: 12px;
+}
+
 ul {
   list-style: none;
   text-decoration: none;
