@@ -4,29 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tournament4 Page</title>
+    <title>Join Tournament</title>
     <link rel="stylesheet" href="{% static 'stylesheet.css' %}">
     <link rel="stylesheet" href="{% static 'buttons.css' %}">
     <link rel="stylesheet" href="{% static 'animations.css' %}">
     <link rel="stylesheet" href="{% static 'logos.css' %}">
     <link rel="stylesheet" href="{% static 'perso.css' %}">
     <link rel="stylesheet" href="{% static 'tournament.css' %}">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Ajoutez d'autres feuilles de style si nécessaire -->
 </head>
 <body>
-    <div class="logo-box">
-        <h2>Tournament</h2>
-    </div>
-    <div class="tournament-box">
-        <button type="submit" onclick="window.location.href = '{% url 'create_tournoi' %}'" style=""> <span></span>
-        <span></span>
-        <span></span>Create Tournament</button>
-    </div>
-    <div class="tournament-box">
-        <button type="submit" onclick="window.location.href = '{% url 'join_tournoi' %}'" style=""> <span></span>
-        <span></span>
-        <span></span>Join Tournament</button>
-    </div>
+    <h2>Join Tournament</h2>
+    <form id="join-tournament-form" method="post">
+        {% csrf_token %}
+        <label for="player-name">Your Name:</label><br>
+        <input type="text" id="player-name" name="player_name" required><br>
+        <label for="tournament-id">Tournament ID:</label><br>
+        <input type="text" id="tournament-id" name="tournament_id" required><br>
+        <button type="submit">Join Tournament</button>
+    </form>
     <button type="submit" onclick="javascript:history.go(-1);" class="button back-button"><span></span>
         <span></span>
         <span></span>Back

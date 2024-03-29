@@ -22,6 +22,4 @@ urlpatterns = [
     path('twofactor/', view_twofactor, name='twofactor'),
 	path('generate_profile_json/', generate_profile_json, name='generate_profile_json'),
     path('play/', view_play, name='play'),
-    path('create_tournoi/', TemplateView.as_view(template_name='create_tournoi.html'), name='create_tournoi'),
-    path('join_tournoi/', TemplateView.as_view(template_name='join_tournoi.html'), name='join_tournoi'),
 ]

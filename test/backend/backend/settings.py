@@ -69,7 +69,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'api', 'templates'),  # Add the directory path here
+            os.path.join(BASE_DIR, 'api', 'templates'),
+            os.path.join(BASE_DIR, 'tournaments', 'templates'),  # Add the directory path here
         ],
         'APP_DIRS': True,
         'OPTIONS': {

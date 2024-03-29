@@ -20,6 +20,7 @@ from django.contrib import admin
 from django.http import HttpResponseNotAllowed
 from django.conf import settings
 from django.conf.urls.static import static
+from tournaments import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,6 +29,7 @@ urlpatterns = [
     path('matchmaking/', include('matchmaking.urls')),
     path('smtp/', include('smtp.urls')),
     path('blockchain/', include('blockchain.urls')),
+    path('tournaments/', include('tournaments.urls')),
 ]
 
 if settings.DEBUG:
