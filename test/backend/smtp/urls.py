@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.http import HttpResponseNotAllowed
 from django.views.generic import TemplateView
 
-from smtp.views.twofactor import twofactor_oauth, twofactor_setting
+from aouth.views.twofactor import twofactor_oauth, twofactor_setting
 
 urlpatterns = [
     path('twofactor_oauth/', twofactor_oauth, name='twofactor_oauth'),

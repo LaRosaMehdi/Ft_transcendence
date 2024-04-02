@@ -1,5 +1,6 @@
 import logging
 from users.models import User
+from users.views.users import user_update_status
 from games.models import Game  
 
 logger = logging.getLogger(__name__)
@@ -17,6 +18,8 @@ def game_init(player1_id, player2_id):
             winner_id=None
         )
         new_game.save()
+        user_update_status(player1, "ingame")
+        user_update_status(player2, "ingame")
         logger.debug(f"New game created: {new_game}")
         return new_game
     except Exception as e:

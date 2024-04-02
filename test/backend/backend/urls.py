@@ -30,6 +30,7 @@ urlpatterns = [
     path('smtp/', include('smtp.urls')),
     path('blockchain/', include('blockchain.urls')),
     path('tournaments/', include('tournaments.urls')),
+    path('aouth/', include('aouth.urls')),
 ]
 
 if settings.DEBUG:

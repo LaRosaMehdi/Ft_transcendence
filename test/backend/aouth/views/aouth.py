@@ -17,8 +17,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.backends import ModelBackend
 
 from users.views import *
-from users.views.users import user_set_is_connected
-from smtp.views.twofactor import twofactor_oauth_send
+from aouth.views.forms import *
+from users.views.users import user_update_status
+from aouth.views.twofactor import twofactor_oauth_send
 
 logger = logging.getLogger(__name__)
 
@@ -146,7 +147,6 @@ def aouth_callback_register(request):
         user_email = user_info['email']
         user = User.objects.filter(email=user_email).first()
         if user:
-            user_set_is_connected(user, False)
             messages.error(request, "You are already registered.", extra_tags='aouth_callback_register')
             return redirect('register')
 
@@ -214,7 +214,7 @@ def aouth_callback_login(request):
     
 def aouth_logout(request):
     if request.user.is_authenticated:
-        user_set_is_connected(request.user, False)
+        user_update_status(request.user, 'offline')
         logout(request)
     return redirect('login')
     

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api',
     'blockchain',
+    'aouth',
     'users',
     'games',
     'tournaments',
@@ -60,7 +61,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'users.views.aouth.AouthRequiredMiddleware',
+    'aouth.views.aouth.AouthRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -202,7 +203,7 @@ LOGGING = {
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 AUTHENTICATION_BACKENDS = [
-    'users.views.aouth.AouthUser',
+    'aouth.views.aouth.AouthUser',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
@@ -223,30 +224,32 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 MIDDLEWARE_EXEMPT_URLS = [
     '/admin/',
+    '/api/accueil/',
     '/api/register/',
     '/api/login/',
-    '/api/accueil/',
-    '/api/twofactor/',
-    '/users/aouth_register_form/',
-    '/users/aouth_login_form/',
-    '/users/aouth_callback_login/',
-    '/users/aouth_callback_register/',
-    '/smtp/twofactor_oauth/',
+    '/aouth/twofactor/',
+    '/aouth/aouth_register_form/',
+    '/aouth/aouth_login_form/',
+    '/aouth/aouth_callback_login/',
+    '/aouth/aouth_callback_register/',
+    '/aouth/twofactor_oauth/',
+    '/aouth/twofactor_setting/',
 ]
+
 
 # 42 OAUTH REGISTRATION
 # ---------------------
 
-OAUTH_REGISTER_CLIENT_ID = 'u-s4t2ud-b3c3aab2fe7f2180e74044806b9cbae551124bde9e7364970c26bf3810041aab'
-OAUTH_REGISTER_CLIENT_SECRET = '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'
-OAUTH_REGISTER_REDIRECT_URI = 'https://localhost:8080/users/aouth_callback_register'
+OAUTH_REGISTER_CLIENT_ID = 'u-s4t2ud-0a6c7dd0ce5467609436bf9c353dd5163b6cdce97bab01c21c775b6153594057'
+OAUTH_REGISTER_CLIENT_SECRET = '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'
+OAUTH_REGISTER_REDIRECT_URI = 'https://localhost:8080/aouth/aouth_callback_register'
 
 # 42 OAUTH LOGIN
 # --------------
 
-AOUTH_LOGIN_CLIENT_ID = 'u-s4t2ud-6e9fbb1976d031cd23a0474ef53b45b8a5912e8bd44198d1393b3ca454785709'
-OAUTH_LOGIN_CLIENT_SECRET = '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'
-AOUTH_LOGIN_REDIRECT_URI = 'https://localhost:8080/users/aouth_callback_login'
+AOUTH_LOGIN_CLIENT_ID = 'u-s4t2ud-30202103ca54231a28f9266cb6f4f39982685d8b9deb7f6afda815bcad0405e9'
+OAUTH_LOGIN_CLIENT_SECRET = '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'
+AOUTH_LOGIN_REDIRECT_URI = 'https://localhost:8080/aouth/aouth_callback_login'
 
 # ASGI_APPLICATION = 'matchmaking.routing.application'
 

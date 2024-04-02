@@ -39,6 +39,8 @@ def user_create(_login, _password, _email, _img):
     logger.info(f"New user created: {new_user}")
     return new_user, False
 
-def user_set_is_connected(user, connected=True):
-    user.is_connected = connected
-    user.save(update_fields=['is_connected'])
+def user_update_status(user, new_status):
+    if user.status == new_status:
+        return
+    user.status = new_status
+    user.save()

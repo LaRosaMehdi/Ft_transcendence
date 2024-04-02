@@ -9,7 +9,7 @@ from django.views.generic import TemplateView
 from django.urls import path
 # from .consumers import MatchmakingConsumer
 from matchmaking.views.queue import queue_add_to_default
-from matchmaking.views.manager import matchmaking_manager
+from matchmaking.views.matchmaking import matchmaking_make
 
 # websocket_urlpatterns = [
 #     # URL WebSocket pour la logique de matchmaking
@@ -17,7 +17,7 @@ from matchmaking.views.manager import matchmaking_manager
 # ]
 
 urlpatterns = [
-    path('matchmaking_manager/', matchmaking_manager, name='matchmaking_manager'),
+    path('matchmaking_make/', matchmaking_make, name='matchmaking_make'),
     path('queue_add_to_default/', queue_add_to_default, name='queue_add_to_default'),
     # Ajoutez d'autres vues et leurs URL ici
 ]

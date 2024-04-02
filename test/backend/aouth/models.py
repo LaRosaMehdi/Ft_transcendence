@@ -41,23 +41,17 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)  # Add this line
+    is_connected = models.BooleanField(default=True)
 
     last_login = models.DateTimeField(auto_now=True)
 
     wins = models.IntegerField(default=0)
     losses = models.IntegerField(default=0)
     alias = models.CharField(max_length=100, null=True, blank=True)
-    # match_history = models.ManyToManyField('games.Game', related_name="match_history_user", blank=True) 
+    match_history = models.ManyToManyField('games.Game', related_name="match_history_user", blank=True) 
 
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'
-
-    STATUS_CHOICES = [
-        ('online', 'Online'),
-        ('offline', 'Offline'),
-        ('ingame', 'In Game'),
-    ]
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='offline')
 
     validation_code = models.CharField(max_length=64, null=True, blank=True)
     objects = UserManager()

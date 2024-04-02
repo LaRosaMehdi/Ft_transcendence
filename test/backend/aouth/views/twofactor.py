@@ -7,9 +7,9 @@ from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth import update_session_auth_hash
 
 from users.models import User
-from users.views.users import user_set_is_connected
-from smtp.views.forms import TwoFactorForm
-from smtp.views.smtp import smtp_aouth_validation, smtp_setting_validation
+from users.views.users import user_update_status
+from aouth.views.forms import TwoFactorForm
+from smtp.views import smtp_aouth_validation, smtp_setting_validation
 
 import hashlib, random
 
@@ -45,12 +45,12 @@ def twofactor_oauth(request):
                 if user.validation_code == hashed_validation_code_entered:
                     user.validation_code = None
                     user.save()
-                    user_set_is_connected(user)
+                    user_update_status(user, 'online')
                     user.backend = f'{ModelBackend.__module__}.{ModelBackend.__qualname__}'
                     login(request, user)
                     return redirect('home')
                 else:
-                    user_set_is_connected(user, False)
+                    user_update_status(user, 'offline')
                     messages.error(request, "Invalid validation code", extra_tags='twofactor_oauth_tag')
         else:
             for field, errors in form.errors.items():
@@ -95,7 +95,7 @@ def twofactor_setting(request):
                     else:
                         messages.error(request, "No new password found in session", extra_tags='twofactor_oauth_tag')
                 else:
-                    user_set_is_connected(user, False)
+                    user_update_status(user, 'offline')
                     messages.error(request, "Invalid validation code", extra_tags='twofactor_oauth_tag')
         else:
             for field, errors in form.errors.items():

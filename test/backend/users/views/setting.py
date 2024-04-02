@@ -12,7 +12,7 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from users.views import *
-from smtp.views.twofactor import twofactor_setting_send
+from aouth.views.twofactor import twofactor_setting_send
 
 logger = logging.getLogger(__name__)
 
