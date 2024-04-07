@@ -39,24 +39,32 @@
         <form action="{% url 'aouth_register_form' %}" method="post">
             {% csrf_token %}
             <div class="user-box">
-                <label>Username</label>
+                <!-- <label>Username</label> -->
                 <!-- {{ form.username.label_tag }} -->
-                {{ form.username }}
+                <input type="text" id="id_username" name="username" placeholder="Enter your username">
+
+                <!-- {{ form.username }} -->
             </div>
             <div class="user-box">
-                <label>Email</label>
+                <!-- <label>Email</label> -->
+                <input type="email" id="id_email" name="email" placeholder="Enter your email">
+
                 <!-- {{ form.email.label_tag }} -->
-                {{ form.email }}
+                <!-- {{ form.email }} -->
             </div>
             <div class="user-box">
-                <label>Password</label>
+                <!-- <label>Password</label> -->
+                <input type="password" id="id_password1" name="password1" placeholder="Enter your password">
+
                 <!-- {{ form.password1.label_tag }} -->
-                {{ form.password1 }}
+                <!-- {{ form.password1 }} -->
             </div>
             <div class="user-box">
-                <label>Password again</label>
+                <!-- <label>Password again</label> -->
+                <input type="password" id="password2" name="password2" placeholder="Enter your password again">
+
                 <!-- {{ form.password2.label_tag }} -->
-                {{ form.password2 }}
+                <!-- {{ form.password2 }} -->
             </div>
             <button type="submit">Submit</button>
         </form>

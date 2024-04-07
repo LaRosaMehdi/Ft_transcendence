@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tournament4 Page</title>
+    <link rel="stylesheet" href="{% static 'stylesheet.css' %}">
+    <link rel="stylesheet" href="{% static 'buttons.css' %}">
+    <link rel="stylesheet" href="{% static 'animations.css' %}">
+    <link rel="stylesheet" href="{% static 'logos.css' %}">
+    <link rel="stylesheet" href="{% static 'perso.css' %}">
+    <link rel="stylesheet" href="{% static 'tournament.css' %}">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <h1>Create Tournament</h1>
+    <form id="create-tournament-form">
+        {% csrf_token %}
+        <label for="name">Tournament Name:</label>
+        <input type="text" id="name" name="name" required>
+        <button type="submit">Create Tournament</button>
+    </form>
+    <form id="player-count-form">
+        {% csrf_token %}
+
+        <label for="num-players">Number of Players:</label>
+        <input type="number" id="num-players" name="num-players" min="1" max="8" required>
+        <button type="submit">Next</button>
+    </form>
+    <form id="player-invite-form">
+        <!-- Dynamically add input fields for player invitations here using JavaScript -->
+        <button type="submit">Invite Players</button>
+    </form>
+    <button type="submit" onclick="javascript:history.go(-1);" class="button back-button"><span></span>
+        <span></span>
+        <span></span>Back
+    </button>
+    <script src="{% static '/js/createPrivateTournament.js' %}"></script>
+</body>
+</html>

@@ -16,11 +16,10 @@
     <div class="logo-box">
         <h2>FT-tRaNsCeNdEnCe</h2>
     </div>
-    <img src="{{ current_user.image }}" class="user-image">
+    <img src="{{ current_user.image.url }}" class="user-image">
     
     <div id="app-content">
-    <div style="display: flex; gap: 10px; justify-content: flex-end; position: fixed; top: 10px; right: 10px;">
-        <div class="perso-button" style="position: relative;">
+        <div class="perso-button" style="">
             <button type="submit" onclick="loadPersoPage()">
            <!-- <button type="submit" onclick="window.location.href = '{% url 'perso' %}'"> -->
                 <span></span>
@@ -28,20 +27,19 @@
                 <span></span>
                 Espace Perso</button>
         </div>
-        <div class="perso-button" style="position: relative;">
+        <div class="perso-button" style="top: 90%">
             <button type="submit" onclick="window.location.href = '{% url 'aouth_logout' %}'"><span></span>
                 <span></span>
                 <span></span>
                 <span></span>
                 Log out</button>
         </div>
-    </div>
     
         <!-- Initially empty; content is loaded here by your JavaScript -->
     
     <div class="accueil-box">
         <h2 style="text-align: center;">Welcome, {{ current_user.username }}</h1>
-        <button type="submit" onclick="window.location.href = '{% url 'matchmaking' %}'" style=""> <span></span>
+        <button type="submit" onclick="window.location.href = '{% url 'play' %}'" style=""> <span></span>
         <span></span>
         <span></span>Play</button>
         <button type="submit" onclick="window.location.href = '{% url 'tournament' %}'"style=""> <span></span>

@@ -128,6 +128,10 @@ document.addEventListener('DOMContentLoaded', function() {
             player2.y += player2.speed;
         }
     }
+
+    const accelerationRate = 0.005; 
+    const baseBallSpeed = 1; // Vitesse de base de la balle
+    let currentBallSpeed = baseBallSpeed; // Vitesse actuelle de la balle
     
     const ball = {
         x: canvas.width / 2,
@@ -145,12 +149,24 @@ document.addEventListener('DOMContentLoaded', function() {
         ctx.closePath();
     }
 
+
+    function stopBall() {
+        // Arrêter le mouvement de la balle
+        ball.dx = 0;
+        ball.dy = 0;
+    }
+
+
     function resetBall() {
         ball.x = canvas.width / 2;
         ball.y = canvas.height / 2;
         ball.dx = -ball.dx; // Changement de direction de la balle après chaque point marqué
         ball.dy = -ball.dy;
-    }
+        currentBallSpeed = baseBallSpeed;
+        ball.dx = Math.sign(ball.dx) * baseBallSpeed;
+        ball.dy = Math.sign(ball.dy) * baseBallSpeed;
+        player1.y = canvas.height / 2 - 50;
+        player2.y = canvas.height / 2 - 50;    }
 
     function handleCollision() {
         if (ball.y - ball.radius <= 0 || ball.y + ball.radius >= canvas.height) {
@@ -173,36 +189,99 @@ document.addEventListener('DOMContentLoaded', function() {
         if (ball.x - ball.radius <= player1.x + player1.width &&
             ball.y >= player1.y && ball.y <= player1.y + player1.height) {
             ball.dx = -ball.dx; // Inverser la direction horizontale de la balle
+            currentBallSpeed += accelerationRate;
         }
     
         // Vérifier la collision avec le joueur 2
         if (ball.x + ball.radius >= player2.x &&
             ball.y >= player2.y && ball.y <= player2.y + player2.height) {
             ball.dx = -ball.dx; // Inverser la direction horizontale de la balle
+            currentBallSpeed += accelerationRate;
         }
     }
-    
+
     function drawScores() {
         // Dessiner les scores ici
-        ctx.font = '3% Arial';
+        ctx.font = '24px Arial';
         ctx.fillStyle = 'white';
         ctx.fillText('Player 1: ' + scorePlayer1, 20, 30);
         ctx.fillText('Player 2: ' + scorePlayer2, canvas.width - 150, 30);
     }
-    
+
+
     function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'black'; // Remplacez 'blue' par la couleur de votre choix
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.beginPath();
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 2;
+        ctx.moveTo(canvas.width / 2, 0);
+        ctx.lineTo(canvas.width / 2, canvas.height);
+        ctx.stroke();
         drawPlayers();
         drawBall();
         drawScores();
         movePlayers();
         handleCollision();
-        ball.x += ball.dx;
+        ball.dx += accelerationRate * Math.sign(ball.dx);
+        ball.dy += accelerationRate * Math.sign(ball.dy);
+
+        ball.x += ball.dx; // Appliquer la vitesse actuelle de la balle
         ball.y += ball.dy;
         requestAnimationFrame(draw);
     }
-    
+
+
+    function endGame() {
+        // Afficher le gagnant et le perdant en fonction du score
+        let winner, loser;
+        if (scorePlayer1 > scorePlayer2) {
+            winner = "Joueur 1";
+            loser = "Joueur 2";
+        } else if (scorePlayer2 > scorePlayer1) {
+            winner = "Joueur 2";
+            loser = "Joueur 1";
+        } else {
+            winner = "Personne (égalité)";
+            loser = "Personne (égalité)";
+        }
+        alert(`Le temps est écoulé! ${winner} remporte la partie avec ${Math.max(scorePlayer1, scorePlayer2)} points contre ${loser} avec ${Math.min(scorePlayer1, scorePlayer2)} points.`);
+        resetBall();
+        stopBall();
+    }
+
+    let countdownInterval; // Déclaration d'une variable globale pour stocker l'identifiant de l'intervalle du compte à rebours
+
+function startTimer(durationInSeconds) {
+    let timer = durationInSeconds; // Durée initiale du chronomètre en secondes
+
+    // Fonction qui met à jour le chrono et l'affiche
+    function updateTimer() {
+        const minutes = Math.floor(timer / 60);
+        let seconds = timer % 60;
+
+        // Ajout d'un zéro devant le nombre si les secondes sont inférieures à 10
+        seconds = seconds < 10 ? '0' + seconds : seconds;
+
+        // Affichage du chrono
+        document.getElementById('chrono-button').textContent = minutes + ':' + seconds;
+
+        // Décrémentation du chrono
+        if (--timer < 0) {
+            clearInterval(countdownInterval); // Arrêter le compte à rebours lorsque le temps est écoulé
+            endGame();
+            // alert('Time is up!'); // Afficher un message lorsque le temps est écoulé (vous pouvez modifier cela selon vos besoins)
+        }
+    }
+
+    // Appel de la fonction updateTimer toutes les secondes
+        updateTimer();
+        countdownInterval = setInterval(updateTimer, 1000); // Mettre à jour le chrono toutes les 1000 ms (1 seconde)
+    }
+
     function startGame() {
+        startTimer(60);
         draw();
     }
 });

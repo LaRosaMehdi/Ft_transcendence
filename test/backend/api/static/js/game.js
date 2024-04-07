@@ -207,8 +207,8 @@ let scorePlayer1 = 0;
 let scorePlayer2 = 0;
 
 function drawScores() {
-    ctx.font = '3% Arial';
-    ctx.fillStyle = 'white';
+    ctx.font = '24px Arial';
+    ctx.fillStyle = 'black';
     ctx.fillText('Player 1: ' + scorePlayer1, 20, 30);
     ctx.fillText('Player 2: ' + scorePlayer2, canvas.width - 150, 30);
 }

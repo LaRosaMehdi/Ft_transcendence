@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'buttons.css' %}">
+    <link rel="stylesheet" href="{% static 'animations.css' %}">
+    <link rel="stylesheet" href="{% static 'logos.css' %}">
+    <link rel="stylesheet" href="{% static 'perso.css' %}">
+    <link rel="stylesheet" href="{% static 'matchmaking.css' %}">
+    <link rel="stylesheet" href="{% static 'stylesheet.css' %}">
+    <link rel="stylesheet" href="{% static 'tournament.css' %}">
+    <title>Create Open Tournament</title>
+</head>
+<body>
+    <div class="tournament-results">
+        <h1>Creation du tournoi publique</h1>
+        <form id="player-form">
+            <label for="num-players">Nombre de joueurs (max 8) :</label>
+            <input type="number" id="num-players" name="num-players" min="1" max="8" value="5">
+            <button type="submit" id="generate-button">Générer</button>
+        </form>
+        <div id="tournament-results" data-current-user="{{ current_user.username }}">
+            <!-- Autres éléments de votre page -->
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Position</th>
+                    <th>Joueur</th>
+                    <th>Victoires</th>
+                    <th>Nulles</th>
+                    <th>Défaites</th>
+                </tr>
+            </thead>
+            <tbody id="results-body">
+                <!-- Les lignes seront générées dynamiquement ici -->
+            </tbody>
+        </table>
+    </div>
+    <button type="submit" onclick="javascript:history.go(-1);" class="button back-button"><span></span>
+        <span></span>
+        <span></span>Back
+    </button>
+    <script src="{% static '/js/createOpenTournament.js' %}"></script>
+</body>
+</html>

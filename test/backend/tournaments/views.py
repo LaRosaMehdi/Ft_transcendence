@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from .models import Tournament
+from django.contrib.auth.models import User
 from users.models import User
-
+from users.views import *
+from aouth.views import *
 from .models import Tournament
 
 def tournament_list(request):
@@ -17,7 +19,28 @@ def create_tournament_view(request):
         return HttpResponse("Tournament created successfully!")  # Exemple de réponse
 
     # Si la méthode HTTP est GET, afficher simplement la page HTML du formulaire
-    return render(request, 'tournaments/create_tournament.html')  # Chemin correct vers le modèle HTML
+    return render(request, 'tournaments/templates/createPrivateTournament.html', {'current_user': request.user})  # Chemin correct vers le modèle HTML
+
+
+def create_public_tournament_view(request):
+    if request.method == 'POST':
+        tournament_name = request.POST.get('name')
+        # Traitement des données du formulaire et création du tournoi
+        # Redirection vers une autre page après la création du tournoi
+        return HttpResponse("Tournament created successfully!")  # Exemple de réponse
+
+    # Si la méthode HTTP est GET, afficher simplement la page HTML du formulaire
+    return render(request, 'createOpenTournament.html', {'current_user': request.user})  # Chemin correct vers le modèle HTML
+
+def create_private_tournament_view(request):
+    if request.method == 'POST':
+        tournament_name = request.POST.get('name')
+        # Traitement des données du formulaire et création du tournoi
+        # Redirection vers une autre page après la création du tournoi
+        return HttpResponse("Tournament created successfully!")  # Exemple de réponse
+
+    # Si la méthode HTTP est GET, afficher simplement la page HTML du formulaire
+    return render(request, 'createPrivateTournament.html', {'current_user': request.user})  # Chemin correct vers le modèle HTML
 
 def join_tournament_view(request):
     if request.method == 'POST':

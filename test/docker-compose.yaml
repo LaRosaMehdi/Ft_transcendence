@@ -44,6 +44,7 @@ services:
       - ft_transcendence_network
     volumes:
       - ft_transcendence_database-data:/var/lib/postgresql/data
+      - ./backend:/usr/src/
     depends_on:
       - ft_transcendence_database
       - ganache

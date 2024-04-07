@@ -9,6 +9,16 @@ right: 0;
 font-size: 2vw;
 }
 
+.logout-button {
+  background-color: transparent;
+  border: none;
+  border-radius: 50%; 
+  position: absolute;
+  bottom: 7%;
+  right: 0; 
+  font-size: 2vw;
+  }
+
 .custom-button::before {
 content: "";
 display: block;

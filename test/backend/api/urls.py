@@ -17,6 +17,8 @@ urlpatterns = [
     path('perso-content/', views.view_perso, name='perso-content'),
 
     
+    path('resTournoi/', TemplateView.as_view(template_name='res_tournoi.html'), name='resTournoi'),
+    
     path('main_chat/', TemplateView.as_view(template_name='res_tournoi.html'), name='main_chat'),
     path('vscomputer/', TemplateView.as_view(template_name='vscomputer.html'), name='vscomputer'),
     path('hard/', TemplateView.as_view(template_name='hard.html'), name='hard'),
