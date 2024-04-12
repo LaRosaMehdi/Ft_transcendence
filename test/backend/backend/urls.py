@@ -31,6 +31,7 @@ urlpatterns = [
     path('blockchain/', include('blockchain.urls')),
     path('tournaments/', include('tournaments.urls')),
     path('aouth/', include('aouth.urls')),
+    path('games/', include('games.urls')),
 ]
 
 if settings.DEBUG:

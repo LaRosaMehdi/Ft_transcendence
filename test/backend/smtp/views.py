@@ -1,9 +1,11 @@
 import smtplib, random, logging
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from aouth.views.jwt import jwt_login_required
 
 logger = logging.getLogger(__name__)
 
+@jwt_login_required
 def smtp_setting_validation(user, new_password):
     message: MIMEMultipart = MIMEMultipart()
     message['From'] = "fttranscendence.ft42@gmail.com"

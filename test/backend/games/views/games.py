@@ -1,10 +1,12 @@
 import logging
 from users.models import User
 from users.views.users import user_update_status
-from games.models import Game  
+from games.models import Game 
+from aouth.views.jwt import jwt_login_required
 
 logger = logging.getLogger(__name__)
 
+@jwt_login_required
 def game_init(player1_id, player2_id):
     logger.debug(f"game_init: player1_id={player1_id}, player2_id={player2_id}")
     try: 

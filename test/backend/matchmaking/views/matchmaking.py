@@ -7,10 +7,11 @@ from users.views.users import user_update_status
 from games.views.games import game_init
 from matchmaking.views.queue import queue_add_to_default, queue_remove_from_default
 from matchmaking.models import MatchmakingQueue
- 
+from aouth.views.jwt import jwt_login_required
+
 logger = logging.getLogger(__name__)
 
-@login_required
+@jwt_login_required
 def matchmaking_make(request):
     default_queue = MatchmakingQueue.objects.get(name="default queue")
     players = default_queue.players.all()
@@ -25,7 +26,7 @@ def matchmaking_make(request):
         return True
     return False
 
-@login_required
+@jwt_login_required
 def matchmaking(request):
     if request.user.status == "ingame":
         return redirect('play')

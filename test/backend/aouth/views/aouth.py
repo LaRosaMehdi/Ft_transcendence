@@ -1,6 +1,5 @@
 import requests, re, logging
 from requests import get
-from users.models import User
 from django.urls import reverse
 from django.conf import settings
 from django.db import IntegrityError
@@ -16,8 +15,9 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.backends import ModelBackend
 
-from users.views import *
 from aouth.views.forms import *
+from aouth.views.jwt import *
+from users.models import User
 from users.views.users import user_update_status
 from aouth.views.twofactor import twofactor_oauth_send
 
@@ -35,20 +35,6 @@ class AouthUser(ModelBackend):
         except User.DoesNotExist:
             return None
 
-# MIDDLWARE
-# ---------
-
-class AouthRequiredMiddleware:
-    def __init__(self, get_response):
-        self.get_response = get_response
-
-    def __call__(self, request):
-        if not request.user.is_authenticated and not any(request.path.startswith(url) for url in settings.MIDDLEWARE_EXEMPT_URLS):
-            unauthorized_url = request.path
-            messages.warning(request, f"You need to log in to access this page. {unauthorized_url}", extra_tags="aouth_required_middleware_tag")
-            return redirect('login')
-        return self.get_response(request)
-
 # LOGIN
 # -----
 
@@ -62,21 +48,22 @@ def aouth_login_form(request):
                 user = authenticate(request, email=user_id, password=password)
             else:
                 user = authenticate(request, username=user_id, password=password)
-                
             if user is not None:
-                return twofactor_oauth_send(request, user)
+                jwt_create(request, user)
+                return twofactor_oauth_send(request)
             else:
                 messages.error(request, "Invalid username or password", extra_tags='aouth_login_tag')
         else:
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{field}: {error}", extra_tags='aouth_login_tag')
-    
     return redirect('login')
 
 
 # REGISTRATION
 # ------------
+
+from aouth.views.jwt import jwt_create
 
 def aouth_register_form(request):
     if request.method == 'POST':
@@ -87,9 +74,10 @@ def aouth_register_form(request):
                 user = form.save()
                 username = form.cleaned_data.get('username')
                 password = form.cleaned_data.get('password1')
-                user = authenticate(request, username=username, password=password)      
+                user = authenticate(request, username=username, password=password)
                 if user is not None:
-                    return twofactor_oauth_send(request, user)
+                    jwt_create(request, user)
+                    return twofactor_oauth_send(request)
                 else:
                     messages.error(request, "Failed to authenticate user after registration", extra_tags='aouth_register_tag')
             
@@ -151,7 +139,8 @@ def aouth_callback_register(request):
             return redirect('register')
 
         user = User.objects.create_user(username=f"{user_info['login']}_42", email=user_email, image_url=user_info['image']['link'])
-        return twofactor_oauth_send(request, user)
+        jwt_create(request, user)
+        return twofactor_oauth_send(request)
 
     except Exception as e:
         logger.exception("An error occurred in oauth_callback_register")
@@ -202,7 +191,8 @@ def aouth_callback_login(request):
         if not user:
             messages.error(request, "You are not registered. Please register first.", extra_tags='aouth_callback_login')
             return redirect('login')
-        return twofactor_oauth_send(request, user)
+        jwt_create(request, user)
+        return twofactor_oauth_send(request)
 
     except Exception as e:
         logger.exception("An error occurred in aouth_callback_login")
@@ -213,9 +203,13 @@ def aouth_callback_login(request):
 # -------
     
 def aouth_logout(request):
+    # Clear JWT tokens from the client side (e.g., remove cookies or clear local storage)
+    response = redirect('login')
+    response.delete_cookie('access_token')
+    response.delete_cookie('refresh_token')
+
     if request.user.is_authenticated:
-        user_update_status(request.user, 'offline')
+        jwt_invalidate(request)
         logout(request)
-    return redirect('login')
-    
+    return response
     

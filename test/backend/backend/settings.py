@@ -52,17 +52,22 @@ INSTALLED_APPS = [
 	
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'aouth.views.aouth.AouthRequiredMiddleware',
 ]
+
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -72,6 +77,9 @@ TEMPLATES = [
         'DIRS': [
             os.path.join(BASE_DIR, 'api', 'templates'),
             os.path.join(BASE_DIR, 'tournaments', 'templates'),  # Add the directory path here
+            os.path.join(BASE_DIR, 'aouth', 'templates'),
+            os.path.join(BASE_DIR, 'users', 'templates'),
+            os.path.join(BASE_DIR, 'matchmaking', 'templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -144,6 +152,8 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# LOGGING
+# -------
 
 LOGGING = {
     'version': 1,
@@ -197,10 +207,24 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': False,
         },
+        'aouth': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'tournaments': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
     },
 }
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
+
+# AUTHENTICATION
+# --------------
 
 AUTHENTICATION_BACKENDS = [
     'aouth.views.aouth.AouthUser',
@@ -209,33 +233,30 @@ AUTHENTICATION_BACKENDS = [
 
 AUTH_USER_MODEL = 'users.User'
 
+# CSRF
+# ----
+
 SESSION_COOKIE_SECURE = True 
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = True
+
+# HSTS
+# ----
 
 SECURE_HSTS_SECONDS = 3600
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
+# SSL
+# ---
+
 SECURE_SSL_REDIRECT = True
+
+# MEDIA
+# -----
 
 MEDIA_URL = '/users/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-MIDDLEWARE_EXEMPT_URLS = [
-    '/admin/',
-    '/api/accueil/',
-    '/api/register/',
-    '/api/login/',
-    '/aouth/twofactor/',
-    '/aouth/aouth_register_form/',
-    '/aouth/aouth_login_form/',
-    '/aouth/aouth_callback_login/',
-    '/aouth/aouth_callback_register/',
-    '/aouth/twofactor_oauth/',
-    '/aouth/twofactor_setting/',
-]
-
 
 # 42 OAUTH REGISTRATION
 # ---------------------
@@ -250,7 +271,3 @@ OAUTH_REGISTER_REDIRECT_URI = 'https://localhost:8080/aouth/aouth_callback_regis
 AOUTH_LOGIN_CLIENT_ID = 'u-s4t2ud-cecd1a52c9d51af27bc2daeefe882eda5dd05f725f7c6207b551e44720c37969'
 OAUTH_LOGIN_CLIENT_SECRET = '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'
 AOUTH_LOGIN_REDIRECT_URI = 'https://localhost:8080/aouth/aouth_callback_login/'
-
-# ASGI_APPLICATION = 'matchmaking.routing.application'
-
-# AUTO_LOGOUT_TIME = 1800

@@ -1,2 +1,3 @@
-# from users.games.file import *
+from games.views.games import *
+from games.views.views import *
 

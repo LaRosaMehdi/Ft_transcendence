@@ -1,6 +1,5 @@
 import requests, re, logging
 from requests import get
-from users.models import User
 from django.http import JsonResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
@@ -11,15 +10,18 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
-from users.views import *
+
+from users.models import User
+from users.views.forms import *
 from aouth.views.twofactor import twofactor_setting_send
+from aouth.views.jwt import jwt_login_required
 
 logger = logging.getLogger(__name__)
 
 # SETTINGS
 # --------
 
-@login_required
+@jwt_login_required
 def setting_change_username(request):
     errors = []
     if request.method == 'POST':
@@ -44,7 +46,7 @@ def setting_change_username(request):
         messages.error(request, error, extra_tags='change_username_tag')
     return redirect('settings')
 
-@login_required
+@jwt_login_required
 def setting_change_image(request):
     errors = []
     if request.method == 'POST':

@@ -5,10 +5,11 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 
 from users.models import User
+from aouth.views.jwt import jwt_login_required
 
 logger = logging.getLogger(__name__)
 
-@login_required
+@jwt_login_required
 def queue_add_to_default(request, player=None):
     user = request.user if player is None else player
     default_queue, created = MatchmakingQueue.objects.get_or_create(name="default queue")
@@ -16,7 +17,7 @@ def queue_add_to_default(request, player=None):
         default_queue.players.add(user)
     return JsonResponse({'message': 'Vous êtes maintenant en file d\'attente pour un match.'})
 
-@login_required
+@jwt_login_required
 def queue_remove_from_default(request, player=None):
     user = request.user if player is None else player
     try: default_queue = MatchmakingQueue.objects.get(name="default queue")
