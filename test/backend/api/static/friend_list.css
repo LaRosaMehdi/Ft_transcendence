@@ -1,0 +1,112 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(#141e30, #243b55);
+    color: #fff;
+    padding: 20px;
+}
+
+
+.search-container {
+    margin-bottom: 20px;
+}
+
+.search-container input[type="text"],
+.search-container button {
+    padding: 10px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.search-container button {
+    background-color: #03e9f4;
+    color: #000;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: rgba(255, 255, 255, 0.1); /* Light background for the table */
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+button {
+    padding: 5px 10px;
+    background-color: #03e9f4;
+    border: none;
+    border-radius: 5px;
+    color: #000;
+}
+
+.circle_status{
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    margin-left: 20px;
+}
+
+.circle_status::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    border: 1px solid white;
+    border-radius: 50%;
+    box-sizing: border-box;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(0, 255, 0, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 255, 0, 0);
+    }
+}
+
+.online {
+    background-color: green;
+    animation: pulse 2s infinite;
+}
+
+@keyframes blink {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.offline {
+    background-color: red;
+    animation: blink 3s infinite;
+}
+
+.ingame{
+    background-color: violet;
+}
+
