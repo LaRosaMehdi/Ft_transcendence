@@ -7,7 +7,6 @@ from django.http import HttpResponseNotAllowed
 from django.views.generic import TemplateView
 from django.urls import path
 
-from api.views import *
 from aouth.views.aouth import *
 from aouth.views.twofactor import *
 from aouth.views.views import *

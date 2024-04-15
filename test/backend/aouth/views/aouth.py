@@ -201,15 +201,26 @@ def aouth_callback_login(request):
 
 # LOUGOUT
 # -------
-    
-def aouth_logout(request):
-    # Clear JWT tokens from the client side (e.g., remove cookies or clear local storage)
-    response = redirect('login')
-    response.delete_cookie('access_token')
-    response.delete_cookie('refresh_token')
 
+class AouthLogoutAutoMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        if request.user.is_authenticated:
+            if request.path == '/aouth/register/':
+                return aouth_logout(request, redirect_url='register')
+            if request.path == '/aouth/login/' or request.path == '/aouth/twofactor/':
+                return aouth_logout(request)
+        return response
+
+@jwt_login_required
+def aouth_logout(request, redirect_url='login'):
+    response = redirect(redirect_url)
     if request.user.is_authenticated:
-        jwt_invalidate(request)
+        jwt_destroy(request, response)
+        user_update_status(request, request.user, 'offline')
         logout(request)
     return response
     

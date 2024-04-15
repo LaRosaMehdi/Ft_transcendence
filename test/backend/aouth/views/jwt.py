@@ -1,16 +1,17 @@
+import logging
+from functools import wraps
+from django.http import JsonResponse
+from django.contrib import messages
+from django.shortcuts import redirect
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import SuspiciousOperation
 from django.utils import timezone
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
+from django.utils.deprecation import MiddlewareMixin
 
 User = get_user_model()
-
-
-from functools import wraps
-from django.http import JsonResponse
-from django.contrib import messages
-from django.shortcuts import redirect
+logger = logging.getLogger(__name__)
 
 # JWT Decorators
 # --------------
@@ -18,12 +19,19 @@ from django.shortcuts import redirect
 def jwt_login_required(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
-        user = jwt_decode(request)
-        if user:
+        # logger.debug(f"BFIUewbripupgerbpuie Decode: {type(request)}")
+        access_token = request.session.get('access_token')
+        if access_token:
             return view_func(request, *args, **kwargs)
         else:
-            messages.error(request, 'Authentication required', extra_tags='aouth_login_tag')
-            return redirect('login')  # Redirect to your login page
+            try:
+                jwt_refresh(request)
+                access_token = request.session.get('access_token')
+                if access_token:
+                    return view_func(request, *args, **kwargs)
+            except SuspiciousOperation as e:
+                messages.error(request, f'Authentication error', extra_tags='aouth_login_tag')
+                return redirect('login')
     return _wrapped_view
 
 # JWT Tokens
@@ -34,40 +42,24 @@ def jwt_create(request, user):
         refresh = RefreshToken.for_user(user)
         access_token = str(refresh.access_token)
         refresh_token = str(refresh)
-        
-        # Store tokens in session with expiration time
         request.session['access_token'] = access_token
         request.session['refresh_token'] = refresh_token
         request.session.set_expiry(refresh.access_token.payload['exp'])
     except TokenError as e:
-        # Handle token generation errors
         raise SuspiciousOperation(f"Error generating tokens: {e}")
     except Exception as e:
-        # Handle other unexpected errors
         raise SuspiciousOperation(f"Unexpected error: {e}")
 
-# def jwt_destroy(request):
-#     # Clear JWT tokens from the client side (e.g., remove cookies or clear local storage)
-#     if 'access_token' in request.session:
-#         del request.session['access_token']
-#     if 'refresh_token' in request.session:
-#         del request.session['refresh_token']
-#     response.delete_cookie('access_token')
-#     response.delete_cookie('refresh_token')
-    
-
-def jwt_invalidate(request):
-    invalidated_tokens = request.session.get('invalidated_tokens', [])
-    access_token = request.session.get('access_token')
-    refresh_token = request.session.get('refresh_token')
-    if access_token:
-        invalidated_tokens.append(access_token)
-    if refresh_token:
-        invalidated_tokens.append(refresh_token)
-    request.session['invalidated_tokens'] = invalidated_tokens
-
+def jwt_destroy(request, response):
+    if 'access_token' in request.session:
+        del request.session['access_token']
+    if 'refresh_token' in request.session:
+        del request.session['refresh_token']
+    response.delete_cookie('access_token')
+    response.delete_cookie('refresh_token')
 
 def jwt_decode(request):
+    # logger.debug(f"JWT Decode: {type(request)}")
     access_token = request.session.get('access_token')
     refresh_token = request.session.get('refresh_token')
     
@@ -78,14 +70,51 @@ def jwt_decode(request):
             user = User.objects.get(id=user_id)
             return user
         except TokenError as e:
-            # Handle token decoding errors
             raise SuspiciousOperation(f"Error decoding tokens: {e}")
         except User.DoesNotExist:
-            # Handle user not found
             raise SuspiciousOperation("User not found")
         except Exception as e:
-            # Handle other unexpected errors
             raise SuspiciousOperation(f"Unexpected error: {e}")
     else:
-        # No tokens found in session
         return None
+  
+# JWT Refresh
+# -----------
+
+# class JwtRefreshMiddleware(MiddlewareMixin):
+#     def process_request(self, request):
+#         if request.user.is_authenticated: 
+#             self.jwt_token_expire(request)
+
+#     def jwt_token_expire(self, request):
+#         access_token = request.session.get('access_token')
+#         if access_token:
+#             try:
+#                 refresh = RefreshToken(access_token)
+#                 if refresh.access_token.time_until_expiration() < timedelta(minutes=5):
+#                     self.jwt_token_refresh(request)
+#             except TokenError as e:
+#                 logger.error(f"Error decoding token: {e}")
+
+#     def jwt_token_refresh(self, request):
+#         try:
+#             jwt_refresh(request)
+#         except SuspiciousOperation as e:
+#             messages.error(request, f'Authentication error: {e}', extra_tags='aouth_login_tag')
+#             return redirect('login')
+
+def jwt_refresh(request):
+    try:
+        refresh_token = request.session.get('refresh_token')
+        if refresh_token:
+            refresh = RefreshToken(refresh_token)
+            access_token = str(refresh.access_token)
+            request.session['access_token'] = access_token
+            request.session.set_expiry(refresh.access_token.payload['exp'])
+            return access_token
+        else:
+            raise SuspiciousOperation("Refresh token not found")
+    except TokenError as e:
+        raise SuspiciousOperation(f"Error refreshing token: {e}")
+    except Exception as e:
+        raise SuspiciousOperation(f"Unexpected error: {e}")

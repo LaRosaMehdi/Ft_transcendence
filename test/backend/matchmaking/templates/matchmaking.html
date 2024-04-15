@@ -14,6 +14,7 @@
     </div>
     <script>
         function matchmakingLoop() {
+            console.log('Searching for another player...');
             fetch('{% url "matchmaking" %}')
             .then(response => {
                 if (response.redirected) {

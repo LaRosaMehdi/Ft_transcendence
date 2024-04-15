@@ -11,6 +11,9 @@ from aouth.views.jwt import jwt_login_required
 
 logger = logging.getLogger(__name__)
 
+# Management
+# ----------
+
 @jwt_login_required
 def matchmaking_make(request):
     default_queue = MatchmakingQueue.objects.get(name="default queue")
@@ -19,8 +22,7 @@ def matchmaking_make(request):
     while players.count() >= 2:
         player1 = players.first()
         player2 = players.exclude(pk=player1.pk).first()
-        logger.debug(f"Matched players: {player1.username} and {player2.username}")
-        new_game = game_init(player1, player2)
+        new_game = game_init(request, player1, player2)
         queue_remove_from_default(request, player1)
         queue_remove_from_default(request, player2)
         return True

@@ -58,9 +58,9 @@ def twofactor_oauth(request):
                 if user.validation_code == hashed_validation_code_entered:
                     user.validation_code = None
                     user.save()
-                    user_update_status(user, 'online')
                     user.backend = f'{ModelBackend.__module__}.{ModelBackend.__qualname__}'     
                     login(request, user)
+                    user_update_status(request, user, 'online')
                     return redirect('home')
                 else:
                     user_update_status(user, 'offline')

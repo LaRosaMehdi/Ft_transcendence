@@ -5,7 +5,6 @@ from django.http import HttpResponse
 from django.http import HttpResponseNotAllowed
 from django.views.generic import TemplateView
 
-from api.views import *
 from users.views import *
 
 urlpatterns = [
@@ -14,15 +13,15 @@ urlpatterns = [
     path('home/', view_accueil, name='home'),
     path('perso/', view_perso, name='perso'),
     path('perso-content/', view_perso, name='perso-content'),
-	
+    path('friends/', TemplateView.as_view(template_name='friends.html'), name='friends'),
+
+    
     # Settings
     path('settings/', view_setting, name='settings'),
     path('setting_change_username/', setting_change_username, name='setting_change_username'),
     path('setting_change_image/', setting_change_image, name='setting_change_image'),
     path('setting_change_password/', setting_change_password, name='setting_change_password'),
 
-    # Friend list
-    path('friend/', friend_list, name='friend_list'),
-    path('add_friend/<int:user_id>/', add_friend, name='add_friend'),
-    # path('user_search/', search_users, name='user_search'),
+    # Other 
+    path('generate_profile_json/', generate_profile_json, name='generate_profile_json'),
 ]

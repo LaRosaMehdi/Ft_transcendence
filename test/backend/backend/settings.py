@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'api',
     'blockchain',
     'aouth',
     'users',
@@ -66,6 +65,10 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'aouth.views.jwt.JwtRefreshMiddleware',
+    'aouth.views.aouth.AouthLogoutAutoMiddleware',
+    # 'matchmaking.views.matchmaking.MatchmakingCleanupMiddleware',
+    # 'matchmaking.views.queue.QueueRemoveFromDefaultAutoMiddleware',
 ]
 
 
@@ -75,11 +78,11 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'api', 'templates'),
             os.path.join(BASE_DIR, 'tournaments', 'templates'),  # Add the directory path here
             os.path.join(BASE_DIR, 'aouth', 'templates'),
             os.path.join(BASE_DIR, 'users', 'templates'),
             os.path.join(BASE_DIR, 'matchmaking', 'templates'),
+            os.path.join(BASE_DIR, 'games', 'templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -147,6 +150,11 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATICFILES_DIRS = [
+    BASE_DIR / "backend/static",
+    BASE_DIR / "tournaments/static",
+]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
@@ -187,11 +195,6 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': False,
         },
-        'api': {  # Your app
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
         'smtp': {
             'handlers': ['console'],
             'level': 'DEBUG',
@@ -217,8 +220,14 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': False,
         },
+        'matchmaking': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
     },
 }
+
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
