@@ -24,4 +24,8 @@ urlpatterns = [
 
     # Other 
     path('generate_profile_json/', generate_profile_json, name='generate_profile_json'),
+
+    # Tools
+    path('get_last_game/', user_get_last_game, name='tools'),
+    path('get_current_game/', user_get_current_game, name='tools'),
 ]

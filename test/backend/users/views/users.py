@@ -57,8 +57,8 @@ def user_update_status(request=None, user=None, new_status=None):
     else:
         logger.error("Invalid arguments for user_update_status")
 
-# User match history
-# ------------------
+# User game management
+# --------------------
 
 @jwt_login_required
 def user_add_to_match_history(request=None, user=None, game=None):
@@ -81,6 +81,44 @@ def user_remove_from_match_history(request=None, user=None, game=None):
         user.save()
     else:
         logger.error("Invalid arguments for user_remove_from_match_history")
+
+@jwt_login_required
+def user_add_current_game(request=None, user=None, game=None):
+    if request is not None and user is not None and game is not None:
+        user.current_game = game
+        user.save()
+    elif user is not None and game is not None:
+        user.current_game = game
+        user.save()
+    else:
+        logger.error("Invalid arguments for user_add_current_game")
+
+@jwt_login_required
+def user_remove_current_game(request=None, user=None):
+    if request is not None and user is not None:
+        user.current_game = None
+        user.save()
+    elif user is not None:
+        user.current_game = None
+        user.save()
+    else:
+        logger.error("Invalid arguments for user_remove_current_game")
+
+@jwt_login_required
+def user_get_current_game(request):
+    return JsonResponse({'current_game': request.user.current_game.id if request.user.current_game else None})
+
+@jwt_login_required
+def user_get_last_game(request):
+    if not request.user.match_history.all():
+        return None
+    return request.user.match_history.last()
+
+    
+
+
+# Other
+# -----
 
 @jwt_login_required
 def generate_profile_json(request):

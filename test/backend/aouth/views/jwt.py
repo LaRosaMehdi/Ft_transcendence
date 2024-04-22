@@ -19,21 +19,25 @@ logger = logging.getLogger(__name__)
 def jwt_login_required(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
-        # logger.debug(f"BFIUewbripupgerbpuie Decode: {type(request)}")
-        access_token = request.session.get('access_token')
-        if access_token:
-            return view_func(request, *args, **kwargs)
+        if request.session.exists(request.session.session_key):
+            access_token = request.session.get('access_token')
+            if access_token:
+                return view_func(request, *args, **kwargs)
+            else:
+                try:
+                    jwt_refresh(request)
+                    access_token = request.session.get('access_token')
+                    if access_token:
+                        return view_func(request, *args, **kwargs)
+                except SuspiciousOperation as e:
+                    messages.error(request, 'Authentication error', extra_tags='aouth_login_tag')
+                    return redirect('login')
         else:
-            try:
-                jwt_refresh(request)
-                access_token = request.session.get('access_token')
-                if access_token:
-                    return view_func(request, *args, **kwargs)
-            except SuspiciousOperation as e:
-                messages.error(request, f'Authentication error', extra_tags='aouth_login_tag')
-                return redirect('login')
+            messages.error(request, 'Session does not exist', extra_tags='aouth_login_tag')
+            return redirect('login')
     return _wrapped_view
 
+      
 # JWT Tokens
 # ----------
 
@@ -78,31 +82,6 @@ def jwt_decode(request):
     else:
         return None
   
-# JWT Refresh
-# -----------
-
-# class JwtRefreshMiddleware(MiddlewareMixin):
-#     def process_request(self, request):
-#         if request.user.is_authenticated: 
-#             self.jwt_token_expire(request)
-
-#     def jwt_token_expire(self, request):
-#         access_token = request.session.get('access_token')
-#         if access_token:
-#             try:
-#                 refresh = RefreshToken(access_token)
-#                 if refresh.access_token.time_until_expiration() < timedelta(minutes=5):
-#                     self.jwt_token_refresh(request)
-#             except TokenError as e:
-#                 logger.error(f"Error decoding token: {e}")
-
-#     def jwt_token_refresh(self, request):
-#         try:
-#             jwt_refresh(request)
-#         except SuspiciousOperation as e:
-#             messages.error(request, f'Authentication error: {e}', extra_tags='aouth_login_tag')
-#             return redirect('login')
-
 def jwt_refresh(request):
     try:
         refresh_token = request.session.get('refresh_token')

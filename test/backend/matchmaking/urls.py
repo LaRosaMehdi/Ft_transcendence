@@ -14,8 +14,13 @@ from matchmaking.views import *
 # ]
 
 urlpatterns = [
-    path('matchmaking/', view_matchmaking, name='matchmaking'),
-    path('matchmaking_make/', matchmaking_make, name='matchmaking_make'),
-    path('queue_add_to_default/', queue_add_to_default, name='queue_add_to_default'),
-    # Ajoutez d'autres vues et leurs URL ici
+
+    # Default queue
+    # -------------
+    path('matchmaking_remote/', view_matchmaking_remote, name='matchmaking_remote'),
+    path('matchmaking_remote_make/', matchmaking_remote_make, name='matchmaking_remote_make'),
+    path('matchmaking_remote_leave/', matchmaking_remote_leave, name='matchmaking_remote_leave'),
+    
+    # Remote mode
+    # -----------
 ]

@@ -219,8 +219,8 @@ class AouthLogoutAutoMiddleware:
 def aouth_logout(request, redirect_url='login'):
     response = redirect(redirect_url)
     if request.user.is_authenticated:
-        jwt_destroy(request, response)
         user_update_status(request, request.user, 'offline')
+        jwt_destroy(request, response)
         logout(request)
     return response
     

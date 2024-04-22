@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game results</title>
+    <link rel="stylesheet" href="{% static 'stylesheet.css' %}">
+    <link rel="stylesheet" href="{% static 'buttons.css' %}">
+    <link rel="stylesheet" href="{% static 'chats.css' %}">
+    <link rel="stylesheet" href="{% static 'jeu.css' %}">
+    <link rel="stylesheet" href="{% static 'animations.css' %}">
+    <link rel="stylesheet" href="{% static 'logos.css' %}">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="login-box">
+        {% if game.winner == request.user %}
+            <h2 style="text-align: center;">Congratulations!<br>You are the winner!</h2>
+        {% elif game.winner %}
+            <h2 style="text-align: center;">Sorry!<br> You are not the winner this time.</h2>
+        {% else %}
+            <h2 style="text-align: center;">Game in progress...</h2>
+        {% endif %}
+        <p style="color:white; text-align: center;">{{ game.player1.username }} vs {{ game.player2.username }}</h4>
+        {% if game.player1_score == -1 %}
+            <p style="color:white; text-align: center;">Score : QUIT GAME - {{ game.player2_score }}</h4>
+        {% elif game.player2_score == -1 %}
+            <p style="color:white; text-align: center;">Score : {{ game.player1_score }} - QUIT GAME</h4>
+        {% else %}
+            <p style="color:white; text-align: center;">Score : {{ game.player1_score }} - {{ game.player2_score }}</h4>
+        {% endif %}
+        <p style="color:white; text-align: center;">Time & Date : {{ game.date_time}} </h4>
+    </div>
+    <div class="perso-button" style="top: 90%">
+        <button type="submit" onclick="window.location.href = '{% url 'matchmaking_remote' %}'" style="margin-right: 20px;"> <span></span>
+            <span></span>
+            <span></span>PLAY AGAIN
+        </button>
+        <button type="submit" onclick="window.location.href = '{% url 'home' %}'" style="margin-right: 20px;"> <span></span>
+            <span></span>
+            <span></span>LEAVE
+        </button>
+    </div>
+    
+</body>
+</html>

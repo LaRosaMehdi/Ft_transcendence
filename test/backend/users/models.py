@@ -47,6 +47,8 @@ class User(AbstractBaseUser):
     wins = models.IntegerField(default=0)
     losses = models.IntegerField(default=0)
     alias = models.CharField(max_length=100, null=True, blank=True)
+    
+    current_game = models.ForeignKey('games.Game', on_delete=models.SET_NULL, null=True, blank=True, related_name='current_game_user')
     match_history = models.ManyToManyField('games.Game', related_name="match_history_user", blank=True) 
 
     USERNAME_FIELD = 'username'
