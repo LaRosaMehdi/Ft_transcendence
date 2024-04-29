@@ -44,17 +44,10 @@
         <form action="{% url 'aouth_login_form' %}" method="post">
             {% csrf_token %}
             <div class="user-box">
-                <!-- {{ form.user_id.label_tag }} -->
                 <input type="text" id="user_id" name="user_id" placeholder="Enter your username">
-                <!-- <label for="id_username">Username</label> -->
-                <!-- {{ form.user_id }}  -->
-
             </div>
             <div class="user-box">
                 <input type="password" id="id_password1" name="password" placeholder="Enter your password">
-
-                <!-- {{ form.password.label_tag }}
-                {{ form.password }} -->
             </div>  
             <button type="submit">Submit</button>
         </form>

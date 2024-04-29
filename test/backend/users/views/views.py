@@ -1,6 +1,7 @@
 import logging
 from django.shortcuts import render
 from django.template.loader import render_to_string
+from django.contrib.auth.forms import PasswordChangeForm
 from django.http import HttpResponseRedirect, HttpResponseBadRequest, JsonResponse
 
 from users.views.forms import *
@@ -31,13 +32,27 @@ def view_perso(request):
 # Settings
 # --------
 
+# @jwt_login_required
+# def view_setting(request):
+#     if request.user.password is not None:
+#         return render(request, 'settings.html', {
+#             'change_username_form': ChangeUsernameForm(instance=request.user),
+#             'change_image_form': ChangeImageForm(instance=request.user),
+#             'change_password_form': PasswordChangeForm(request.user)
+#         })
+#     return render(request, 'settings.html', {
+#         'change_username_form': ChangeUsernameForm(instance=request.user),
+#         'change_image_form': ChangeImageForm(instance=request.user),
+#     })
+
+
 @jwt_login_required
 def view_setting(request):
     if request.user.password is not None:
         return render(request, 'settings.html', {
             'change_username_form': ChangeUsernameForm(instance=request.user),
             'change_image_form': ChangeImageForm(instance=request.user),
-            'change_password_form': ChangePasswordForm()
+            'change_password_form': ChangePasswordForm(request.user)
         })
     return render(request, 'settings.html', {
         'change_username_form': ChangeUsernameForm(instance=request.user),

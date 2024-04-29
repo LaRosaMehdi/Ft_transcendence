@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil Page</title>
+    <link rel="stylesheet" href="{% static 'stylesheet.css' %}">
+    <link rel="stylesheet" href="{% static 'buttons.css' %}">
+    <link rel="stylesheet" href="{% static 'animations.css' %}">
+    <link rel="stylesheet" href="{% static 'logos.css' %}">
+</head>
+<body>
+    <div class="login-box">
+        <h2>2 Facture Authentication</h2>
+        <p style="color: white;">Please enter the 6 digit code sent to you by mail</p>        
+        <form method="post" action="{% url 'twofactor_setting_func' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Submit</button>
+        </form>
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'twofactor_oauth_tag error' %}
+                    <p style="color: red;">ERROR: {{ message }}</p>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
+    <p style="color: white;">If you haven't received the code, check the email you specified during registration</p>
+</body>
+</html>

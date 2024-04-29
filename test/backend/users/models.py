@@ -35,7 +35,7 @@ class User(AbstractBaseUser):
     username = models.CharField(max_length=100, unique=True)
     email = models.EmailField(unique=True)
     elo = models.IntegerField(default=1000)
-    password = models.CharField(max_length=100, null=True)
+    # password = models.CharField(max_length=100, null=True)
     image = models.ImageField(upload_to='', null=True)
 
     is_active = models.BooleanField(default=True)
@@ -62,6 +62,9 @@ class User(AbstractBaseUser):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='offline')
 
     validation_code = models.CharField(max_length=64, null=True, blank=True)
+
+    twofactor_enabled = models.BooleanField(default=True)
+
     objects = UserManager()
 
     def __str__(self):

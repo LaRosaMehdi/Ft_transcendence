@@ -1,19 +1,14 @@
+import logging, hashlib, random
 from django.urls import reverse
+from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth import login
+from datetime import datetime, timedelta
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.utils.deprecation import MiddlewareMixin
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth import update_session_auth_hash
-
-
-from users.models import User
-from aouth.views.jwt import jwt_login_required
-from aouth.views.jwt import jwt_create, jwt_decode
-from users.views.users import user_update_status
-from aouth.views.forms import TwoFactorForm
-from smtp.views import smtp_aouth_validation, smtp_setting_validation
-
 from django.contrib.auth import get_user_model
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -21,7 +16,14 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 
-import hashlib, random
+from users.models import User
+from aouth.views.jwt import jwt_login_required, jwt_login_required, jwt_decode
+from users.views.users import user_update_status
+from aouth.views.forms import TwoFactorForm
+from smtp.views import smtp_aouth_validation, smtp_setting_validation
+from aouth.views.jwt import jwt_login_required
+
+logger = logging.getLogger(__name__)
 
 # Generate a 6-digit validation code
 # ----------------------------------
@@ -49,9 +51,6 @@ def twofactor_oauth(request):
         form = TwoFactorForm(request.POST)
         if form.is_valid():
             validation_code = form.cleaned_data['validation_code']
-            # user_id = request.session.get('user_id')
-            # if user_id:
-            #     user = User.objects.get(id=user_id)
             user = jwt_decode(request)
             if user:
                 hashed_validation_code_entered = hashlib.sha256(validation_code.encode()).hexdigest()
@@ -77,19 +76,22 @@ def twofactor_oauth(request):
 # -------------------------------------
 
 @jwt_login_required
-def twofactor_setting_send(request, user, new_password):
+def twofactor_setting_send(request, new_password):
+    user = request.user
     user.backend = f'{ModelBackend.__module__}.{ModelBackend.__qualname__}'
     validation_code, hashed_validation_code = generate_validation_code()
     user.validation_code = hashed_validation_code
     user.save()
-    smtp_setting_validation(user, validation_code)    
+    smtp_setting_validation(request, validation_code)    
     request.session['user_id'] = user.id
     request.session['new_password'] = new_password  # Store hashed password in session
-    redirect_url = reverse('twofactor') + '?context=password_change'
-    return HttpResponseRedirect(redirect_url)
+    # Redirect to the two-factor setting page where the user will enter the validation code
+    return redirect('twofactor_setting')
+
 
 @jwt_login_required
 def twofactor_setting(request):
+    logger.debug(f"twofactor_setting: 1")
     if request.method == 'POST':
         form = TwoFactorForm(request.POST)
         if form.is_valid():
@@ -110,7 +112,7 @@ def twofactor_setting(request):
                     else:
                         messages.error(request, "No new password found in session", extra_tags='twofactor_oauth_tag')
                 else:
-                    user_update_status(user, 'offline')
+                    user_update_status(request, user, 'offline')
                     messages.error(request, "Invalid validation code", extra_tags='twofactor_oauth_tag')
         else:
             for field, errors in form.errors.items():

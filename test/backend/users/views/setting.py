@@ -68,6 +68,7 @@ def setting_change_password(request):
     errors = []
     if request.method == 'POST':
         form = ChangePasswordForm(request.POST)
+        logger.debug(f"twofactor_setting: { form.is_valid()}")
         if form.is_valid():
             old_password = form.cleaned_data['old_password']
             new_password = form.cleaned_data['new_password']
@@ -77,7 +78,15 @@ def setting_change_password(request):
             if user.check_password(old_password):
                 if new_password == confirm_password:
                     hashed_new_password = make_password(new_password)  # Hash the new password
-                    return twofactor_setting_send(request, user, hashed_new_password)  # Pass hashed password to the function
+                    if hashed_new_password:
+                        user.password = hashed_new_password
+                        user.save()
+                        update_session_auth_hash(request, user)
+                                                
+                        messages.success(request, 'Your password was successfully updated!', extra_tags='change_password_tag')
+                        logger.debug(f"twofactor_setting: Your password was successfully updated!")
+                        
+                        return redirect('settings')
                 else:
                     errors.append('New passwords do not match!')
             else:
@@ -89,3 +98,39 @@ def setting_change_password(request):
     for error in errors:
         messages.error(request, error, extra_tags='change_password_tag')
     return redirect('settings')
+
+# @jwt_login_required
+# def setting_change_password(request):
+#     errors = []
+#     if request.method == 'POST':
+#         form = PasswordChangeForm(request.user, request.POST)
+#         if form.is_valid():
+#             old_password = form.cleaned_data['old_password']
+#             new_password = form.cleaned_data['new_password1']
+#             confirm_password = form.cleaned_data['new_password2']
+#             user = request.user
+#             if user.check_password(old_password):
+#                 # if new_password == confirm_password:
+#                 #     hashed_new_password = make_password(new_password)  # Hash the new password
+#                 #     return twofactor_setting_send(request, hashed_new_password)   # Pass request to access session
+#                 hashed_new_password = make_password(new_password)  # Hash the new password
+#                 if hashed_new_password:
+#                     user.password = hashed_new_password
+#                     user.save()
+#                     update_session_auth_hash(request, user)
+                                            
+#                     messages.success(request, 'Your password was successfully updated!', extra_tags='change_password_tag')
+#                     logger.debug(f"twofactor_setting: Your password was successfully updated!")
+                    
+#                     return redirect('settings')
+#                 else:
+#                     errors.append('New passwords do not match!')
+#             else:
+#                 errors.append('Incorrect old password!')
+#         else:
+#             for field, field_errors in form.errors.items():
+#                 for error in field_errors:
+#                     errors.append(f"{field}: {error}")
+#     for error in errors:
+#         messages.error(request, error, extra_tags='change_password_tag')
+    # return redirect('settings')

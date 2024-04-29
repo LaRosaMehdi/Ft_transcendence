@@ -25,7 +25,7 @@
             </div>
         </div>
     </div>
-    <h2>Settings</h2>
+    <h2 style="color: white; text-align: center;">Settings</h2>
     {% if request.user.password is not None %}
         <div style="display: flex; justify-content: center; gap: 20px;">
             <div class="login-box">
@@ -33,8 +33,7 @@
                 <form method="post" action="{% url 'setting_change_username' %}">
                     {% csrf_token %}
                     <div class="user-box">
-                        {{ change_username_form.username.label_tag }}
-                        {{ change_username_form.username }}
+                        <input type="text" id="username" name="username" placeholder="Enter your new username">
                     </div>
                     <button type="submit">Change Username</button>
                 </form>
@@ -52,14 +51,14 @@
                     {% endfor %}
                 {% endif %}
             </div>
-            <div class="login-box">
+             <div class="login-box">
                 <h2>Change Image</h2>
                 <form method="post" enctype="multipart/form-data" action="{% url 'setting_change_image' %}">
                     {% csrf_token %}
-                    <div class="user-box">
-                        {{ change_image_form.as_p }}
-                        <button type="submit">Upload</button>
-                    <div class="user-box">
+                    <div class="upload-container">
+                        <input id="file-upload" type="file" name="image" accept="image/*" onchange="readURL(this);">
+                    </div>
+                    <button type="submit">Upload</button>
                 </form>
                 {% if messages %}
                     {% for message in messages %}
@@ -77,16 +76,14 @@
                 <form method="post" action="{% url 'setting_change_password' %}">
                     {% csrf_token %}
                     <div class="user-box">
-                        {{ change_password_form.old_password.label_tag }}
-                        {{ change_password_form.old_password }}
+                        <input type="password" id="old_password" name="old_password" placeholder="Enter your old password">
+            
                     </div>
                     <div class="user-box">
-                        {{ change_password_form.new_password.label_tag }}
-                        {{ change_password_form.new_password }}
+                        <input type="password" id="new_password" name="new_password" placeholder="Enter your new password">
                     </div>
                     <div class="user-box">
-                        {{ change_password_form.confirm_password.label_tag }}
-                        {{ change_password_form.confirm_password }}
+                        <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm your new password">
                     </div>
                     <button type="submit">Change Password</button>
                 </form>
@@ -109,8 +106,7 @@
                 <form method="post" action="{% url 'setting_change_username' %}">
                     {% csrf_token %}
                     <div class="user-box">
-                        {{ change_username_form.username.label_tag }}
-                        {{ change_username_form.username }}
+                        <input type="text" id="username" name="username" placeholder="Enter your new username">
                     </div>
                     <button type="submit">Change Username</button>
                 </form>
@@ -132,10 +128,10 @@
                 <h2>Change Image</h2>
                 <form method="post" enctype="multipart/form-data" action="{% url 'setting_change_image' %}">
                     {% csrf_token %}
-                    <div class="user-box">
-                        {{ change_image_form.as_p }}
-                        <button type="submit">Upload</button>
-                    <div class="user-box">
+                    <div class="upload-container">
+                        <input id="file-upload" type="file" name="image" accept="image/*" onchange="readURL(this);">
+                    </div>
+                    <button type="submit">Upload</button>
                 </form>
                 {% if messages %}
                     {% for message in messages %}
@@ -150,5 +146,9 @@
             </div>
         </div>
     {% endif %}
+    <button type="submit" onclick="window.location.href = '{% url 'home' %}'"class="button back-button"> <span></span>
+        <span></span>
+        <span></span>Back
+    </button>
 </body>
 </html>

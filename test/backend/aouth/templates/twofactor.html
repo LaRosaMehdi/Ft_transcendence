@@ -14,7 +14,7 @@
     <div class="login-box">
         <h2>2 Facture Authentication</h2>
         <p style="color: white;">Please enter the 6 digit code sent to you by mail</p>        
-        <form method="post" action="{% if context == 'password_change' %}{% url 'twofactor_setting' %}{% else %}{% url 'twofactor_oauth' %}{% endif %}">
+        <form method="post" action="{% url 'twofactor_oauth' %}">
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit">Submit</button>

@@ -15,6 +15,7 @@ class ChangeUsernameForm(UserChangeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields.pop('password')
+        self.fields['username'].widget.attrs['placeholder'] = 'Enter your username'
 
     def clean_new_username(self):
         new_username = self.cleaned_data['new_username']

@@ -57,6 +57,19 @@ def user_update_status(request=None, user=None, new_status=None):
     else:
         logger.error("Invalid arguments for user_update_status")
 
+@jwt_login_required
+def user_update_twofactor(request=None, user=None, enabled=None):
+    if request is not None and user is not None and enabled is not None:
+        logger.debug(f"Updating twofactor of {user.username} to {enabled}")
+        user.twofactor = enabled
+        user.save()
+    elif user is not None and enabled is not None:
+        logger.debug(f"Updating twofactor of {user.username} to {enabled}")
+        user.twofactor = enabled
+        user.save()
+    else:
+        logger.error("Invalid arguments for user_update_twofactor")
+
 # User game management
 # --------------------
 
