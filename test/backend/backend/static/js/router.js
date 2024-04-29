@@ -1,34 +1,224 @@
-function loadPersoPage() {
+//SPA Request GET, load page /user/...
+function loadPageUsers(pagePath, pushState = true) {
+    console.log("Load PageUsers", pagePath)
     $.ajax({
-        url: '/api/perso-content/', // Ensure this URL is correctly routed to your `view_perso` view
+        url: `/users/${pagePath}/`,
         success: function(response) {
-            console.log('Sucess:', response);
             $('#app-content').html(response.html);
-            history.pushState({path: '/perso'}, '', '/perso');
+            if (pushState) {
+                history.pushState({ path: pagePath, content: response.html }, '', `/users/${pagePath}`);
+            }
+            bindFormEvent(); 
         },
         error: function(error) {
-            console.log('Error loading the page:', error);
+            console.error('Error loading the page:', error);
         }
     });
 }
 
-
-function loadProfileDataJson() {
+//SPA Request GET, load Setting page
+function loadPageUsersSettings(pagePath, pushState = true) {
+    event.preventDefault();
     var profileData = $('#profileData');
 
-    // Vérifier si le profil est déjà affiché
     if (profileData.is(':visible')) {
-        // Si c'est le cas, le cacher
         profileData.hide();
     } else {
         $.ajax({
-            url: 'api/generate_profile_json/',
+            url: `/users/${pagePath}/`,
+            success: function(response) {
+                $('#profileData').html(response.html);
+                $('#profileData').show();
+                bindFormEvent(); 
+            },
+            error: function(error) {
+                console.error('Error loading the page:', error);
+            }
+        });
+    }
+}
+
+//SPA Request GET, load page /Aouth/...
+function loadPageAouth(pagePath, pushState = true) {
+    console.log("load page Aouth", pagePath)
+    $.ajax({
+        url: `/aouth/${pagePath}/`,
+        success: function(response) {
+            $('#app-content').html(response.html);
+            if (pushState) {
+                history.pushState({ path: pagePath, content: response.html }, '', `/${pagePath}`);
+            }
+            bindFormEvent(); 
+        },
+        error: function(error) {
+            console.error('Error loading the page:', error);
+        }
+    });
+}
+
+//SPA Request POST, Form register, login, 2FA
+function bindFormEvent() {
+    //REgister
+    $('#registerForm').off('submit').on('submit', function(e) {
+        e.preventDefault();
+        console.log("Form submit event caught");
+        const formData = new FormData(this);
+
+        $.ajax({
+            type: 'POST',
+            url: this.action,
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log("Response received:", response);
+                if (response.status === 'success') {
+                    loadPageAouth(response.redirectUrl.replace(/^\//, ''), true);
+                } else {
+                    console.log('Success with unexpected status:', response.message);
+                    loadPageAouth(response.redirectUrl.replace(/^\//, ''), true);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error submitting form:", error);
+                
+            }
+        });
+    });
+
+    //TwoFactor'twoFactorAouth"
+    $('#twoFactorAouth').off('submit').on('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        console.log("router/ twofactor call");
+
+        $.ajax({
+            type: 'POST',
+            url: this.action,
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log("Response received:", response);
+                if (response.status === 'success') {
+                    loadPageUsers(response.redirectUrl.replace(/^\//, ''), true);
+                } else {
+                    console.log('Success with unexpected status:', response.message);
+                    loadPageAouth(response.redirectUrl.replace(/^\//, ''), true);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error submitting form:", error);
+            }
+        });
+    });
+
+    //Auth login 
+    $('#loginForm').off('submit').on('submit', function(e) {
+        e.preventDefault();
+        console.log("login form caught");
+        const formData = new FormData(this);
+
+        $.ajax({
+            type: 'POST',
+            url: this.action,
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log("Response received:", response);
+                if (response.status === 'success') {
+                    loadPageAouth(response.redirectUrl.replace(/^\//, ''), true);
+                } else {
+                    console.log('Success with unexpected status:', response.message);
+                    loadPageAouth(response.redirectUrl.replace(/^\//, ''), true);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error submitting form:", error);
+            }
+        });
+    });
+
+    $('#searchFriends').off('submit').on('submit', function(e) {
+        e.preventDefault();
+        const queryData = $(this).serialize();
+        
+        $.ajax({
+            type: 'GET',
+            url: this.action,
+            data: queryData,
+            success: function(response) {
+                console.log("Response received:", response);
+                $('#app-content').html(response.html);
+                    history.pushState({ path: '', content: response.html }, '', ``);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error submitting form:", error);
+            }
+        });
+    });
+    
+    $('#AddFriends').off('submit').on('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        $.ajax({
+            type: 'POST',
+            url: this.action,
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log("Response received:", response);
+                loadPageUsers('friend', true);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error submitting form:", error);
+            }
+        });
+    });
+}
+
+
+$(document).ready(function() {
+    bindFormEvent();
+    history.replaceState({ path: window.location.pathname, content: $('#app-content').html() }, '', window.location.pathname);
+
+    $('body').on('click', '#goBackButton', function()
+    {
+        window.history.back();
+    });
+
+    window.addEventListener('popstate', function(event)
+    {
+        if (event.state) {
+            $('#app-content').html(event.state.content);
+        }
+    });
+});
+
+
+function setupGoBackButton() {
+    $('#goBackButton').on('click', function() {
+        window.history.back();
+    });
+}
+
+function loadProfileDataJson() {
+    event.preventDefault();
+    var profileData = $('#profileData');
+
+    if (profileData.is(':visible')) {
+        profileData.hide();
+    } else {
+        $.ajax({
+            url: `generate_profile_json/`,
             type: 'GET',
             success: function(data) {
                 var profileDiv = $('<div>').addClass('profile-section');
 
                 Object.keys(data).forEach(function(key) {
-                    // Créer un compartiment pour chaque propriété
                     var propertyDiv = $('<div>').addClass('profile-property');
                     propertyDiv.append('<span class="property-label">' + key + ': </span>');
                     propertyDiv.append('<span class="property-value">' + data[key] + '</span>');

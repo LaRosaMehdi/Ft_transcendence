@@ -23,6 +23,7 @@ from django.conf.urls.static import static
 from tournaments import views
 
 urlpatterns = [
+    path('', include('aouth.urls')),
     path('admin/', admin.site.urls),
 	path('users/', include('users.urls')),
     path('matchmaking/', include('matchmaking.urls')),

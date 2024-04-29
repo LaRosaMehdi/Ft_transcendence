@@ -5,54 +5,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accueil Page</title>
-    <link rel="stylesheet" href="{% static 'stylesheet.css' %}">
-    <link rel="stylesheet" href="{% static 'buttons.css' %}">
-    <link rel="stylesheet" href="{% static 'animations.css' %}">
-    <link rel="stylesheet" href="{% static 'logos.css' %}">
-    <link rel="stylesheet" href="{% static 'perso.css' %}">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {% include 'head_elements.html' %}
 </head>
 <body>
-    <div class="logo-box">
-        <h2>FT-tRaNsCeNdEnCe</h2>
+    <div class="hero">
+        <div class="cube"></div><div class="cube"></div><div class="cube"></div>
+        <div class="cube"></div><div class="cube"></div><div class="cube"></div>
     </div>
-    <img src="{{ current_user.image.url }}" class="user-image">
-    
     <div id="app-content">
-        <div class="perso-button" style="">
-            <button type="submit" onclick="loadPersoPage()">
-            <button type="submit" onclick="window.location.href = '{% url 'settings' %}'">
-                <span></span>
-                <span></span>
-                <span></span>
-                Espace Perso</button>
+        <div id="profileData">
         </div>
-        <div class="perso-button" style="top: 90%">
-            <button type="submit" onclick="window.location.href = '{% url 'aouth_logout' %}'"><span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                Log out</button>
-        </div>
-    
-        <!-- Initially empty; content is loaded here by your JavaScript -->
-    
-    <div class="accueil-box">
-        <h2 style="text-align: center;">Welcome, {{ current_user.username }}</h1>
-        <button type="submit" onclick="window.location.href = '{% url 'play' %}'" style=""> <span></span>
-        <span></span>
-        <span></span>Play</button>
-        <button type="submit" onclick="window.location.href = '{% url 'tournament' %}'"style=""> <span></span>
+        {% include 'header.html' %}
+        <div class="accueil-box">
+            <h2 style="text-align: center;">Welcome, {{ current_user.username }}</h1>
+            <button type="submit" onclick="window.location.href = '{% url 'play' %}'" style=""> <span></span>
             <span></span>
-            <span></span>Tournament</button>
-        <button type="submit" onclick="window.location.href = '{% url 'mode' %}'" style=""> <span></span>
+            <span></span>Play</button>
+            <button type="submit" onclick="window.location.href = '{% url 'tournament' %}'"style=""> <span></span>
                 <span></span>
-                <span></span>Mode</button>
-        <button type="submit" onclick="window.location.href = '{% url 'main_chat' %}'" style=""> <span></span>
-                <span></span>
-                <span></span>Friends</button>
+                <span></span>Tournament</button>
+            <button type="submit" onclick="window.location.href = '{% url 'mode' %}'" style=""> <span></span>
+                    <span></span>
+                    <span></span>Mode</button>
+            <button type="submit" onclick="loadPageUsers('friend')" style=""> <span></span>
+                    <span></span>
+                    <span></span>Friends</button>
+        </div>
     </div>
-    </div>
+    
     <script src="{% static 'js/router.js' %}"></script>
 </body>
 </html>

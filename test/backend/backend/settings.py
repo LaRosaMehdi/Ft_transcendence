@@ -101,6 +101,11 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
+            os.path.join(BASE_DIR, 'aouth', 'templates', 'spa'),
+            os.path.join(BASE_DIR, 'tournaments', 'templates', 'spa'),
+            os.path.join(BASE_DIR, 'users', 'templates', 'spa'),
+            os.path.join(BASE_DIR, 'marchmaking', 'templates', 'spa'),
+            os.path.join(BASE_DIR, 'games', 'templates', 'spa'),
             os.path.join(BASE_DIR, 'tournaments', 'templates'),  # Add the directory path here
             os.path.join(BASE_DIR, 'aouth', 'templates'),
             os.path.join(BASE_DIR, 'users', 'templates'),

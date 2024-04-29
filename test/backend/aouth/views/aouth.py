@@ -14,6 +14,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.backends import ModelBackend
+from django.template.loader import render_to_string
 
 from aouth.views.forms import *
 from aouth.views.jwt import *
@@ -57,7 +58,11 @@ def aouth_login_form(request):
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{field}: {error}", extra_tags='aouth_login_tag')
-    return redirect('login')
+    return JsonResponse({
+        'status': 'error',
+        'message': 'error.',
+        'redirectUrl': 'login',
+    })
 
 
 # REGISTRATION
@@ -91,7 +96,11 @@ def aouth_register_form(request):
             for field, field_errors in form.errors.items():
                 for error in field_errors:
                     messages.error(request, f"{field}: {error}", extra_tags='aouth_register_tag')
-    return redirect('register')
+    return JsonResponse({
+        'status': 'error',
+        'message': 'error.',
+        'redirectUrl': 'register',
+    })
 
 # 42 OAUTH REGISTRATION
 # ---------------------
@@ -222,5 +231,9 @@ def aouth_logout(request, redirect_url='login'):
         user_update_status(request, request.user, 'offline')
         jwt_destroy(request, response)
         logout(request)
-    return response
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        html = render_to_string('spa_login.html', request=request)
+        return JsonResponse({'html': html})
+    else: 
+        return response
     

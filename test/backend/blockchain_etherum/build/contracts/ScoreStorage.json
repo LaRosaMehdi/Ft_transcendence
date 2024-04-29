@@ -28,7 +28,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -93,7 +94,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -122,7 +124,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -135,7 +138,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     }
   ],
   "metadata": "{\"compiler\":{\"version\":\"0.7.3+commit.9bfce1f6\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_tournamentId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"_name\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"_eloScore\",\"type\":\"uint256\"}],\"name\":\"addPlayerToTournament\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_id\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_startTime\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"_status\",\"type\":\"string\"}],\"name\":\"addTournament\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_tournamentId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_playerIndex\",\"type\":\"uint256\"}],\"name\":\"getTournamentPlayer\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"eloScore\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_tournamentId\",\"type\":\"uint256\"}],\"name\":\"getTournamentPlayerCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getTournamentsCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"tournaments\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"startTime\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"status\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/ScoreStorage.sol\":\"ScoreStorage\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/ScoreStorage.sol\":{\"keccak256\":\"0x54eed777aed26cdc4eaf7c1adb22df863b3bb2946f23ab0130458332ea7e6694\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://0e43689a84be1bbb31ff9d49e3d38b3245e52629f1f29339909f7e825a73c03f\",\"dweb:/ipfs/QmdRJ7bkrpTCU43Krv54tovepjccivUrn5fmCG5NbBE2eg\"]}},\"version\":1}",
@@ -4395,10 +4399,47 @@
       "links": {},
       "address": "0x42c864Cc6CDB823241c89ae53f2cA0d1e9dB9F68",
       "transactionHash": "0x4ae0266a9ecae202dc3da93fd92c6ba036dcb046d78df0969507e0a9cb0ee2bf"
+    },
+    "1714395322343": {
+      "events": {},
+      "links": {},
+      "address": "0xd45eC39053424AC02d4A540c82312b554C8B4375",
+      "transactionHash": "0xa6ea59828ff615221bd4110ec92b4268ccbcc33821de8a1b0f68579aaa6f61c7"
+    },
+    "1714399029210": {
+      "events": {},
+      "links": {},
+      "address": "0xfAb72F6ebA5780bdDA1ED4b0c90A861E9b35a61f",
+      "transactionHash": "0x37535cfc2e8f21d73a94fb8183cd0cf0f7d018c75f1d4138a0fa2380013ca5f8"
+    },
+    "1714400566319": {
+      "events": {},
+      "links": {},
+      "address": "0xE52988d21019CB3d79eC2110036e995f1ABa3b32",
+      "transactionHash": "0x755c24b23025c748e73e7d99577f3d99f5da0a24120d00b74c7351809b5d9a3d"
+    },
+    "1714402269960": {
+      "events": {},
+      "links": {},
+      "address": "0x8A7C8975Bca135BFb75049fFC4CB4655D51AA458",
+      "transactionHash": "0x08945ac5075a2108aa996fe516bfd614ceacf1f475bffd2de63c95ddb4579803"
+    },
+    "1714404399836": {
+      "events": {},
+      "links": {},
+      "address": "0xa1315641E34f2e25D81A5116d332aDDE63cC9CE3",
+      "transactionHash": "0x72d609b97837b468e051da93a8859a36d3f262e8b9746f0a8fb4ffdd8bfd3d0f"
+    },
+    "1714407163471": {
+      "events": {},
+      "links": {},
+      "address": "0xF7e2b763De49625239629148ff5f993754482B74",
+      "transactionHash": "0x3a42fa6d6a44ad82ee9026de5992bc7c4f3c773f3b532fd47ab53f9a007e87bc"
     }
   },
   "schemaVersion": "3.4.16",
-  "updatedAt": "2024-04-29T11:40:25.614Z",
+  "updatedAt": "2024-04-29T16:27:33.256Z",
+  "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
     "methods": {},

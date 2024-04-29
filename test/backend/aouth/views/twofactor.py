@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth import login
 from datetime import datetime, timedelta
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.utils.deprecation import MiddlewareMixin
 from django.contrib.auth.backends import ModelBackend
@@ -44,7 +44,14 @@ def twofactor_oauth_send(request):
     user.save()
     smtp_aouth_validation(user, validation_code)
     request.session['user_id'] = user.id
-    return redirect('twofactor')
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Two-factor authentication code sent. Please check your email.',
+            'redirectUrl': 'twofactor',
+        })
+    else:
+        return redirect('twofactor')
 
 def twofactor_oauth(request):
     if request.method == 'POST':
@@ -60,7 +67,11 @@ def twofactor_oauth(request):
                     user.backend = f'{ModelBackend.__module__}.{ModelBackend.__qualname__}'     
                     login(request, user)
                     user_update_status(request, user, 'online')
-                    return redirect('home')
+                    return JsonResponse({
+                    'status': 'success',
+                    'message': 'Login Sucess, welcome',
+                    'redirectUrl': 'home',
+                })
                 else:
                     user_update_status(user, 'offline')
                     messages.error(request, "Invalid validation code", extra_tags='twofactor_oauth_tag')
@@ -70,7 +81,11 @@ def twofactor_oauth(request):
                     messages.error(request, f"{field}: {error}", extra_tags='twofactor_oauth_tag')
     else:
         messages.error(request, "Invalid request method", extra_tags='twofactor_oauth_tag')
-    return redirect('twofactor')
+    return JsonResponse({
+        'status': 'error',
+        'message': 'error',
+        'redirectUrl': 'home',
+    })
 
 # TWO FACTOR SETTINGS (password change)
 # -------------------------------------

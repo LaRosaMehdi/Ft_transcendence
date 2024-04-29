@@ -35,7 +35,7 @@ class User(AbstractBaseUser):
     username = models.CharField(max_length=100, unique=True)
     email = models.EmailField(unique=True)
     elo = models.IntegerField(default=1000)
-    # password = models.CharField(max_length=100, null=True)
+    password = models.CharField(max_length=100, null=True)
     image = models.ImageField(upload_to='', null=True)
 
     is_active = models.BooleanField(default=True)
@@ -47,9 +47,9 @@ class User(AbstractBaseUser):
     wins = models.IntegerField(default=0)
     losses = models.IntegerField(default=0)
     alias = models.CharField(max_length=100, null=True, blank=True)
-    
     current_game = models.ForeignKey('games.Game', on_delete=models.SET_NULL, null=True, blank=True, related_name='current_game_user')
     match_history = models.ManyToManyField('games.Game', related_name="match_history_user", blank=True) 
+    friends = models.ManyToManyField('self', symmetrical=False, related_name='added_by')
 
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'

@@ -1,5 +1,5 @@
 import logging
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib.auth.forms import PasswordChangeForm
 from django.http import HttpResponseRedirect, HttpResponseBadRequest, JsonResponse
@@ -16,17 +16,21 @@ logger = logging.getLogger(__name__)
 def view_accueil(request):
     logger.debug(f"ACCEUIL JWT tokens: {request.session.get('access_token')} {request.session.get('refresh_token')}")
     logger.debug(f"ACCEUIL User ID: {request.user}")
-    return render(request, 'accueil.html', {'current_user': request.user})
+    if request.is_ajax():
+        html = render_to_string('spa_accueil.html', {'current_user': request.user, 'context': 'ajax'}, request=request)
+        return JsonResponse({'html': html})
+    else :
+        return render(request, 'accueil.html', {'current_user': request.user})
 
 @jwt_login_required
 def view_perso(request):
     logger.debug(f"PERSO JWT tokens: {request.session.get('access_token')} {request.session.get('refresh_token')}")
     logger.debug(f"PERSO User ID: {request.user}")
-    if request.is_ajax():
-        html = render_to_string('perso.html', {'current_user': request.user}, request=request)
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        html = render_to_string('spa_perso.html', {'current_user': request.user, 'context': 'ajax'}, request=request)
         return JsonResponse({'html': html})
     else:
-        return HttpResponseBadRequest("This endpoint require an AJAX request.")
+        return render(request, 'perso.html', {'current_user': request.user, 'context': ''})
 
 
 # Settings
@@ -45,16 +49,45 @@ def view_perso(request):
 #         'change_image_form': ChangeImageForm(instance=request.user),
 #     })
 
-
 @jwt_login_required
 def view_setting(request):
     if request.user.password is not None:
-        return render(request, 'settings.html', {
-            'change_username_form': ChangeUsernameForm(instance=request.user),
-            'change_image_form': ChangeImageForm(instance=request.user),
-            'change_password_form': ChangePasswordForm(request.user)
-        })
-    return render(request, 'settings.html', {
-        'change_username_form': ChangeUsernameForm(instance=request.user),
-        'change_image_form': ChangeImageForm(instance=request.user),
-    })
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            html = render_to_string('spa_settings.html', {'current_user': request.user,'change_username_form': ChangeUsernameForm(instance=request.user),'change_image_form': ChangeImageForm(instance=request.user),'change_password_form': ChangePasswordForm(), 'context': 'ajax'},request=request)
+            return JsonResponse({'html': html})
+        else:
+            return render(request, 'settings.html', {
+                'current_user': request.user,
+                'change_username_form': ChangeUsernameForm(instance=request.user),
+                'change_image_form': ChangeImageForm(instance=request.user),
+                'change_password_form': ChangePasswordForm()
+            })
+    else:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            html = render_to_string('spa_settings.html', {'current_user': request.user, 'change_username_form': ChangeUsernameForm(instance=request.user),'change_image_form': ChangeImageForm(instance=request.user),'context': ''}, request=request)
+            return JsonResponse({'html': html})
+        else:
+            return render(request, 'settings.html', {
+                'current_user': request.user,
+                'change_username_form': ChangeUsernameForm(instance=request.user),
+                'change_image_form': ChangeImageForm(instance=request.user),
+            })
+
+
+@jwt_login_required
+def view_profile(request):
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        html = render_to_string('spa_viewProfile.html', {'current_user': request.user, 'context': 'ajax'}, request=request)
+        return JsonResponse({'html': html})
+    else:
+        return render(request, 'viewProfile.html', {'current_user': request.user, 'context': ''})
+    
+@jwt_login_required
+def view_profile_friend(request, friend_user):
+    # logger.info("check debug::", friend_user)
+    user_profile = get_object_or_404(User, username=friend_user)
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        html = render_to_string('spa_viewProfile.html', {'current_user': user_profile, 'context': 'ajax'}, request=request)
+        return JsonResponse({'html': html})
+    else:
+        return render(request, 'viewProfile.html', {'current_user': user_profile, 'context': ''})

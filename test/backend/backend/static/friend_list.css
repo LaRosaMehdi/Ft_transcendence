@@ -1,112 +1,98 @@
-body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(#141e30, #243b55);
-    color: #fff;
+/* Friends List Page Styling */
+.friends-list-page {
+    display: grid;
+    grid-template-columns: 1fr;  /* Simplified to a single column layout */
+    gap: 20px;
     padding: 20px;
+    color: #fff;  /* White text color for high contrast */
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    box-sizing: border-box;
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+    /* background: linear-gradient(#141e30, #243b55);  Background gradient from the profile container */
 }
 
-
-.search-container {
+.friends-list-page h1 {
+    text-align: center;
     margin-bottom: 20px;
 }
 
-.search-container input[type="text"],
-.search-container button {
+/* Search Container Styling */
+.friends-list-page .search-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.friends-list-page .search-container input[type="text"],
+.friends-list-page .search-container button {
     padding: 10px;
     margin-right: 10px;
-    border: none;
+    border: 1px solid #fff;
     border-radius: 5px;
-    cursor: pointer;
+    background-color: transparent;  /* Matching the profile info background */
+    color: #fff;  /* Consistent color for visibility */
 }
 
-.search-container button {
-    background-color: #03e9f4;
-    color: #000;
+.friends-list-page .search-container button {
+    background-color: linear-gradient(#141e30, #243b55);  /* Cyan for buttons, consistent with profile page */
 }
 
-table {
+.friends-list-page .search-container button:hover {
+    background-color: linear-gradient(#141e30, #243b55);  /* Darker shade for hover, maintaining the interactive feel */
+}
+
+/* Table Styling */
+.friends-list-page table {
     width: 100%;
     border-collapse: collapse;
-    background-color: rgba(255, 255, 255, 0.1); /* Light background for the table */
+    background: linear-gradient(#141e30, #243b55);  /* Semi-transparent background matching profile sections */
 }
 
-th, td {
+.friends-list-page th, .friends-list-page td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;  /* White line separators */
     text-align: left;
-    padding: 8px;
-    border-bottom: 1px solid #ddd;
 }
 
-th {
-    background-color: rgba(0, 0, 0, 0.5);
+.friends-list-page th {
+    background-color: linear-gradient(#141e30, #243b55);  /* Darker headers for visual structure */
 }
 
-img {
-    display: block;
-    max-width: 100%;
-    height: auto;
-}
-
-button {
-    padding: 5px 10px;
-    background-color: #03e9f4;
-    border: none;
-    border-radius: 5px;
-    color: #000;
-}
-
-.circle_status{
+/* Status Indicators with Animation */
+.friends-list-page .circle_status {
+    display: inline-block;
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    display: inline-block;
-    position: relative;
-    margin-left: 20px;
+    margin-left: 5px;
+    background-color: #03e9f4;  /* Default status color */
 }
 
-.circle_status::before {
-    content: "";
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    width: calc(100% + 4px);
-    height: calc(100% + 4px);
-    border: 1px solid white;
-    border-radius: 50%;
-    box-sizing: border-box;
-}
-
-@keyframes pulse {
-    0% {
-        box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.7);
-    }
-    70% {
-        box-shadow: 0 0 0 10px rgba(0, 255, 0, 0);
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba(0, 255, 0, 0);
-    }
-}
-
-.online {
+.friends-list-page .circle_status.online {
     background-color: green;
-    animation: pulse 2s infinite;
 }
 
-@keyframes blink {
-    0%, 100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.5;
-    }
+.friends-list-page .circle_status.ingame {
+    background-color: yellow;
 }
 
-.offline {
+.friends-list-page .circle_status.offline {
     background-color: red;
-    animation: blink 3s infinite;
 }
 
-.ingame{
-    background-color: violet;
+/* Back Button Adjustments */
+.friends-list-page .back-button {
+    padding: 10px 20px;
+    background-color: #243b55;  /* Darker background for the button */
+    color: #fff;
+    border-radius: 5px;
+    text-align: center;
+    margin-top: 20px;
+    border: none;
 }
 
+.friends-list-page .back-button:hover {
+    background-color: #03e9f4;
+    color: #000;
+}

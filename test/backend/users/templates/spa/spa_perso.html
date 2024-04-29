@@ -1,0 +1,22 @@
+<!-- No <html>, <head>, or <body> tags here; just the content specific to this section -->
+    <div class="logo-box">
+        <h2>Ft_Transcendence</h2>
+    </div>
+    <div>
+        <img src="{{ current_user.image.url }}" class="user-image">
+        <div class="logout-button">
+            <!-- Adjusted for SPA navigation -->
+            <button type="submit" onclick="logout()">Log out</button>
+        </div>
+    </div>
+    
+    <ul class="ul">
+        <li><a href="#" onclick="loadProfileDataJson()">View Profile</a></li>
+        <li><a href="#">Historique</a></li>
+        <li><a href="#">Stats</a></li>
+        <li><a href="#" onclick="loadSettingsPage()">Setting</a></li> <!-- Example adjustment for SPA -->
+    </ul>
+    <button type="submit" onclick="javascript:history.go(-1)"; class="button back-button">Back</button> <!-- SPA-friendly back button -->
+    <div id="profileData" class="profile-section">
+        <!-- Profile data gets populated here -->
+    </div>

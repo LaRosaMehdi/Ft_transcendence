@@ -1,0 +1,33 @@
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 60px;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 0;
+}
+
+.sidebar button {
+    background: transparent;
+    border: none;
+    color: #03e9f4;
+    padding: 10px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.sidebar .logout-button {
+    margin-top: auto;
+    margin-bottom: 20px;
+}
+
+.sidebar button:hover {
+    color: #ffffff;
+}
+
+

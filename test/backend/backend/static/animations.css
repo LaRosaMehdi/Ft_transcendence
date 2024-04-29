@@ -103,3 +103,55 @@ text-shadow:
     color: white; /* 100% du temps écoulé, tout redevient blanc */
 }
 }
+
+/*Animation background*/
+@import url('https://fonts.googleapis.com/css?family=Montserrat:700');
+
+.hero {
+    position: fixed; /* Makes sure the hero covers the full viewport and stays in the background */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(#141e30, #243b55); /* Uses your gradient */
+    overflow: hidden;
+    z-index: -1; /* Keeps it behind all other content */
+}
+
+.hero__title {
+    color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 50px;
+}
+
+.cube {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border: solid 0.5px rgba(3, 233, 244, 0.3);
+    transform-origin: top left;
+    transform: scale(0) rotate(0deg) translate(-50%, -50%);
+    animation: cube 25s ease-in forwards infinite;
+}
+
+/* Define specific cubes */
+.cube:nth-child(2n) { border-color: rgba(3, 233, 244, 0.5); }
+.cube:nth-child(2) { animation-delay: 2s; left: 25vw; top: 40vh; }
+.cube:nth-child(3) { animation-delay: 4s; left: 75vw; top: 50vh; }
+.cube:nth-child(4) { animation-delay: 6s; left: 90vw; top: 10vh; }
+.cube:nth-child(5) { animation-delay: 8s; left: 10vw; top: 85vh; }
+.cube:nth-child(6) { animation-delay: 10s; left: 50vw; top: 10vh; }
+
+@keyframes cube {
+    from {
+        transform: scale(0) rotate(0deg) translate(-50%, -50%);
+        opacity: 0.7; /* Starting from less opaque */
+    }
+    to {
+        transform: scale(20) rotate(960deg) translate(-50%, -50%);
+        opacity: 0; /* Ending at fully transparent */
+    }
+}

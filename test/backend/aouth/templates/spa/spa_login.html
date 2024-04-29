@@ -1,0 +1,51 @@
+{% load static %}
+<div class="container">
+    <button type="submit" onclick="loadPageAouth('register')"><span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        Not Yet Registered ? Register</button>
+</div>
+{% if messages %}
+    {% for message in messages %}
+        {% if message.tags == 'aouth_required_middleware_tag warning' %}
+            <p style="color: orange;">WARNING: {{ message }}</p>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+<div class="login-box">
+    <h2>Login</h2>      
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'aouth_login_tag error' %}
+                <p style="color: red;">ERROR: {{ message }}</p>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    <form id="loginForm" action="{% url 'aouth_login_form' %}" method="post">
+        {% csrf_token %}
+        <div class="user-box">
+            <input type="text" id="user_id" name="user_id" placeholder="Enter your username">
+        </div>
+        <div class="user-box">
+            <input type="password" id="id_password1" name="password" placeholder="Enter your password">
+        </div>  
+        <button type="submit">Submit</button>
+    </form>
+</div>
+<h2 style="text-align: center; color: white;"> or </h2>
+<div class="login-box">
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'aouth_callback_login error' %}
+                <p style="color: red;">ERROR: {{ message }}</p>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    <button type="submit" onclick="window.location.href = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-cecd1a52c9d51af27bc2daeefe882eda5dd05f725f7c6207b551e44720c37969&redirect_uri=https%3A%2F%2Flocalhost%3A8080%2Faouth%2Faouth_callback_login%2F&response_type=code'"><span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        Login with 42
+    </button>
+</div>

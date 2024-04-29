@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'buttons.css' %}">
     <link rel="stylesheet" href="{% static 'animations.css' %}">
     <link rel="stylesheet" href="{% static 'logos.css' %}">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <style>
         .container {
             position: absolute;
@@ -18,8 +19,13 @@
     </style>
 </head>
 <body>
+    <div class="hero">
+        <div class="cube"></div><div class="cube"></div><div class="cube"></div>
+        <div class="cube"></div><div class="cube"></div><div class="cube"></div>
+    </div>
+    <div id="app-content">
     <div class="container">
-        <button type="submit" onclick="window.location.href = '{% url 'register' %}'"><span></span>
+        <button type="submit" onclick="loadPageAouth('register')"><span></span>
             <span></span>
             <span></span>
             <span></span>
@@ -41,7 +47,7 @@
                 {% endif %}
             {% endfor %}
         {% endif %}
-        <form action="{% url 'aouth_login_form' %}" method="post">
+        <form id="loginForm" action="{% url 'aouth_login_form' %}" method="post">
             {% csrf_token %}
             <div class="user-box">
                 <input type="text" id="user_id" name="user_id" placeholder="Enter your username">
@@ -68,5 +74,7 @@
             Login with 42
         </button>
     </div>
+    </div>
+    <script src="{% static 'js/router.js' %}"></script>
 </body>
 </html>

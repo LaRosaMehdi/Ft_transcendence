@@ -1,0 +1,13 @@
+{% load static %}
+{% include 'head_elements.html' %}
+<header>
+    <div class="perso-header-button" style="top: 5%; gap: 100px;">
+        <button type=submit onclick="loadPageUsers('viewProfile')">View Profile</button>
+        <button type=submit href="#">Score Tournament</button>
+        <button type=submit onclick="loadPageUsers('settings')">Setting</button>
+    </div>
+    <div class="logo-box" style="flex-grow: 1; text-align: center;" onclick="loadPageUsers('home')">
+        <h2>FT-tRaNsCeNdEnCe</h2>
+    </div>
+
+</header>

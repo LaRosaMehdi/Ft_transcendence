@@ -1,0 +1,19 @@
+{% load static %}
+<div id="profileData">
+</div>
+{% include 'header.html' %}
+<div class="accueil-box">
+    <h2 style="text-align: center;">Welcome, {{ current_user.username }}</h1>
+    <button type="submit" onclick="window.location.href = '{% url 'play' %}'" style=""> <span></span>
+    <span></span>
+    <span></span>Play</button>
+    <button type="submit" onclick="window.location.href = '{% url 'tournament' %}'"style=""> <span></span>
+        <span></span>
+        <span></span>Tournament</button>
+    <button type="submit" onclick="window.location.href = '{% url 'mode' %}'" style=""> <span></span>
+            <span></span>
+            <span></span>Mode</button>
+    <button type="submit" onclick="loadPageUsers('friend')" style=""> <span></span>
+            <span></span>
+            <span></span>Friends</button>
+</div>

@@ -1,0 +1,51 @@
+
+{% load static %}
+<div class="container">
+    <button type="submit" onclick="loadPageAouth('login')"><span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        Already Registered ? Login</button>
+</div>
+<div class="login-box">
+    <h2>Register</h2>      
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'aouth_register_tag error' %}
+                <p style="color: red;">ERROR: {{ message }}</p>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    <form id="registerForm" action="{% url 'aouth_register_form' %}" method="post">
+        {% csrf_token %}
+        <div class="user-box">
+            <input type="text" id="id_username" name="username" placeholder="Enter your username">
+        </div>
+        <div class="user-box">
+            <input type="email" id="id_email" name="email" placeholder="Enter your email">
+        </div>
+        <div class="user-box">
+            <input type="password" id="id_password1" name="password1" placeholder="Enter your password">
+        </div>
+        <div class="user-box">
+            <input type="password" id="password2" name="password2" placeholder="Enter your password again">
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+</div>
+<h2 style="text-align: center; color: white;"> or </h2>
+<div class="login-box">
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'aouth_callback_register error' %}
+                <p style="color: red;">ERROR: {{ message }}</p>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    <button type="submit" onclick="window.location.href = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-466be83f43b8d3d0ea71b9efc1a9d830027b84b1f2194622888816049e4afc65&redirect_uri=https%3A%2F%2Flocalhost%3A8080%2Faouth%2Faouth_callback_register%2F&response_type=code'"><span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        Register with 42
+    </button>
+</div>

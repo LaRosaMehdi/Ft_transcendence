@@ -1,0 +1,120 @@
+.profile-page-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+    padding: 20px;
+    color: #fff; /* White text color as per graphic chart */
+    background: transparent, (#141e30, #243b55); /* Background gradient */
+}
+
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    border-radius: 10px;
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+}
+
+.profile-image-container img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 3px solid #fff; /* White border around profile image */
+    object-fit: cover;
+}
+
+.profile-info {
+    width: 100%; /* Ensure the container uses the full width available */
+}
+
+.profile-info h1, .profile-info div, .profile-info p {
+    margin: 10px 0;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    font-size: 16px;
+}
+
+.info-item i {
+    margin-right: 10px;
+    color: #03e9f4; /* Cyan color for icons */
+}
+
+.elo-score span, .friend-count span {
+    color: #03e9f4; /* Cyan color for highlights */
+}
+
+.match-history-container {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+}
+
+.match {
+    padding: 10px;
+    border-bottom: 1px solid #fff; /* White lines between matches */
+}
+
+.circle_status {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.circle_status.online {
+    background-color: green;
+}
+
+.circle_status.ingame {
+    background-color: yellow;
+}
+
+.circle_status.offline {
+    background-color: red;
+}
+
+.status-container {
+    display: flex;
+    align-items: center;
+}
+
+.status-container i {
+    margin-left: 5px;
+}
+
+.button.back-button {
+    background-color: #243b55;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    margin-top: 20px;
+}
+
+.button.back-button:hover {
+    background-color: #03e9f4;
+    color: #000;
+}
+
+.username {
+    font-size: 28px; 
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.1); 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    display: inline-block; 
+    transition: transform 0.3s ease-in-out; 
+}
+
+
+.username:hover {
+    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.2);
+}

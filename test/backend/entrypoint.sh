@@ -13,6 +13,7 @@ pip install web3
 
 python -m pip install Pillow
 
+python manage.py flush 
 python /usr/src/manage.py makemigrations
 python /usr/src/manage.py migrate
 
