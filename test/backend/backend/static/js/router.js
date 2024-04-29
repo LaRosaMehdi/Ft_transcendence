@@ -190,9 +190,11 @@ $(document).ready(function() {
         window.history.back();
     });
 
-    window.addEventListener('popstate', function(event)
-    {
-        if (event.state) {
+    window.addEventListener('popstate', function(event) {
+        if (window.location.pathname === '/aouth/twofactor/') {
+            loadPageAouth('aouth_logout'); 
+        }
+        else if (event.state) {
             $('#app-content').html(event.state.content);
         }
     });
