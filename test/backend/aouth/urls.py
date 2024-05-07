@@ -30,6 +30,4 @@ urlpatterns = [
     # Two factor authentication
     path('twofactor/', view_twofactor, name='twofactor'),
     path('twofactor_oauth/', twofactor_oauth, name='twofactor_oauth'),
-    path('twofactor_setting/', view_twofactor_setting, name='twofactor_setting'),
-    path('twofactor_setting_func/', twofactor_setting, name='twofactor_setting_func'),
 ]

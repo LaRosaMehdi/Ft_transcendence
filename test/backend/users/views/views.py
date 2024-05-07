@@ -36,43 +36,31 @@ def view_perso(request):
 # Settings
 # --------
 
-# @jwt_login_required
-# def view_setting(request):
-#     if request.user.password is not None:
-#         return render(request, 'settings.html', {
-#             'change_username_form': ChangeUsernameForm(instance=request.user),
-#             'change_image_form': ChangeImageForm(instance=request.user),
-#             'change_password_form': PasswordChangeForm(request.user)
-#         })
-#     return render(request, 'settings.html', {
-#         'change_username_form': ChangeUsernameForm(instance=request.user),
-#         'change_image_form': ChangeImageForm(instance=request.user),
-#     })
-
 @jwt_login_required
 def view_setting(request):
     if request.user.password is not None:
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            html = render_to_string('spa_settings.html', {'current_user': request.user,'change_username_form': ChangeUsernameForm(instance=request.user),'change_image_form': ChangeImageForm(instance=request.user),'change_password_form': ChangePasswordForm(), 'context': 'ajax'},request=request)
+            html = render_to_string('spa_settings.html', {'current_user': request.user,'change_username_form': ChangeUsernameForm(instance=request.user),'change_image_form': ChangeImageForm(instance=request.user), 'change_2fa_form': Change2faForm(), 'change_password_form': ChangePasswordForm(), 'context': 'ajax'},request=request)
             return JsonResponse({'html': html})
         else:
             return render(request, 'settings.html', {
                 'current_user': request.user,
                 'change_username_form': ChangeUsernameForm(instance=request.user),
                 'change_image_form': ChangeImageForm(instance=request.user),
+                'change_2fa_form': Change2faForm(),
                 'change_password_form': ChangePasswordForm()
             })
     else:
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            html = render_to_string('spa_settings.html', {'current_user': request.user, 'change_username_form': ChangeUsernameForm(instance=request.user),'change_image_form': ChangeImageForm(instance=request.user),'context': ''}, request=request)
+            html = render_to_string('spa_settings.html', {'current_user': request.user, 'change_username_form': ChangeUsernameForm(instance=request.user),'change_image_form': ChangeImageForm(instance=request.user), 'change_2fa_form': Change2faForm(),'context': ''}, request=request)
             return JsonResponse({'html': html})
         else:
             return render(request, 'settings.html', {
                 'current_user': request.user,
                 'change_username_form': ChangeUsernameForm(instance=request.user),
                 'change_image_form': ChangeImageForm(instance=request.user),
+                'change_2fa_form': Change2faForm()
             })
-
 
 @jwt_login_required
 def view_profile(request):
@@ -84,7 +72,6 @@ def view_profile(request):
     
 @jwt_login_required
 def view_profile_friend(request, friend_user):
-    # logger.info("check debug::", friend_user)
     user_profile = get_object_or_404(User, username=friend_user)
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         html = render_to_string('spa_viewProfile.html', {'current_user': user_profile, 'context': 'ajax'}, request=request)

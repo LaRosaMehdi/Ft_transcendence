@@ -31,8 +31,3 @@ def view_twofactor(request):
         return JsonResponse({'html': html})
     else:
         return render(request, 'twofactor.html', {'form': TwoFactorForm(), 'context': ''})
-
-@jwt_login_required
-def view_twofactor_setting(request):
-    context = request.GET.get('context', '')
-    return render(request, 'twofactor_setting.html', {'form': TwoFactorForm(), 'context': context})

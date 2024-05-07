@@ -20,7 +20,7 @@ from users.models import User
 from aouth.views.jwt import jwt_login_required, jwt_login_required, jwt_decode
 from users.views.users import user_update_status
 from aouth.views.forms import TwoFactorForm
-from smtp.views import smtp_aouth_validation, smtp_setting_validation
+from smtp.views import smtp_aouth_validation
 from aouth.views.jwt import jwt_login_required
 
 logger = logging.getLogger(__name__)
@@ -86,53 +86,3 @@ def twofactor_oauth(request):
         'message': 'error',
         'redirectUrl': 'home',
     })
-
-# TWO FACTOR SETTINGS (password change)
-# -------------------------------------
-
-@jwt_login_required
-def twofactor_setting_send(request, new_password):
-    user = request.user
-    user.backend = f'{ModelBackend.__module__}.{ModelBackend.__qualname__}'
-    validation_code, hashed_validation_code = generate_validation_code()
-    user.validation_code = hashed_validation_code
-    user.save()
-    smtp_setting_validation(request, validation_code)    
-    request.session['user_id'] = user.id
-    request.session['new_password'] = new_password  # Store hashed password in session
-    # Redirect to the two-factor setting page where the user will enter the validation code
-    return redirect('twofactor_setting')
-
-
-@jwt_login_required
-def twofactor_setting(request):
-    logger.debug(f"twofactor_setting: 1")
-    if request.method == 'POST':
-        form = TwoFactorForm(request.POST)
-        if form.is_valid():
-            validation_code = form.cleaned_data['validation_code']
-            user_id = request.session.get('user_id')
-            if user_id:
-                user = User.objects.get(id=user_id)
-                hashed_validation_code_entered = hashlib.sha256(validation_code.encode()).hexdigest()
-                if user.validation_code == hashed_validation_code_entered:
-                    user.validation_code = None
-                    hashed_new_password = request.session.pop('new_password', None)
-                    if hashed_new_password:
-                        user.password = hashed_new_password
-                        user.save()
-                        update_session_auth_hash(request, user)
-                        messages.success(request, 'Your password was successfully updated!', extra_tags='change_password_tag')
-                        return redirect('settings')
-                    else:
-                        messages.error(request, "No new password found in session", extra_tags='twofactor_oauth_tag')
-                else:
-                    user_update_status(request, user, 'offline')
-                    messages.error(request, "Invalid validation code", extra_tags='twofactor_oauth_tag')
-        else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"{field}: {error}", extra_tags='twofactor_oauth_tag')
-    else:
-        messages.error(request, "Invalid request method", extra_tags='twofactor_oauth_tag')
-    return redirect('twofactor')

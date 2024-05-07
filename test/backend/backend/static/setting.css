@@ -1,0 +1,105 @@
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 80px; /* Adjust width */
+    height: 40px; /* Adjust height */
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 40px; /* Adjust border-radius to match height */
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 30px; /* Adjust height of slider button */
+    width: 30px; /* Adjust width of slider button */
+    top: 5px; /* Center vertically */
+    left: 5px; /* Center horizontally */
+    /* transform: translateY(-50%); */
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #00e9f4;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #00e9f4;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(40px); /* Adjust movement distance */
+    -ms-transform: translateX(40px); /* Adjust movement distance */
+    transform: translateX(40px); /* Adjust movement distance */
+}
+
+/* Style for the toggle text */
+.toggle-text {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+}
+
+.left-text {
+    left: 10px;
+    {% if not request.user.twofactor_enabled %}visibility: hidden;{% endif %}
+}
+
+.right-text {
+    right: 10px;
+    {% if request.user.twofactor_enabled %}visibility: hidden;{% endif %}
+}
+
+.custom-file-upload {
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+    background-color: #00e9f4;
+    color: white;
+    border-radius: 5px;
+    border: 1px solid #00e9f4;
+    transition: background-color 0.3s ease;
+}
+
+.custom-file-upload:hover {
+    background-color: #00c7d4;
+}
+
+#file-upload {
+    display: none; /* Hide the default file input */
+}
+
+.custom-file-upload {
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+    background-color: #00e9f4;
+    color: white;
+    border-radius: 5px;
+    border: 1px solid #00e9f4;
+    transition: background-color 0.3s ease;
+}
+
+.custom-file-upload:hover {
+    background-color: #00c7d4;
+}

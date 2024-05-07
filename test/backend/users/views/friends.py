@@ -14,7 +14,6 @@ from django.http import HttpResponseForbidden
 from django.template.loader import render_to_string
 
 from users.views.forms import *
-from aouth.views.twofactor import twofactor_setting_send
 from aouth.views.jwt import jwt_login_required
 from django.urls import reverse
 

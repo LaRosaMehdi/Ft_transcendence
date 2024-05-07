@@ -32,3 +32,6 @@ class ChangePasswordForm(forms.Form):
     old_password = forms.CharField(label='Old Password', widget=forms.PasswordInput)
     new_password = forms.CharField(label='New Password', widget=forms.PasswordInput)
     confirm_password = forms.CharField(label='Confirm New Password', widget=forms.PasswordInput)
+
+class Change2faForm(forms.Form):
+    enable_2fa = forms.BooleanField(label='Enable 2FA', required=False, widget=forms.CheckboxInput)

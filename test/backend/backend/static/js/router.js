@@ -127,7 +127,10 @@ function bindFormEvent() {
             contentType: false,
             success: function(response) {
                 console.log("Response received:", response);
-                if (response.status === 'success') {
+                if (response.redirectUrl == 'home') {
+                    loadPageUsers(response.redirectUrl.replace(/^\//, ''), true);
+                }
+                else if (response.status === 'success') {
                     loadPageAouth(response.redirectUrl.replace(/^\//, ''), true);
                 } else {
                     console.log('Success with unexpected status:', response.message);

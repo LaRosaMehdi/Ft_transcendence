@@ -2,7 +2,9 @@ import requests, re, logging
 from requests import get
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
 from django.http import JsonResponse
+from datetime import datetime, timedelta
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.contrib.auth import get_user_model
@@ -57,18 +59,39 @@ def user_update_status(request=None, user=None, new_status=None):
     else:
         logger.error("Invalid arguments for user_update_status")
 
+# User security
+# -------------
+
 @jwt_login_required
 def user_update_twofactor(request=None, user=None, enabled=None):
     if request is not None and user is not None and enabled is not None:
-        logger.debug(f"Updating twofactor of {user.username} to {enabled}")
-        user.twofactor = enabled
+        logger.debug(f"Updating twofactor {'enabled' if enabled else 'disabled'} for {user.username}")
+        user.twofactor_enabled = enabled
         user.save()
     elif user is not None and enabled is not None:
-        logger.debug(f"Updating twofactor of {user.username} to {enabled}")
-        user.twofactor = enabled
+        logger.debug(f"Updating twofactor {'enabled' if enabled else 'disabled'} for {user.username}")
+        user.twofactor_enabled = enabled
         user.save()
     else:
         logger.error("Invalid arguments for user_update_twofactor")
+
+def user_update_validation_code(request=None, user=None, validation_code=None, registration_validation=False):
+    if request is not None and user is not None and validation_code is not None:
+        logger.debug(f"Updating validation code for {user.username}")
+        user.validation_code = validation_code
+        user.validation_code_expiration = timezone.now() + timedelta(minutes=5)
+        if user.registration_validation is False and registration_validation is True:
+            user.registration_validation = registration_validation
+        user.save()
+    elif user is not None and validation_code is not None:
+        logger.debug(f"Updating validation code for {user.username}")
+        user.validation_code = validation_code
+        user.validation_code_expiration = timezone.now() + timedelta(minutes=5)
+        if user.registration_validation is False and registration_validation is True:
+            user.registration_validation = registration_validation
+        user.save()
+    else:
+        logger.error("Invalid arguments for user_update_validation_code")
 
 # User game management
 # --------------------

@@ -13,7 +13,6 @@ urlpatterns = [
     path('home/', view_accueil, name='home'),
     path('perso/', view_perso, name='perso'),
     path('perso-content/', view_perso, name='perso-content'),
-    path('viewProfile/', view_profile, name='viewProfile'),
     path('friends/', TemplateView.as_view(template_name='friends.html'), name='friends'),
 
     
@@ -22,6 +21,7 @@ urlpatterns = [
     path('setting_change_username/', setting_change_username, name='setting_change_username'),
     path('setting_change_image/', setting_change_image, name='setting_change_image'),
     path('setting_change_password/', setting_change_password, name='setting_change_password'),
+    path('setting_change_2fa/', setting_change_2fa, name='setting_change_2fa'),
 
     # Other 
     path('generate_profile_json/', generate_profile_json, name='generate_profile_json'),
@@ -29,10 +29,4 @@ urlpatterns = [
     # Tools
     path('get_last_game/', user_get_last_game, name='tools'),
     path('get_current_game/', user_get_current_game, name='tools'),
-
-    # Friend list
-    path('friend/', friend_list, name='friend_list'),
-    path('add_friend/<int:user_id>/', add_friend, name='add_friend'),
-    path('friend-profile/<str:friend_user>/', view_profile_friend, name='viewProfileFriend'),
-
 ]

@@ -19,6 +19,7 @@ from django.template.loader import render_to_string
 from aouth.views.forms import *
 from aouth.views.jwt import *
 from users.models import User
+from aouth.views.jwt import jwt_create
 from users.views.users import user_update_status
 from aouth.views.twofactor import twofactor_oauth_send
 
@@ -51,7 +52,9 @@ def aouth_login_form(request):
                 user = authenticate(request, username=user_id, password=password)
             if user is not None:
                 jwt_create(request, user)
-                return twofactor_oauth_send(request)
+                if user.twofactor_enabled is True:
+                    return twofactor_oauth_send(request)
+                return aouth_login(request, user)
             else:
                 messages.error(request, "Invalid username or password", extra_tags='aouth_login_tag')
         else:
@@ -67,8 +70,6 @@ def aouth_login_form(request):
 
 # REGISTRATION
 # ------------
-
-from aouth.views.jwt import jwt_create
 
 def aouth_register_form(request):
     if request.method == 'POST':
@@ -201,12 +202,29 @@ def aouth_callback_login(request):
             messages.error(request, "You are not registered. Please register first.", extra_tags='aouth_callback_login')
             return redirect('login')
         jwt_create(request, user)
-        return twofactor_oauth_send(request)
-
+        if user.twofactor_enabled is True:
+            return twofactor_oauth_send(request)
+        return aouth_login(request, user)
+    
     except Exception as e:
         logger.exception("An error occurred in aouth_callback_login")
         messages.error(request, "An error occurred during login", extra_tags='aouth_callback_login')
         return redirect('login')
+
+# LOGIN
+# -----
+
+def aouth_login(request, user):
+    user.backend = f'{ModelBackend.__module__}.{ModelBackend.__qualname__}'     
+    login(request, user)
+    user_update_status(request, user, 'online')
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Login Sucess, welcome',
+            'redirectUrl': 'home',
+        })
+    return redirect('home')
 
 # LOUGOUT
 # -------

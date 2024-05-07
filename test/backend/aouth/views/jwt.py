@@ -63,7 +63,6 @@ def jwt_destroy(request, response):
     response.delete_cookie('refresh_token')
 
 def jwt_decode(request):
-    # logger.debug(f"JWT Decode: {type(request)}")
     access_token = request.session.get('access_token')
     refresh_token = request.session.get('refresh_token')
     

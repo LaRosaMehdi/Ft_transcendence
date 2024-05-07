@@ -5,26 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accueil Page</title>
-    <link rel="stylesheet" href="{% static 'stylesheet.css' %}">
-    <link rel="stylesheet" href="{% static 'buttons.css' %}">
-    <link rel="stylesheet" href="{% static 'animations.css' %}">
-    <link rel="stylesheet" href="{% static 'logos.css' %}">
+    {% include 'header.html' %}
 </head>
 <body>
-    <div>
-        <div style="position: fixed; top: 20px; left: 20px;">
-            <img src="{{ current_user.image.url }}" style="width: 50px; height: 50px;">
-        </div>
-        <div style="display: flex; gap: 10px; justify-content: flex-end; position: fixed; top: 10px; right: 10px;">
-            <div class="perso-button" style="position: relative;">
-                <button type="submit" onclick="window.location.href = '{% url 'aouth_logout' %}'"><span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    Log out</button>
-            </div>
-        </div>
-    </div>
     <h2 style="color: white; text-align: center;">Settings</h2>
     {% if request.user.password is not None %}
         <div style="display: flex; justify-content: center; gap: 20px;">
@@ -43,10 +26,10 @@
                             <p style="color: red;">ERROR: {{ message }}</p>
                         {% endif %}
                         {% if message.tags == 'change_username_tag warning' %}
-                            <p style="color: green;">WARNING: {{ message }}</p>
+                            <p style="color: orange;">WARNING: {{ message }}</p>
                         {% endif %}
                         {% if message.tags == 'change_username_tag success' %}
-                            <p style="color: orange;">SUCCESS: {{ message }}</p>
+                            <p style="color: green;">SUCCESS: {{ message }}</p>
                         {% endif %}
                     {% endfor %}
                 {% endif %}
@@ -66,11 +49,11 @@
                             <p style="color: red;">ERROR: {{ message }}</p>
                         {% endif %}
                         {% if message.tags == 'change_image_tag success' %}
-                            <p style="color: orange;">SUCCESS: {{ message }}</p>
+                            <p style="color: green;">SUCCESS: {{ message }}</p>
                         {% endif %}
                     {% endfor %}
                 {% endif %}
-            </div>
+            </div>  
             <div class="login-box">
                 <h2>Change Password</h2>
                 <form method="post" action="{% url 'setting_change_password' %}">
@@ -93,11 +76,44 @@
                             <p style="color: red;">ERROR: {{ message }}</p>
                         {% endif %}
                         {% if message.tags == 'change_password_tag success' %}
-                            <p style="color: orange;">SUCCESS: {{ message }}</p>
+                            <p style="color: green;">SUCCESS: {{ message }}</p>
                         {% endif %}
                     {% endfor %}
                 {% endif %}
             </div>
+            <div class="login-box">
+                <div style="display: flex;justify-content: center; flex-direction: row; height: 35%;">
+                    <h2>Two-factor Authentication</h2>
+                    <div style="height: 100%;">
+                        <form id="2faForm" method="post" action="{% url 'setting_change_2fa' %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label class="switch">
+                                    <input type="checkbox" id="enable_2fa" name="enable_2fa" {% if request.user.twofactor_enabled %}checked{% endif %}>
+                                    <span class="slider"></span>
+                                    <span class="toggle-text left-text">ON</span>
+                                    <span class="toggle-text right-text">OFF</span>
+                                </label>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.tags == 'change_2fa_tag error' %}
+                            <p style="color: red;">ERROR: {{ message }}</p>
+                        {% endif %}
+                        {% if message.tags == 'change_2fa_tag success' %}
+                            <p style="color: green;">SUCCESS: {{ message }}</p>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <script>
+                document.getElementById('enable_2fa').addEventListener('change', function() {
+                    document.getElementById('2faForm').submit();
+                });
+            </script>
         </div>
     {% else %}
         <div style="display: flex; justify-content: center; gap: 20px;">
@@ -116,10 +132,10 @@
                             <p style="color: red;">ERROR: {{ message }}</p>
                         {% endif %}
                         {% if message.tags == 'change_username_tag warning' %}
-                            <p style="color: green;">WARNING: {{ message }}</p>
+                            <p style="color: orange;">WARNING: {{ message }}</p>
                         {% endif %}
                         {% if message.tags == 'change_username_tag success' %}
-                            <p style="color: orange;">SUCCESS: {{ message }}</p>
+                            <p style="color: green;">SUCCESS: {{ message }}</p>
                         {% endif %}
                     {% endfor %}
                 {% endif %}
@@ -128,7 +144,11 @@
                 <h2>Change Image</h2>
                 <form method="post" enctype="multipart/form-data" action="{% url 'setting_change_image' %}">
                     {% csrf_token %}
-                    <div class="upload-container">
+                    <img id="image" src="{{ current_user.image.url }}" style="width: 100px; height: 100px;">
+                    <div class="form-group">
+                        <label for="file-upload" class="custom-file-upload">
+                            Choose File
+                        </label>
                         <input id="file-upload" type="file" name="image" accept="image/*" onchange="readURL(this);">
                     </div>
                     <button type="submit">Upload</button>
@@ -139,16 +159,45 @@
                             <p style="color: red;">ERROR: {{ message }}</p>
                         {% endif %}
                         {% if message.tags == 'change_image_tag success' %}
-                            <p style="color: orange;">SUCCESS: {{ message }}</p>
+                            <p style="color: green;">SUCCESS: {{ message }}</p>
                         {% endif %}
                     {% endfor %}
                 {% endif %}
             </div>
+            <div class="login-box">
+                <div style="display: flex;justify-content: center; flex-direction: row; height: 35%;">
+                    <h2>Two-factor Authentication</h2>
+                    <div style="height: 100%;">
+                        <form id="2faForm" method="post" action="{% url 'setting_change_2fa' %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label class="switch">
+                                    <input type="checkbox" id="enable_2fa" name="enable_2fa" {% if request.user.twofactor_enabled %}checked{% endif %}>
+                                    <span class="slider"></span>
+                                    <span class="toggle-text left-text">ON</span>
+                                    <span class="toggle-text right-text">OFF</span>
+                                </label>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.tags == 'change_2fa_tag error' %}
+                            <p style="color: red;">ERROR: {{ message }}</p>
+                        {% endif %}
+                        {% if message.tags == 'change_2fa_tag success' %}
+                            <p style="color: green;">SUCCESS: {{ message }}</p>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <script>
+                document.getElementById('enable_2fa').addEventListener('change', function() {
+                    document.getElementById('2faForm').submit();
+                });
+            </script>
         </div>
     {% endif %}
-    <button type="submit" onclick="window.location.href = '{% url 'home' %}'"class="button back-button"> <span></span>
-        <span></span>
-        <span></span>Back
-    </button>
 </body>
 </html>

@@ -1,7 +1,9 @@
 {% load static %}
+{% csrf_token %}
 <div id="profileData">
 </div>
 {% include 'header.html' %}
+
 <div class="accueil-box">
     <h2 style="text-align: center;">Welcome, {{ current_user.username }}</h1>
     <button type="submit" onclick="window.location.href = '{% url 'play' %}'" style=""> <span></span>
