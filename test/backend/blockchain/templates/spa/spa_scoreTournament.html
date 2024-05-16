@@ -1,0 +1,47 @@
+{% load static %}
+{% include 'header.html' %}
+<div class="tournament-list-page">
+    <h1><i class="fas fa-trophy"></i> Tournament List</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Tournament ID</th>
+                <th>Status</th>
+                <th>Username</th>
+                <th>Score</th>
+                <th>Hash</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tournament in tournaments %}
+                {% with tournament.players|length as player_count %}
+                {% for player in tournament.players %}
+                    <tr>
+                        {% if forloop.first %}
+                            <td rowspan="{{ player_count }}">{{ tournament.id }}</td>
+                            <td rowspan="{{ player_count }}">{{ tournament.status }}</td>
+                        {% endif %}
+                        <td>{{ player.name }}</td>
+                        <td>{{ player.eloScore }}</td>
+                        {% if forloop.first %}
+                            <td rowspan="{{ player_count }}">
+                                {% for hash in tournament.hashes %}
+                                    <div>{{ hash }}</div>
+                                {% endfor %}
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5">No players found in this tournament.</td>
+                    </tr>
+                {% endfor %}
+                {% endwith %}
+            {% empty %}
+                <tr>
+                    <td colspan="5">No tournaments found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

@@ -139,10 +139,39 @@ def user_remove_current_game(request=None, user=None):
         user.save()
     else:
         logger.error("Invalid arguments for user_remove_current_game")
+     
+from matchmaking.models import MatchmakingQueue
+
+""" @jwt_login_required
+def user_get_current_game(request):
+    default_queue = MatchmakingQueue.objects.get(name="remote queue")
+    players = default_queue.players.all()
+    contexts = 0
+    if players.first():
+        contexts = 1
+    else:
+        contexts = 2
+    return JsonResponse({'context': contexts, 'current_game': request.user.current_game.id if request.user.current_game else None})
+ """
 
 @jwt_login_required
 def user_get_current_game(request):
-    return JsonResponse({'current_game': request.user.current_game.id if request.user.current_game else None})
+    default_queue = MatchmakingQueue.objects.get(name="remote queue")
+    players = list(default_queue.players.all())
+    
+    # Determine the context based on the player's position in the queue or game state
+    context = 0  # Default context for "no game"
+    if players:
+        if request.user == players[0]:
+            context = 1  # User is the first player in the queue
+        elif request.user in players:
+            context = 2  # User is in the queue but not the first player
+        else:
+            context = 3  # User is neither first nor in the queue (fallback case)
+
+    current_game_id = request.user.current_game.id if request.user.current_game else None
+    return JsonResponse({'context': context, 'current_game': current_game_id})
+
 
 @jwt_login_required
 def user_get_last_game(request):

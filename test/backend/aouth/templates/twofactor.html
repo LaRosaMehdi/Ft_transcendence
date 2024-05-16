@@ -9,12 +9,14 @@
     <link rel="stylesheet" href="{% static 'buttons.css' %}">
     <link rel="stylesheet" href="{% static 'animations.css' %}">
     <link rel="stylesheet" href="{% static 'logos.css' %}">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
+    <div id="app-content">
     <div class="login-box">
         <h2>2 Facture Authentication</h2>
         <p style="color: white;">Please enter the 6 digit code sent to you by mail</p>        
-        <form method="post" action="{% url 'twofactor_oauth' %}">
+        <form method="post" id="twoFactorAouth" action="{% url 'twofactor_oauth' %}">
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit">Submit</button>
@@ -28,5 +30,7 @@
         {% endif %}
     </div>
     <p style="color: white;">If you haven't received the code, check the email you specified during registration</p>
+    </div>
+    <script src="{% static 'js/router.js' %}"></script>
 </body>
 </html>

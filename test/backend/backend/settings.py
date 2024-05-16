@@ -101,6 +101,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
+            os.path.join(BASE_DIR, 'blockchain', 'templates', 'spa'),
             os.path.join(BASE_DIR, 'aouth', 'templates', 'spa'),
             os.path.join(BASE_DIR, 'tournaments', 'templates', 'spa'),
             os.path.join(BASE_DIR, 'users', 'templates', 'spa'),
@@ -253,6 +254,11 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': False,
         },
+        'blockchain': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
     },
 }
 
@@ -299,12 +305,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # ---------------------
 
 OAUTH_REGISTER_CLIENT_ID = 'u-s4t2ud-466be83f43b8d3d0ea71b9efc1a9d830027b84b1f2194622888816049e4afc65'
-OAUTH_REGISTER_CLIENT_SECRET = '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'
+OAUTH_REGISTER_CLIENT_SECRET = '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'
 OAUTH_REGISTER_REDIRECT_URI = 'https://localhost:8080/aouth/aouth_callback_register/'
 
 # 42 OAUTH LOGIN
 # --------------
 
-AOUTH_LOGIN_CLIENT_ID = 'u-s4t2ud-cecd1a52c9d51af27bc2daeefe882eda5dd05f725f7c6207b551e44720c37969'
-OAUTH_LOGIN_CLIENT_SECRET = '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'
+AOUTH_LOGIN_CLIENT_ID =  'u-s4t2ud-cecd1a52c9d51af27bc2daeefe882eda5dd05f725f7c6207b551e44720c37969'
+OAUTH_LOGIN_CLIENT_SECRET = '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'
 AOUTH_LOGIN_REDIRECT_URI = 'https://localhost:8080/aouth/aouth_callback_login/'

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Friend List</title>
-    <link rel="stylesheet" href="{% static 'friend_list.css' %}">
+    {% include 'head_elements.html' %}
 </head>
 <body>
     <div class="hero">
@@ -13,13 +13,12 @@
     </div>
     <div id="app-content">
     <div class="friends-list-page">
-        {% include 'header.html' %}
-        <main>
-            <h1>Friends List</h1>
+            {% include 'header.html' %}
+            <h1><i class="fas fa-users"></i> Friends List</h1>
             <div class="search-container">
                 <form id="searchFriends" action="{% url 'friend_list' %}" method="get">
-                    <input type="text" placeholder="Search users..." name="search_query" value="{{ search_query }}" aria-label="Search users">
-                    <button type="submit" aria-label="Search">Search</button>
+                    <input type="text" placeholder="Search users..." name="search_query" value="{{ search_query }}">
+                    <button type="submit"><i class="fas fa-search"></i> Search</button>
                 </form>
             </div>
             <table>
@@ -33,15 +32,11 @@
                 <tbody>
                     {% for friend in friends %}
                     <tr>
-                        <td>
-                            <a href="{% url 'viewProfileFriend' friend.username %}" aria-label="View profile of {{ friend.username }}">
-                                <img src="{{ friend.image.url }}" alt="Profile picture of {{ friend.username }}" style="width:50px;height:50px;border-radius:50%; object-fit: cover;">
-                            </a>
-                        </td>
+                        <td><a href="javascript:void(0);" data-username="{{ friend.username }}" aria-label="View profile of {{ friend.username }}" onclick="loadPageFriendProfile('{{ friend.username }}')">
+                            <img src="{{ friend.image.url }}" alt="Profile picture" style="width:50px;height:50px;border-radius:50%; object-fit: cover;">
+                        </a></td>
                         <td>{{ friend.username }}</td>
-                        <td>
-                            <div class="circle_status {{ friend.get_status_display|lower }}" style="margin: 20px;"></div>
-                        </td>
+                        <td><div class="circle_status {{ friend.get_status_display|lower }}"></div></td>
                     </tr>
                     {% empty %}
                     <tr>
@@ -50,46 +45,40 @@
                     {% endfor %}
                 </tbody>
             </table>
-    
+        
             {% if search_query %}
-            <section>
-                <h2>Search Results</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Picture</th>
-                            <th>Username</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for user in users %}
-                        <tr>
-                            <td><img src="{{ user.image.url }}" alt="Profile picture of {{ user.username }}" style="width:50px;height:50px;border-radius:50%; object-fit: cover;"></td>
-                            <td>{{ user.username }}</td>
-                            <td>
-                                <div class="circle_status {{ user.get_status_display|lower }}" style="margin: 20px;"></div>
-                            </td>
-                            <td>
-                                <form id="AddFriends" action="{% url 'add_friend' user.id %}" method="post">
-                                    {% csrf_token %}
-                                    <button type="submit" aria-label="Add {{ user.username }} as friend">Add</button>
-                                </form>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="4">No users found.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </section>
+            <h2><i class="fas fa-search-plus"></i> Search Results</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Picture</th>
+                        <th>Username</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td><img src="{{ user.image.url }}" alt="Profile picture" style="width:50px;height:50px;border-radius:50%; object-fit: cover;"></td>
+                        <td>{{ user.username }}</td>
+                        <td><div class="circle_status {{ user.get_status_display|lower }}"></div></td>
+                        <td>
+                            <form id="AddFriends" action="{% url 'add_friend' user.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit"><i class="fas fa-user-plus"></i> Add</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">No users found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
             {% endif %}
-        </main>
-    </div>
-</div>
+        </div>
     <script src="{% static 'js/router.js' %}"></script>
 </body>
 </html>

@@ -46,3 +46,7 @@ def view_main_chat(request):
     user = jwt_decode(request)
     logger.debug(f"Remote user: {user}")
     return render(request, 'main_chat.html')
+
+@jwt_login_required
+def view_game_in_progress(request):
+    return render(request, 'game_progress.html')

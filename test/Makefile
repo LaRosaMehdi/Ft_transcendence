@@ -12,6 +12,7 @@ re:
 fclean:
 	@make clean
 	@echo "Removing all the containers, images, and volumes"
+	@rm -rf ./backend/blockchain_etherum/build
 	@docker system prune -a -f --volumes
 	@docker system prune -a -f --volumes
 	@docker network prune -f

@@ -1,9 +1,18 @@
 from django.shortcuts import render, HttpResponse
 from web3 import Web3
 import json
+from aouth.views.jwt import jwt_login_required
+from django.template.loader import render_to_string
+from django.http import JsonResponse
+import logging
+
+logger = logging.getLogger(__name__)
+# logger.info("DEBUG 0000 suuuupppper : ")
 
 w3 = Web3(Web3.HTTPProvider('http://container_ganache:8545'))
-w3.eth.default_account = w3.eth.accounts[0]  # Use the first account for transactions
+# w3.eth.chainId = 345
+w3.eth.default_account = w3.eth.accounts[0]
+
 
 def get_contract():
     contract_file_path = "blockchain_etherum/build/contracts/ScoreStorage.json"
@@ -15,30 +24,36 @@ def get_contract():
         contract = w3.eth.contract(address=contract_address, abi=contract_abi)
         return contract
 
-def tournament_list_view(request):
+@jwt_login_required
+def blockchain_tournament_list_view(request):
     contract = get_contract()
-
-    # Optionally add a tournament and players for testing, if none exist
     tournaments_count = contract.functions.getTournamentsCount().call()
+    # Initialize a list to hold transaction hashes and other tournament data
+    tournaments = []
+    transactions = []
+    
+    # Example of adding tournaments and capturing transaction hashes
     if tournaments_count == 0:
-        # Add a tournament for testing
+        # Create a new tournament and capture the transaction hash
         tx_hash = contract.functions.addTournament(0, 1625097600, "upcoming").transact()
-        w3.eth.wait_for_transaction_receipt(tx_hash)
+        receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
+        transactions.append(tx_hash.hex())  # Store the transaction hash
 
-        # Add players to the newly added tournament
-        contract.functions.addPlayerToTournament(0, "floki", 1200).transact()
-        contract.functions.addPlayerToTournament(0, "le J", 1300).transact()
-        # Re-fetch the tournaments count after adding
+        # Add players and capture transaction hashes
+        tx_hash = contract.functions.addPlayerToTournament(0, "floki", 1200).transact()
+        receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
+        transactions.append(tx_hash.hex())  # Store the transaction hash
+
+        tx_hash = contract.functions.addPlayerToTournament(0, "larosa le J", 1300).transact()
+        receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
+        transactions.append(tx_hash.hex())  # Store the transaction hash
+
+        # Update tournament count after changes
         tournaments_count = contract.functions.getTournamentsCount().call()
 
-    tournaments = []
+    # Retrieve tournament details
     for i in range(tournaments_count):
-        # Fetch tournament details based on your contract's available functions
-        tournament_info = {
-            'id': i,
-            'players': []
-            # You can add more details here as needed
-        }
+        tournament_info = {'id': i, 'players': [], 'hashes': []}
         players_count = contract.functions.getTournamentPlayerCount(i).call()
         for j in range(players_count):
             player_info = contract.functions.getTournamentPlayer(i, j).call()
@@ -46,7 +61,12 @@ def tournament_list_view(request):
                 'name': player_info[0],
                 'eloScore': player_info[1]
             })
+        # Store the transaction hashes associated with each tournament
+        tournament_info['hashes'].extend(transactions)
         tournaments.append(tournament_info)
-
     context = {'tournaments': tournaments}
-    return render(request, 'tournament.html', context)
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        html = render_to_string('spa_scoreTournament.html', context, request=request)
+        return JsonResponse({'html': html})
+    else:
+        return render(request, 'scoreTournament.html', context)

@@ -1,5 +1,5 @@
 {% load static %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"> -->
 <div class="friends-list-page">
     {% include 'header.html' %}
     <h1><i class="fas fa-users"></i> Friends List</h1>
@@ -20,7 +20,7 @@
         <tbody>
             {% for friend in friends %}
             <tr>
-                <td><a href="{% url 'viewProfileFriend' friend.username %}">
+                <td><a href="javascript:void(0);" data-username="{{ friend.username }}" aria-label="View profile of {{ friend.username }}" onclick="loadPageFriendProfile('{{ friend.username }}')">
                     <img src="{{ friend.image.url }}" alt="Profile picture" style="width:50px;height:50px;border-radius:50%; object-fit: cover;">
                 </a></td>
                 <td>{{ friend.username }}</td>
@@ -67,4 +67,3 @@
     </table>
     {% endif %}
 </div>
-<script src="{% static 'js/router.js' %}"></script>

@@ -4,10 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accueil Page</title>
-    {% include 'header.html' %}
+    <title>Settings</title>
+    {% include 'head_elements.html' %}
 </head>
 <body>
+    <div class="hero">
+        <div class="cube"></div><div class="cube"></div><div class="cube"></div>
+        <div class="cube"></div><div class="cube"></div><div class="cube"></div>
+    </div>
+    <div id="app-content">
+    {% include 'header.html' %}
     <h2 style="color: white; text-align: center;">Settings</h2>
     {% if request.user.password is not None %}
         <div style="display: flex; justify-content: center; gap: 20px;">
@@ -199,5 +205,7 @@
             </script>
         </div>
     {% endif %}
+    </div>
+    <script src="{% static 'js/router.js' %}"></script>
 </body>
 </html>

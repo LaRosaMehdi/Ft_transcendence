@@ -27,6 +27,8 @@ def matchmaking_remote_make(request):
     players = default_queue.players.all()
 
     while players.count() >= 2:
+        logger.info("player1: ", player1)
+        logger.info("player2: ", player1)
         player1 = players.first()
         player2 = players.exclude(pk=player1.pk).first()
         new_game = game_init(request, player1, player2)

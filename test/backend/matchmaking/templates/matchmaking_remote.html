@@ -43,30 +43,24 @@
             window.location.href = '/matchmaking/matchmaking_remote_leave/';
         }
 
-        // function matchmakingLoop() {
-        //     fetch('{% url "matchmaking_remote" %}')
-        //     .then(response => {
-        //         if (response.redirected) {
-        //             window.location.href = response.url;
-        //         }
-        //     })
-        //     .catch(error => console.error('Error:', error));
-        // }
-        // setInterval(matchmakingLoop, 1000);
-
+        
         function matchmakingLoop() {
             fetch('/users/get_current_game/')
             .then(response => response.json())
             .then(data => {
-                if (data.current_game !== null) {
+                console.log("context ", data.context);
+                if (data.current_game !== null && data.context === 1) {
                     window.location.href = '/games/play/';
+                }
+                else if(data.current_game !== null){
+                    window.location.href = '/games/game-in-progress/';
                 }
             })
             .catch(error => console.error('Error:', error));
         }
-        setInterval(matchmakingLoop, 1000);
+        setInterval(matchmakingLoop, 2000);
 
-        
+  
     </script>
 
 </head>

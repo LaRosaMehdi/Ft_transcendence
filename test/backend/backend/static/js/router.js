@@ -1,6 +1,6 @@
 //SPA Request GET, load page /user/...
 function loadPageUsers(pagePath, pushState = true) {
-    console.log("Load PageUsers", pagePath)
+    console.log("DEBUG_01");
     $.ajax({
         url: `/users/${pagePath}/`,
         success: function(response) {
@@ -38,6 +38,23 @@ function loadPageUsersSettings(pagePath, pushState = true) {
     }
 }
 
+//SPA Request GET, load page /Blockchain/...
+function loadPageBlockchain(pagePath, pushState = true) {
+    $.ajax({
+        url: `/blockchain/${pagePath}/`,
+        success: function(response) {
+            $('#app-content').html(response.html);
+            if (pushState) {
+                history.pushState({ path: pagePath, content: response.html }, '', `/blockchain/${pagePath}`);
+            }
+            bindFormEvent(); 
+        },
+        error: function(error) {
+            console.error('Error loading the page:', error);
+        }
+    });
+}
+
 //SPA Request GET, load page /Aouth/...
 function loadPageAouth(pagePath, pushState = true) {
     console.log("load page Aouth", pagePath)
@@ -47,6 +64,23 @@ function loadPageAouth(pagePath, pushState = true) {
             $('#app-content').html(response.html);
             if (pushState) {
                 history.pushState({ path: pagePath, content: response.html }, '', `/${pagePath}`);
+            }
+            bindFormEvent(); 
+        },
+        error: function(error) {
+            console.error('Error loading the page:', error);
+        }
+    });
+}
+
+//SPA Request GET, load page profile of a friend /user/...
+function loadPageFriendProfile(username, pushState = true) {
+    $.ajax({
+        url: `/users/friend-profile/${username}/`,
+        success: function(response) {
+            $('#app-content').html(response.html);
+            if (pushState) {
+                history.pushState({ path: pagePath, content: response.html }, '', `/users/friend-profile`);
             }
             bindFormEvent(); 
         },
@@ -90,8 +124,8 @@ function bindFormEvent() {
     $('#twoFactorAouth').off('submit').on('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(this);
-        console.log("router/ twofactor call");
-
+        // console.log("router/ twofactor call");
+        console.log("DEBUG_XXXX");
         $.ajax({
             type: 'POST',
             url: this.action,
@@ -99,8 +133,9 @@ function bindFormEvent() {
             processData: false,
             contentType: false,
             success: function(response) {
-                console.log("Response received:", response);
+                console.log("DEBUG_00");
                 if (response.status === 'success') {
+                    console.log("DEBUG_02", response.redirectUrl);
                     loadPageUsers(response.redirectUrl.replace(/^\//, ''), true);
                 } else {
                     console.log('Success with unexpected status:', response.message);

@@ -1,0 +1,59 @@
+.tournament-list-page {
+    width: 100%;
+    max-width: 70vw;
+    margin: 0 auto; /* Center horizontally */
+    padding: 20px;
+    color: #fff; /* High contrast white text */
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+    position: fixed;
+    top: 100px; /* Fix the div to the top of the viewport */
+    left: 50%; /* Centering by moving it halfway across the screen */
+    right: 50%;
+    transform: translateX(-50%); /* Offset by half its width to truly center */
+    z-index: 1000; /* Ensure it's above other content */
+    overflow-y: scroll; /* Allow internal scrolling */
+    max-height: 70vh; /* Limit the height to the viewport */
+}
+
+.tournament-list-page::-webkit-scrollbar {
+    width: 0 !important;
+}
+
+.tournament-list-page {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+.tournament-list-page h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    padding-top: 10px; /* Add some space on the top inside the fixed div */
+}
+
+.tournament-list-page table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.tournament-list-page th, .tournament-list-page td {
+    border: 1px solid #243b55;
+    text-align: left;
+    padding: 8px;
+    color: #fff;
+}
+
+.tournament-list-page th {
+    background: rgba(255, 255, 255, 0.1);
+    color: #03e9f4;
+}
+
+.tournament-list-page tbody tr:nth-child(odd) {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.tournament-list-page tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}

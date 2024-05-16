@@ -67,11 +67,15 @@ def twofactor_oauth(request):
                     user.backend = f'{ModelBackend.__module__}.{ModelBackend.__qualname__}'     
                     login(request, user)
                     user_update_status(request, user, 'online')
-                    return JsonResponse({
-                    'status': 'success',
-                    'message': 'Login Sucess, welcome',
-                    'redirectUrl': 'home',
-                })
+                    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                        return JsonResponse({
+                            'status': 'success',
+                            'message': 'Login Sucess, welcome',
+                            'redirectUrl': 'home',
+                        })
+                    else:
+                        return redirect('home')
+            
                 else:
                     user_update_status(user, 'offline')
                     messages.error(request, "Invalid validation code", extra_tags='twofactor_oauth_tag')

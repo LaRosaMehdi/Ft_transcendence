@@ -25,4 +25,5 @@ urlpatterns = [
     
     # Others ??
     path('main_chat/', view_main_chat, name='main_chat'),
+    path('game-in-progress/', view_game_in_progress, name='game_in_progress'),
 ]
