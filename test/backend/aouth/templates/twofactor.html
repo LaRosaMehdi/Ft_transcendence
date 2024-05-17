@@ -10,6 +10,35 @@
     <link rel="stylesheet" href="{% static 'animations.css' %}">
     <link rel="stylesheet" href="{% static 'logos.css' %}">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        function checkValidationCode(pushState = true, bruteforce = false) {
+            $.ajax({
+                url: `/aouth/twofactor_auto_delete/${bruteforce ? 'true' : 'false'}/`,
+                success: function(response) {
+                    $('#app-content').html(response.html);
+                    if (pushState) {
+                        history.pushState({ path: 'register', content: response.html }, '', `/aouth/register`);
+                    }
+                    bindFormEvent(); 
+                },
+                error: function(error) {
+                    console.error('Error loading the page:', error);
+                }
+            });
+        }
+
+        setInterval(checkValidationCode, 60000);
+
+        window.addEventListener('beforeunload', function(event) {
+            checkValidationCode(false, true);  // Call without pushState to avoid modifying history
+        
+        });
+
+        $(document).ready(function() {
+            checkValidationCode();
+        });
+
+    </script>
 </head>
 <body>
     <div id="app-content">

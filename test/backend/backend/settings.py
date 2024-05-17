@@ -92,8 +92,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'aouth.views.aouth.AouthLogoutAutoMiddleware',
+    # 'aouth.views.twofactor.TwoFactorUnverifiedUsersAutoDeleteMiddleware',
 ]
-
 
 ROOT_URLCONF = 'backend.urls'
 
