@@ -101,15 +101,17 @@ def twofactor_oauth(request):
 def twofactor_auto_delete(request, bruteforce='false'):
     bruteforce = bruteforce.lower() == 'true'
     user = user_get_from_session(request)
-    if user and user.validation_code_expiration is not None:
+    if user and user.is_verified is not True:
         if user.validation_code_expiration < timezone.now() or bruteforce:
             logger.info(f"Deleting unverified user {user.username}")
             user.delete()
             messages.error(request, "Validation code expired, registration canceled", extra_tags='aouth_register_tag')
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 html = render_to_string('spa_register.html', {'form': RegistrationForm()}, request=request)
-                logger.debug("HERE")
                 return JsonResponse({'html': html})
             else:
-                logger.debug("THERE")
                 return render(request, 'register.html', {'form': RegistrationForm()})
+    elif user and user.is_verified is True:
+        user_update_validation(request, user, None, None, True)
+        return JsonResponse({'status': 'success', 'message': 'User is verified', 'redirectUrl': 'home'})
+    return JsonResponse({'status': 'error', 'message': 'User not found', 'redirectUrl': 'home'})
