@@ -1,15 +1,20 @@
 import logging
-from django.http import JsonResponse
+import json
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-import json
-
+from django.views.decorators.http import require_http_methods
 from users.models import User
 from games.models import Game 
 from games.views.games import game_update
 from aouth.views.jwt import jwt_login_required
 from users.views.users import user_update_status, user_add_to_match_history, user_add_current_game, user_remove_current_game
-
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect
+from django.views.decorators.http import require_POST
+from users.views.users import user_update_status, user_remove_current_game
+from games.views.games import game_update
+from aouth.views.jwt import jwt_login_required
+from games.models import Game
 logger = logging.getLogger(__name__)
 
 
@@ -46,6 +51,30 @@ def game_end_quit(request):
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
 
+
+@jwt_login_required
+@require_POST
+def finishAndquit(request):
+    try:
+        data = json.loads(request.body)
+        player1_score = data.get('player1_score')
+        player2_score = data.get('player2_score')
+
+        current_game = request.user.current_game
+
+        # Validation des scores
+        if not isinstance(player1_score, int) or not isinstance(player2_score, int):
+            raise ValueError("Les scores des joueurs doivent être des entiers.")
+
+        # Mettre à jour le jeu
+        updated_game = game_update(request, current_game, player1_score, player2_score)
+        if updated_game:
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'error'}, status=500)
+    except Exception as e:
+        logger.error(f"Erreur lors de la fin du jeu : {e}")
+        return JsonResponse({'status': 'error', 'message': 'Une erreur est survenue'}, status=500)
 
 """ def game_end_quit(request):
     logger.info("DEBUG_00")

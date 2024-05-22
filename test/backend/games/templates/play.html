@@ -61,6 +61,7 @@
         <div class="player-buttons">
             <button class="player-button" id="player1-btn">{{ game.player1.username }}</button>
             <button class="player-button" id="player2-btn">{{ game.player2.username }}</button>
+            <button class="player-button" id="play-btn">Play</button>
         </div>
         <canvas id="pongCanvas" width="800", height="400"></canvas>
         
@@ -80,6 +81,6 @@
             </div>
         </div>
     </div>
-    <script src="{% static 'js/localgame.js' %}"></script>
+    <script src="{% static 'js/localgame.js' %}" data-arg1="{% csrf_token %}"></script>
 </body>
 </html>

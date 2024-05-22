@@ -13,7 +13,7 @@
             .then(response => response.json())
             .then(data => {
                 if (data.context !== 'ingame') {
-                    window.location.href = '/users/home/';}
+                    window.location.href = '/games/results/';}
             })
             .catch(error => console.error('Error:', error));
         }
