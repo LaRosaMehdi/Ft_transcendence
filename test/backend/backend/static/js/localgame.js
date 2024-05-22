@@ -247,8 +247,47 @@ document.addEventListener('DOMContentLoaded', function() {
             loser = "Personne (égalité)";
         }
         alert(`Le temps est écoulé! ${winner} remporte la partie avec ${Math.max(scorePlayer1, scorePlayer2)} points contre ${loser} avec ${Math.min(scorePlayer1, scorePlayer2)} points.`);
-        resetBall();
-        stopBall();
+        const csrftoken = getCookie('csrftoken');
+
+        // Make the API call to the server to send the scores
+        // $.ajax({
+        //     type: 'POST',
+        //     url: '/games/game_end_quit/',
+        //     headers: {
+        //         'X-CSRFToken': csrftoken,
+        //         'Content-Type': 'application/json'
+        //     },
+        //     data: JSON.stringify({
+        //         scorePlayer1: scorePlayer1,
+        //         scorePlayer2: scorePlayer2
+        //     }),
+        //     success: function(response) {
+        //         if (response.status === 'success') {
+        //             loadPageGames(response.redirectUrl.replace(/^\//, ''), true);
+        //         } else {
+        //             console.error('Error submitting scores:', response.message);
+        //         }
+        //     },
+        //     error: function(xhr, status, error) {
+        //         console.error('Error submitting scores:', error);
+        //     }
+        // });
+        
+    }
+    
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
     }
 
     let countdownInterval; // Déclaration d'une variable globale pour stocker l'identifiant de l'intervalle du compte à rebours
@@ -268,7 +307,7 @@ function startTimer(durationInSeconds) {
         document.getElementById('chrono-button').textContent = minutes + ':' + seconds;
 
         // Décrémentation du chrono
-        if (--timer < 0) {
+        if (timer-- < 0) {
             clearInterval(countdownInterval); // Arrêter le compte à rebours lorsque le temps est écoulé
             endGame();
             // alert('Time is up!'); // Afficher un message lorsque le temps est écoulé (vous pouvez modifier cela selon vos besoins)
@@ -281,7 +320,7 @@ function startTimer(durationInSeconds) {
     }
 
     function startGame() {
-        startTimer(60);
+        startTimer(7);
         draw();
     }
 });

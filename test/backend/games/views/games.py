@@ -1,7 +1,7 @@
 import logging
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-
+from django.http import JsonResponse
 from users.models import User
 from games.models import Game 
 from aouth.views.jwt import jwt_login_required
@@ -56,3 +56,8 @@ def game_update(request, game, player1_score, player2_score):
         logger.error(f"game_update error: {e}")
         return None
 
+@jwt_login_required
+def check_status_user(request):
+    logger.info(f"request: {request.user.status}")
+    context = request.user.status
+    return JsonResponse({'context': context})

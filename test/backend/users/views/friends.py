@@ -43,18 +43,15 @@ def friend_list(request):
 def add_friend(request, user_id):
     if request.method == "POST":
         friend = get_object_or_404(User, pk=user_id)
-
         if friend.username == 'root' or friend == request.user:
             return HttpResponseForbidden("You cannot add this user as a friend.")
-
-        # Check if the friend is already added
         if friend not in request.user.friends.all():
             request.user.friends.add(friend)
-            # Optionally, if you want mutual friendship automatically:
-            # friend.friends.add(request.user)
-
-    return JsonResponse({
-        'status': 'success',
-        'message': 'success.',
-        'redirectUrl': 'friend_list',
-    })
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':        
+        return JsonResponse({
+            'status': 'success',
+            'message': 'success.',
+            'redirectUrl': 'friend_list',
+        })
+    else:
+        return redirect('friend_list')

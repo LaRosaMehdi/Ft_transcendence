@@ -6,6 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Status</title>
     <link rel="stylesheet" href="{% static 'stylesheet.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function matchmakingLoop() {
+            fetch('/games/check_status_user/')
+            .then(response => response.json())
+            .then(data => {
+                if (data.context !== 'ingame') {
+                    window.location.href = '/users/home/';}
+            })
+            .catch(error => console.error('Error:', error));
+        }
+        setInterval(matchmakingLoop, 2000);
+    </script>
     <!-- Other stylesheet links -->
 </head>
 <body>

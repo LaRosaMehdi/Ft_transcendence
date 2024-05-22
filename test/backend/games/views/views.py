@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 @jwt_login_required
 def view_play(request, game_id=None):
-    return render(request, 'play.html', {'game_id': game_id})
+    return render(request, 'play.html', {'game_id': game_id, 'game': user_get_last_game(request)})
 
 @jwt_login_required
 def view_mode(request):

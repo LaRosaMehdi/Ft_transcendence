@@ -1,12 +1,28 @@
 //SPA Request GET, load page /user/...
 function loadPageUsers(pagePath, pushState = true) {
-    console.log("DEBUG_01");
     $.ajax({
         url: `/users/${pagePath}/`,
         success: function(response) {
             $('#app-content').html(response.html);
             if (pushState) {
                 history.pushState({ path: pagePath, content: response.html }, '', `/users/${pagePath}`);
+            }
+            bindFormEvent(); 
+        },
+        error: function(error) {
+            console.error('Error loading the page:', error);
+        }
+    });
+}
+
+//SPA Request GET, load page /user/...
+function loadPageGames(pagePath, pushState = true) {
+    $.ajax({
+        url: `/games/${pagePath}/`,
+        success: function(response) {
+            $('#app-content').html(response.html);
+            if (pushState) {
+                history.pushState({ path: pagePath, content: response.html }, '', `/games/${pagePath}`);
             }
             bindFormEvent(); 
         },
@@ -80,7 +96,7 @@ function loadPageFriendProfile(username, pushState = true) {
         success: function(response) {
             $('#app-content').html(response.html);
             if (pushState) {
-                history.pushState({ path: pagePath, content: response.html }, '', `/users/friend-profile`);
+                history.pushState({ path: `/users/friend-profile/${username}`, content: response.html }, '', `/users/friend-profile/${username}`);
             }
             bindFormEvent(); 
         },
@@ -124,8 +140,6 @@ function bindFormEvent() {
     $('#twoFactorAouth').off('submit').on('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(this);
-        // console.log("router/ twofactor call");
-        console.log("DEBUG_XXXX");
         $.ajax({
             type: 'POST',
             url: this.action,
@@ -133,9 +147,7 @@ function bindFormEvent() {
             processData: false,
             contentType: false,
             success: function(response) {
-                console.log("DEBUG_00");
                 if (response.status === 'success') {
-                    console.log("DEBUG_02", response.redirectUrl);
                     loadPageUsers(response.redirectUrl.replace(/^\//, ''), true);
                 } else {
                     console.log('Success with unexpected status:', response.message);
@@ -151,7 +163,6 @@ function bindFormEvent() {
     //Auth login 
     $('#loginForm').off('submit').on('submit', function(e) {
         e.preventDefault();
-        console.log("login form caught");
         const formData = new FormData(this);
 
         $.ajax({
@@ -187,9 +198,9 @@ function bindFormEvent() {
             url: this.action,
             data: queryData,
             success: function(response) {
-                console.log("Response received:", response);
                 $('#app-content').html(response.html);
-                    history.pushState({ path: '', content: response.html }, '', ``);
+                history.pushState({ path: '', content: response.html }, '', window.location.pathname);
+                bindFormEvent();
             },
             error: function(xhr, status, error) {
                 console.error("Error submitting form:", error);
@@ -208,8 +219,8 @@ function bindFormEvent() {
             processData: false,
             contentType: false,
             success: function(response) {
-                console.log("Response received:", response);
                 loadPageUsers('friend', true);
+                bindFormEvent();
             },
             error: function(xhr, status, error) {
                 console.error("Error submitting form:", error);
@@ -234,6 +245,7 @@ $(document).ready(function() {
         }
         else if (event.state) {
             $('#app-content').html(event.state.content);
+            bindFormEvent();
         }
     });
 });
