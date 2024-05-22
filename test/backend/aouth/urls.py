@@ -30,4 +30,5 @@ urlpatterns = [
     # Two factor authentication
     path('twofactor/', view_twofactor, name='twofactor'),
     path('twofactor_oauth/', twofactor_oauth, name='twofactor_oauth'),
+    path('twofactor_auto_delete/<str:bruteforce>/', twofactor_auto_delete, name='twofactor_auto_delete'),
 ]

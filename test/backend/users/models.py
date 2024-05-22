@@ -38,6 +38,7 @@ class User(AbstractBaseUser):
     password = models.CharField(max_length=100, null=True)
     image = models.ImageField(upload_to='', null=True)
 
+    is_verified = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)  # Add this line
@@ -62,6 +63,7 @@ class User(AbstractBaseUser):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='offline')
 
     validation_code = models.CharField(max_length=64, null=True, blank=True)
+    validation_code_expiration = models.DateTimeField(null=True, blank=True)
 
     twofactor_enabled = models.BooleanField(default=True)
 

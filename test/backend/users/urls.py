@@ -30,8 +30,9 @@ urlpatterns = [
     # Tools
     path('get_last_game/', user_get_last_game, name='tools'),
     path('get_current_game/', user_get_current_game, name='tools'),
+    path('user_get/', user_get, name='user_get'),
 
-     # Friend list
+    # Friend list
     path('friend/', friend_list, name='friend_list'),
     path('add_friend/<int:user_id>/', add_friend, name='add_friend'),
     path('friend-profile/<str:friend_user>/', view_profile_friend, name='viewProfileFriend'),

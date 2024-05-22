@@ -15,15 +15,18 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.template.loader import render_to_string
 
 from users.models import User
+from aouth.views.forms import *
 from aouth.views.jwt import jwt_login_required, jwt_login_required, jwt_decode
-from users.views.users import user_update_status
+from users.views.users import user_update_status, user_update_validation, user_get_from_session
 from aouth.views.forms import TwoFactorForm
 from smtp.views import smtp_aouth_validation
 from aouth.views.jwt import jwt_login_required
 
 logger = logging.getLogger(__name__)
+
 
 # Generate a 6-digit validation code
 # ----------------------------------
@@ -41,6 +44,8 @@ def twofactor_oauth_send(request):
     user.backend = f'{ModelBackend.__module__}.{ModelBackend.__qualname__}'
     validation_code, hashed_validation_code = generate_validation_code()
     user.validation_code = hashed_validation_code
+    if user.is_verified is False:
+        user.validation_code_expiration = timezone.now() + timedelta(minutes=1)
     user.save()
     smtp_aouth_validation(user, validation_code)
     request.session['user_id'] = user.id
@@ -62,10 +67,9 @@ def twofactor_oauth(request):
             if user:
                 hashed_validation_code_entered = hashlib.sha256(validation_code.encode()).hexdigest()
                 if user.validation_code == hashed_validation_code_entered:
-                    user.validation_code = None
-                    user.save()
                     user.backend = f'{ModelBackend.__module__}.{ModelBackend.__qualname__}'     
                     login(request, user)
+                    user_update_validation(request, user, None, None, True)
                     user_update_status(request, user, 'online')
                     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                         return JsonResponse({
@@ -90,3 +94,24 @@ def twofactor_oauth(request):
         'message': 'error',
         'redirectUrl': 'home',
     })
+
+# Middleware
+# ----------
+
+def twofactor_auto_delete(request, bruteforce='false'):
+    bruteforce = bruteforce.lower() == 'true'
+    user = user_get_from_session(request)
+    if user and user.is_verified is not True:
+        if user.validation_code_expiration < timezone.now() or bruteforce:
+            logger.info(f"Deleting unverified user {user.username}")
+            user.delete()
+            messages.error(request, "Validation code expired, registration canceled", extra_tags='aouth_register_tag')
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                html = render_to_string('spa_register.html', {'form': RegistrationForm()}, request=request)
+                return JsonResponse({'html': html})
+            else:
+                return render(request, 'register.html', {'form': RegistrationForm()})
+    elif user and user.is_verified is True:
+        user_update_validation(request, user, None, None, True)
+        return JsonResponse({'status': 'success', 'message': 'User is verified', 'redirectUrl': 'home'})
+    return JsonResponse({'status': 'error', 'message': 'User not found', 'redirectUrl': 'home'})

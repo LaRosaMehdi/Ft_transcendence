@@ -75,23 +75,24 @@ def user_update_twofactor(request=None, user=None, enabled=None):
     else:
         logger.error("Invalid arguments for user_update_twofactor")
 
-def user_update_validation_code(request=None, user=None, validation_code=None, registration_validation=False):
-    if request is not None and user is not None and validation_code is not None:
-        logger.debug(f"Updating validation code for {user.username}")
+@jwt_login_required
+def user_update_validation(request=None, user=None, validation_code=None, expiration=None, verified=None):
+    if request is not None and user is not None and verified is not None:
         user.validation_code = validation_code
-        user.validation_code_expiration = timezone.now() + timedelta(minutes=5)
-        if user.registration_validation is False and registration_validation is True:
-            user.registration_validation = registration_validation
+        user.validation_code_expiration = expiration
+        if verified is not None:
+            logger.info(f"Updating verified status for {user.username}")
+            user.is_verified = verified
         user.save()
-    elif user is not None and validation_code is not None:
-        logger.debug(f"Updating validation code for {user.username}")
+    elif user is not None and verified is not None:
         user.validation_code = validation_code
-        user.validation_code_expiration = timezone.now() + timedelta(minutes=5)
-        if user.registration_validation is False and registration_validation is True:
-            user.registration_validation = registration_validation
+        user.validation_code_expiration = expiration
+        if verified is not None:
+            logger.info(f"Updating verified status for {user.username}")
+            user.is_verified = verified
         user.save()
     else:
-        logger.error("Invalid arguments for user_update_validation_code")
+        logger.error("Invalid arguments for user_update_validation")
 
 # User game management
 # --------------------
@@ -139,39 +140,10 @@ def user_remove_current_game(request=None, user=None):
         user.save()
     else:
         logger.error("Invalid arguments for user_remove_current_game")
-     
-from matchmaking.models import MatchmakingQueue
-
-""" @jwt_login_required
-def user_get_current_game(request):
-    default_queue = MatchmakingQueue.objects.get(name="remote queue")
-    players = default_queue.players.all()
-    contexts = 0
-    if players.first():
-        contexts = 1
-    else:
-        contexts = 2
-    return JsonResponse({'context': contexts, 'current_game': request.user.current_game.id if request.user.current_game else None})
- """
 
 @jwt_login_required
 def user_get_current_game(request):
-    default_queue = MatchmakingQueue.objects.get(name="remote queue")
-    players = list(default_queue.players.all())
-    
-    # Determine the context based on the player's position in the queue or game state
-    context = 0  # Default context for "no game"
-    if players:
-        if request.user == players[0]:
-            context = 1  # User is the first player in the queue
-        elif request.user in players:
-            context = 2  # User is in the queue but not the first player
-        else:
-            context = 3  # User is neither first nor in the queue (fallback case)
-
-    current_game_id = request.user.current_game.id if request.user.current_game else None
-    return JsonResponse({'context': context, 'current_game': current_game_id})
-
+    return JsonResponse({'current_game': request.user.current_game.id if request.user.current_game else None})
 
 @jwt_login_required
 def user_get_last_game(request):
@@ -179,8 +151,26 @@ def user_get_last_game(request):
         return None
     return request.user.match_history.last()
 
-    
 
+# General user management
+# -----------------------
+
+def user_get_from_session(request):
+    user_id = request.session.get('user_id')
+    if user_id:
+        try:
+            user = User.objects.get(id=user_id)
+            return user
+        except User.DoesNotExist:
+            return None
+    return None
+
+def user_get(request):
+    user = user_get_from_session(request)
+    if user:
+        return JsonResponse({'refresh': True})
+    else:
+        return JsonResponse({'refresh': False})
 
 # Other
 # -----
