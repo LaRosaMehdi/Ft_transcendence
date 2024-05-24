@@ -7,7 +7,28 @@ function loadPageUsers(pagePath, pushState = true) {
             if (pushState) {
                 history.pushState({ path: pagePath, content: response.html }, '', `/users/${pagePath}`);
             }
-            bindFormEvent(); 
+            bindFormEvent();
+            
+        },
+        error: function(error) {
+            console.error('Error loading the page:', error);
+        }
+    });
+}
+
+//SPA Request GET, load page /matchmaking/...
+function loadPageMatchmaking(pagePath, pushState = true) {
+    $.ajax({
+        url: `/matchmaking/${pagePath}/`,
+        success: function(response) {
+            $('#app-content').html(response.html);
+            if (pushState) {
+                 history.pushState({ path: pagePath, content: response.html }, '', `/matchmaking/${pagePath}`);
+            }
+            bindFormEvent();
+            if (typeof initializeGame === 'function') {
+                initializeGame();
+            } 
         },
         error: function(error) {
             console.error('Error loading the page:', error);
@@ -24,7 +45,10 @@ function loadPageGames(pagePath, pushState = true) {
             if (pushState) {
                 history.pushState({ path: pagePath, content: response.html }, '', `/games/${pagePath}`);
             }
-            bindFormEvent(); 
+            bindFormEvent();
+            if (typeof initializeGame === 'function' && pagePath === 'play') {
+                initializeGame();
+            }
         },
         error: function(error) {
             console.error('Error loading the page:', error);

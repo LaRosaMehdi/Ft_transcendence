@@ -73,18 +73,14 @@ def view_profile(request):
         return JsonResponse({'html': html})
     else:
         return render(request, 'viewProfile.html', {'current_user': user, 'matches': matches, 'context': ''})
-
-    """ if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        html = render_to_string('spa_viewProfile.html', {'current_user': request.user, 'context': 'ajax'}, request=request)
-        return JsonResponse({'html': html})
-    else:
-        return render(request, 'viewProfile.html', {'current_user': request.user, 'context': ''})
-     """
+    
 @jwt_login_required
 def view_profile_friend(request, friend_user):
     user_profile = get_object_or_404(User, username=friend_user)
+    user = request.user
+    matches = Game.objects.filter(Q(player1=user) | Q(player2=user)).order_by('-date_time')
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        html = render_to_string('spa_viewProfile.html', {'current_user': user_profile, 'context': 'ajax'}, request=request)
+        html = render_to_string('spa_viewProfile.html', {'current_user': user_profile, 'matches': matches, 'context': 'ajax'}, request=request)
         return JsonResponse({'html': html})
     else:
-        return render(request, 'viewProfile.html', {'current_user': user_profile, 'context': ''})
+        return render(request, 'viewProfile.html', {'current_user': user_profile, 'matches': matches, 'context': ''})

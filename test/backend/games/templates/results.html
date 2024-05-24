@@ -37,11 +37,12 @@
             <span></span>
             <span></span>PLAY AGAIN
         </button>
-        <button type="submit" onclick="window.location.href = '{% url 'home' %}'" style="margin-right: 20px;"> <span></span>
+        <button type="submit" onclick="loadPageUsers('home')" style="margin-right: 20px;"> <span></span>
             <span></span>
             <span></span>LEAVE
         </button>
     </div>
     
 </body>
+<script src="{% static 'js/router.js' %}"></script>
 </html>

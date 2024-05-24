@@ -28,7 +28,6 @@ def remote_quit(request):
         game_update(request, current_game, -1, current_game.player2_score)
     else:
         game_update(request, current_game, current_game.player1_score, -1)
-    return redirect('results')
 
 
 @jwt_login_required

@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
+from django.template.loader import render_to_string
 
 from users.views.users import user_update_status
 from games.views.games import game_init
@@ -52,4 +53,9 @@ def matchmaking_remote(request):
 
     if matchmaking_remote_make(request) is True:
         return redirect('play') 
-    return render(request, 'matchmaking_remote.html', {'current_user': request.user})
+    
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        html = render_to_string('spa_matchmaking_remote.html', {'current_user': request.user})
+        return JsonResponse({'html': html})
+    else:    
+        return render(request, 'matchmaking_remote.html', {'current_user': request.user})

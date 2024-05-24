@@ -25,6 +25,7 @@
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <div id="app-content">
     <script>
     
         window.onbeforeunload = function() {
@@ -40,7 +41,7 @@
         }
 
         function leaveMatchmaking() {
-            window.location.href = '/matchmaking/matchmaking_remote_leave/';
+            fetch('/matchmaking/matchmaking_remote_leave/');
         }
 
         
@@ -50,17 +51,27 @@
             .then(data => {
                 console.log("context ", data.context);
                 if (data.current_game !== null && data.context === 1) {
-                    window.location.href = '/games/play/';
+                    loadPageGames('play');
                 }
                 else if(data.current_game !== null){
-                    window.location.href = '/games/game-in-progress/';
+                    loadPageGames('game-in-progress');
                 }
             })
             .catch(error => console.error('Error:', error));
         }
-        setInterval(matchmakingLoop, 2000);
+        matchmakingInterval = setInterval(matchmakingLoop, 2000);
 
-  
+        function stopMatchmaking() {
+            if (matchmakingInterval) {
+                clearInterval(matchmakingInterval);
+            }
+        }
+
+        function handleLeaveMatchmaking(page) {
+            stopMatchmaking();
+            leaveMatchmaking()
+            loadPageUsers(page);
+        }
     </script>
 
 </head>
@@ -79,10 +90,12 @@
             <div>
                 <h4>Are you sure you want to leave the matchmaking page? </h4>
                 <p>Once you leave, you will no longer be in this queue.</p>
-                <button onclick="leaveMatchmaking()">Yes</button>
+                <button onclick="handleLeaveMatchmaking('home')">Yes</button>
                 <button onclick="hideConfirmation()">Cancel</button>
             </div>
         </div>
     </div>
+</div>
+<script src="{% static 'js/router.js' %}"></script>
 </body>
 </html>

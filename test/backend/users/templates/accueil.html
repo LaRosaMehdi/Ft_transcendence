@@ -13,12 +13,11 @@
         <div class="cube"></div><div class="cube"></div><div class="cube"></div>
     </div>
     <div id="app-content">
-        <div id="profileData">
-        </div>
+        <div id="profileData"></div>
         {% include 'header.html' %}
         <div class="accueil-box">
             <h2 style="text-align: center;">Welcome, {{ current_user.username }}</h1>
-            <button type="submit" onclick="window.location.href = '{% url 'matchmaking_remote' %}'" style=""> <span></span>
+            <button type="submit" onclick="loadPageMatchmaking('matchmaking_remote')"><span></span>
             <span></span>
             <span></span>Play</button>
             <button type="submit" onclick="window.location.href = '{% url 'tournament' %}'"style=""> <span></span>
@@ -27,12 +26,12 @@
             <!-- <button type="submit" onclick="window.location.href = '{% url 'mode' %}'" style=""> <span></span> -->
                     <!-- <span></span> -->
                     <!-- <span></span>Mode</button> -->
-            <button type="submit" onclick="loadPageUsers('friend')" style=""> <span></span>
+            <button type="submit" onclick="loadPageUsers('friend')"><span></span>
                     <span></span>
                     <span></span>Friends</button>
         </div>
     </div>
-    
+    <script src="{% static 'js/localgame.js' %}" data-arg1="{% csrf_token %}"></script>
     <script src="{% static 'js/router.js' %}"></script>
 </body>
 </html>
