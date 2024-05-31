@@ -15,7 +15,13 @@
 </style>
 <script>
     window.onbeforeunload = function() {
-        fetch('/matchmaking/matchmaking_remote_leave/');
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/matchmaking/matchmaking_remote_leave/', false); // false makes the request synchronous
+        xhr.send(null);
+
+        if (xhr.status !== 200) {
+            console.error('Failed to leave matchmaking queue');
+        }
     }
     function showConfirmation() {
         document.getElementById('confirmationModal').style.display = 'block';
@@ -32,11 +38,14 @@
         fetch('/users/get_current_game/')
         .then(response => response.json())
         .then(data => {
+            console.log("DEBUG_00");
             if (data.current_game !== null && data.context === 1) {
+                console.log("DEBUG_01");
                 stopMatchmaking();
                 loadPageGames('play');
             }
             else if(data.current_game !== null){
+                console.log("DEBUG_02");
                 stopMatchmaking();
                 loadPageGames('game-in-progress');
             }

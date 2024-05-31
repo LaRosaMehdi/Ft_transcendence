@@ -6,11 +6,6 @@ function hideConfirmation() {
     document.getElementById('confirmationModal').style.display = 'none';
 }
 
-function quitGame() {
-    
-    fetch('/games/remote_quit/');
-    loadPageGames('results');
-}
 
 function enfOfGameLoop() {
     fetch('/users/get_current_game/')
@@ -32,7 +27,7 @@ function drawPlayers(ctx, player1, player2) {
 }
 
 function initializeGame() {
-    console.log("localgame.js is called");
+    console.log("localgame.js is called"); 
 
     const canvas = document.getElementById('pongCanvas');
     if (!canvas) {
@@ -40,10 +35,20 @@ function initializeGame() {
         return;
     }
     const ctx = canvas.getContext('2d');
-    const scriptTag = document.querySelector('script[src*="localgame.js"]');
-    var csrfToken = scriptTag.getAttribute('value');
 
-    console.log(csrfToken);
+    //new modfi JWT
+    const csrfToken = localStorage.getItem('csrf_token');
+    const jwtToken = localStorage.getItem('access_token');
+    //manage the NULL
+    if (!csrfToken || !jwtToken) {
+        console.error('CSRF token or JWT token is missing');
+        alert('Your session has expired. Please log in again.');
+        window.location.href = '/login';  // Redirect to login page or handle appropriately
+        return;
+    }
+    
+    console.log("csrfToken: ", csrfToken);
+
 
     const player1 = {
         x: 50,
@@ -85,16 +90,15 @@ function initializeGame() {
             player2Chosen = true;
         }
 
-        console.log('Player selected:', player);
-        if (player1Chosen && player2Chosen) {
-            canvas.style.visibility = 'visible';
-            startGame();
-        }
+        // console.log('Player selected:', player);
+        // if (player1Chosen && player2Chosen) {
+        //     canvas.style.visibility = 'visible';
+        //     startGame();
+        // }
     }
 
     document.getElementById('play-btn').addEventListener('click', function() {
         canvas.style.visibility = 'visible';
-        console.log("DEBUG_BTN");
         startGame();
     });
 
@@ -105,6 +109,12 @@ function initializeGame() {
     document.getElementById('player2-btn').addEventListener('click', function() {
         choosePlayer('player2');
     });
+
+    document.getElementById('quit_game').addEventListener('click', function() {
+        canvas.style.visibility = 'visible';
+        endGame();
+    });
+
 
     function handleKeyEvents(event) {
         if (player1.keys.includes(event.key)) {
@@ -232,6 +242,7 @@ function initializeGame() {
         ctx.fillStyle = 'white';
         ctx.fillText('Player 1: ' + scorePlayer1, 20, 30);
         ctx.fillText('Player 2: ' + scorePlayer2, canvas.width - 150, 30);
+
     }
 
     function draw() {
@@ -249,12 +260,18 @@ function initializeGame() {
         drawScores();
         movePlayers();
         handleCollision();
+        if (scorePlayer1 >= 2 || scorePlayer2 >= 2) {
+            endGame();
+            return;
+        }
+
         ball.dx += accelerationRate * Math.sign(ball.dx);
         ball.dy += accelerationRate * Math.sign(ball.dy);
 
         ball.x += ball.dx;
         ball.y += ball.dy;
         requestAnimationFrame(draw);
+        
     }
 
     function endGame(game) {
@@ -265,7 +282,8 @@ function initializeGame() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken
+                'X-CSRFToken': csrfToken,
+                'Authorization': `Bearer ${jwtToken}` //new mdif JWT
             },
             body: JSON.stringify({
                 player1_score: player1Score,
@@ -306,7 +324,7 @@ function initializeGame() {
         stopBall();
     }
 
-    let countdownInterval;
+    
 
     function startTimer(durationInSeconds) {
         let timer = durationInSeconds;
@@ -329,8 +347,9 @@ function initializeGame() {
         countdownInterval = setInterval(updateTimer, 1000);
     }
 
+    
+
     function startGame() {
-        startTimer(7);
         draw();
     }
 

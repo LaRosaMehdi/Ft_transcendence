@@ -77,8 +77,13 @@ def view_profile(request):
 @jwt_login_required
 def view_profile_friend(request, friend_user):
     user_profile = get_object_or_404(User, username=friend_user)
+    friends_user = request.user.friends.all()
+    
+    for friends_user in friends_user:
+       if friends_user.username == friend_user:
+           break
     user = request.user
-    matches = Game.objects.filter(Q(player1=user) | Q(player2=user)).order_by('-date_time')
+    matches = Game.objects.filter(Q(player1=friends_user) | Q(player2=friends_user)).order_by('-date_time')
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         html = render_to_string('spa_viewProfile.html', {'current_user': user_profile, 'matches': matches, 'context': 'ajax'}, request=request)
         return JsonResponse({'html': html})

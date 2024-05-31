@@ -143,7 +143,10 @@ def user_remove_current_game(request=None, user=None):
 
 @jwt_login_required
 def user_get_current_game(request):
-    return JsonResponse({'current_game': request.user.current_game.id if request.user.current_game else None})
+    current_game = request.user.current_game.id if request.user.current_game else None
+    logger.debug(f"User: {request.user}, Current Game: {current_game}")
+    return JsonResponse({'current_game': current_game})
+    # return JsonResponse({'current_game': request.user.current_game.id if request.user.current_game else None})
 
 @jwt_login_required
 def user_get_last_game(request):

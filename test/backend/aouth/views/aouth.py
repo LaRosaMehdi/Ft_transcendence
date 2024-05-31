@@ -218,13 +218,30 @@ def aouth_login(request, user):
     user.backend = f'{ModelBackend.__module__}.{ModelBackend.__qualname__}'     
     login(request, user)
     user_update_status(request, user, 'online')
+    response_data = {
+        'status': 'success',
+        'message': 'Login Success, welcome',
+        'redirectUrl': 'home',
+        'access_token': request.session.get('access_token'),
+        'refresh_token': request.session.get('refresh_token'),
+        'csrf_token': request.META.get('CSRF_COOKIE')
+    }
+    
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        return JsonResponse({
-            'status': 'success',
-            'message': 'Login Sucess, welcome',
-            'redirectUrl': 'home',
-        })
-    return redirect('home')
+        return JsonResponse(response_data)
+    
+    response = redirect('home')
+    response.set_cookie('access_token', request.session.get('access_token'))
+    response.set_cookie('refresh_token', request.session.get('refresh_token'))
+    response.set_cookie('csrf_token', request.META.get('CSRF_COOKIE'))
+    return response
+    # if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+    #     return JsonResponse({
+    #         'status': 'success',
+    #         'message': 'Login Sucess, welcome',
+    #         'redirectUrl': 'home',
+    #     })
+    # return redirect('home')
 
 # LOUGOUT
 # -------

@@ -28,7 +28,7 @@ def remote_quit(request):
         game_update(request, current_game, -1, current_game.player2_score)
     else:
         game_update(request, current_game, current_game.player1_score, -1)
-
+    return JsonResponse({'status': 'success'})
 
 @jwt_login_required
 def game_end_quit(request):
@@ -54,6 +54,7 @@ def game_end_quit(request):
 @jwt_login_required
 @require_POST
 def finishAndquit(request):
+    logger.info("DEBUG VIEW finish and quit")
     try:
         data = json.loads(request.body)
         player1_score = data.get('player1_score')

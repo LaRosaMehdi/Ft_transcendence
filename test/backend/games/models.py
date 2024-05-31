@@ -8,6 +8,7 @@ class Game(models.Model):
     player2_score = models.IntegerField(default=0)
     winner = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='won_game', null=True, blank=True)
     date_time = models.DateTimeField(auto_now_add=True)
+    draw = models.IntegerField(default=0)
     # tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='games', null=True, blank=True)
 
     def __str__(self):

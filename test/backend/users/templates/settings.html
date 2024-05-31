@@ -114,11 +114,6 @@
                     {% endfor %}
                 {% endif %}
             </div>
-            <script>
-                document.getElementById('enable_2fa').addEventListener('change', function() {
-                    document.getElementById('2faForm').submit();
-                });
-            </script>
         </div>
     {% else %}
         <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
@@ -173,7 +168,7 @@
                 <div style="display: flex;justify-content: center; flex-direction: column; align-items: center;">
                     <h2>Two-factor Authentication</h2>
                     <div style="height: 100%;">
-                        <form id="2faForm" method="post" action="{% url 'setting_change_2fa' %}">
+                        <form method="post" id="2faForm" action="{% url 'setting_change_2fa' %}">
                             {% csrf_token %}
                             <div class="form-group">
                                 <label class="switch">
@@ -197,14 +192,10 @@
                     {% endfor %}
                 {% endif %}
             </div>
-            <script>
-                document.getElementById('enable_2fa').addEventListener('change', function() {
-                    document.getElementById('2faForm').submit();
-                });
-            </script>
         </div>
     {% endif %}
     </div>
     <script src="{% static 'js/router.js' %}"></script>
+    <script src="{% static 'js/localgame.js' %}" data-arg1="{% csrf_token %}"></script>
 </body>
 </html>

@@ -26,35 +26,14 @@
             border: 1px solid #ccc;
             z-index: 1000; /* Ensure modal is above other elements */
         }
-    </style>
-    <script>
-
-        function showConfirmation() {
-            document.getElementById('confirmationModal').style.display = 'block';
-        }
-
-        function hideConfirmation() {
-            document.getElementById('confirmationModal').style.display = 'none';
-        }
-
-        function quitGame() {
-            window.location.href = '/games/remote_quit/';
-        }
-
-        function enfOfGameLoop() {
-            fetch('/users/get_current_game/')
-            .then(response => response.json())
-            .then(data => {
-                if (data.current_game === null) {
-                    window.location.href = '/games/results/';
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
-        setInterval(enfOfGameLoop, 1000);
-    </script>
+    </style> 
 </head>
-<body>
+<div class="hero">
+    <div class="cube"></div><div class="cube"></div><div class="cube"></div>
+    <div class="cube"></div><div class="cube"></div><div class="cube"></div>
+</div>
+<div id="app-content">
+<body class="pong-game-page">
     {% csrf_token %}
     <div class="container">
         <button id="chrono-button">1:00</button>
@@ -76,11 +55,16 @@
             <div>
                 <h4>Are you sure you want to quit this game? </h4>
                 <p>Quitting automatically set your score at -1 and make your opponant the winner.</p>
-                <button onclick="quitGame()">Yes</button>
+                <button id="quit_game">Yes</button>
                 <button onclick="hideConfirmation()">Cancel</button>
             </div>
         </div>
     </div>
-    <script src="{% static 'js/localgame.js' %}" data-arg1="{% csrf_token %}"></script>
+</div>
+<script src="{% static 'js/router.js' %}"></script>
+<script src="{% static 'js/localgame.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', initializeGame);
+</script>
 </body>
 </html>

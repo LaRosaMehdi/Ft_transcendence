@@ -107,11 +107,29 @@ def setting_change_2fa(request):
             enable_2fa = form.cleaned_data['enable_2fa']
             user_update_twofactor(request=request, user=request.user, enabled=enable_2fa)
             messages.success(request, f'2FA {"enabled" if enable_2fa is True else "disabled"} successfully.', extra_tags='change_2fa_tag')
-            return redirect('settings')
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                logger.info("REDIRECT_JSON__2")
+                return JsonResponse({
+                    'status': 'success',
+                    'message': 'Setting change 2FA',
+                    'redirectUrl': 'settings',
+                })
+            else:
+                logger.info("REDIRECT_02")
+                return redirect('settings')
         else:
             for field, field_errors in form.errors.items():
                 for error in field_errors:
                     errors.append(f'{field}: {error}')
     for error in errors:
         messages.error(request, error, extra_tags='change_2fa_tag')
-    return redirect('settings')
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        logger.info("REDIRECT_JSON__05")
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Setting change 2FA',
+            'redirectUrl': 'settings',
+        })
+    else:
+        logger.info("REDIRECT__05")
+        return redirect('settings')

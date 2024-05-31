@@ -45,6 +45,8 @@ def game_update(request, game, player1_score, player2_score):
             game.winner = game.player1
         elif player1_score < player2_score:
             game.winner = game.player2
+        elif player1_score == player2_score:
+            game.draw = 1
         game.save()
         # ELO
         user_update_status(request, game.player1, "online")

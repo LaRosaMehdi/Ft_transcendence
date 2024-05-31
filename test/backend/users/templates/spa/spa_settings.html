@@ -99,11 +99,6 @@
                     {% endfor %}
                 {% endif %}
             </div>
-            <script>
-                document.getElementById('enable_2fa').addEventListener('change', function() {
-                    document.getElementById('2faForm').submit();
-                });
-            </script>
         </div>
     {% else %}
         <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
@@ -182,10 +177,5 @@
                     {% endfor %}
                 {% endif %}
             </div>
-            <script>
-                document.getElementById('enable_2fa').addEventListener('change', function() {
-                    document.getElementById('2faForm').submit();
-                });
-            </script>
         </div>
     {% endif %}

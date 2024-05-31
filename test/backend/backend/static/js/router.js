@@ -8,7 +8,6 @@ function loadPageUsers(pagePath, pushState = true) {
                 history.pushState({ path: pagePath, content: response.html }, '', `/users/${pagePath}`);
             }
             bindFormEvent();
-            
         },
         error: function(error) {
             console.error('Error loading the page:', error);
@@ -164,6 +163,7 @@ function bindFormEvent() {
     $('#twoFactorAouth').off('submit').on('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(this);
+        
         $.ajax({
             type: 'POST',
             url: this.action,
@@ -172,6 +172,9 @@ function bindFormEvent() {
             contentType: false,
             success: function(response) {
                 if (response.status === 'success') {
+                    localStorage.setItem('access_token', response.access_token);
+                    localStorage.setItem('refresh_token', response.refresh_token);
+                    localStorage.setItem('csrf_token', response.csrf_token);
                     loadPageUsers(response.redirectUrl.replace(/^\//, ''), true);
                 } else {
                     console.log('Success with unexpected status:', response.message);
@@ -182,6 +185,33 @@ function bindFormEvent() {
                 console.error("Error submitting form:", error);
             }
         });
+    });
+
+    // Setting change the 2factor
+    $('#2faForm').off('submit').on('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        console.log("2faForm call");
+
+        $.ajax({
+            type: 'POST',
+            url: this.action,
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log("Success 2faForm");
+               
+            },
+            error: function(xhr, status, error) {
+                console.error("Error submitting form:", error);
+            }
+        });
+    });
+
+    $('#enable_2fa').change(function(e) {
+        e.preventDefault();
+        $('#2faForm').submit();
     });
 
     //Auth login 
@@ -198,6 +228,9 @@ function bindFormEvent() {
             success: function(response) {
                 console.log("Response received:", response);
                 if (response.redirectUrl == 'home') {
+                    localStorage.setItem('access_token', response.access_token);
+                    localStorage.setItem('refresh_token', response.refresh_token);
+                    localStorage.setItem('csrf_token', response.csrf_token);
                     loadPageUsers(response.redirectUrl.replace(/^\//, ''), true);
                 }
                 else if (response.status === 'success') {

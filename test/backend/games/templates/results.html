@@ -11,16 +11,22 @@
     <link rel="stylesheet" href="{% static 'jeu.css' %}">
     <link rel="stylesheet" href="{% static 'animations.css' %}">
     <link rel="stylesheet" href="{% static 'logos.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+    <div class="hero">
+        <div class="cube"></div><div class="cube"></div><div class="cube"></div>
+        <div class="cube"></div><div class="cube"></div><div class="cube"></div>
+    </div>
+    <div id="app-content">
     <div class="login-box">
         {% if game.winner == request.user %}
             <h2 style="text-align: center;">Congratulations!<br>You are the winner!</h2>
         {% elif game.winner %}
             <h2 style="text-align: center;">Sorry!<br> You are not the winner this time.</h2>
         {% else %}
-            <h2 style="text-align: center;">Game in progress...</h2>
+            <h2 style="text-align: center;">Bad luck its a Draw</h2>
         {% endif %}
         <p style="color:white; text-align: center;">{{ game.player1.username }} vs {{ game.player2.username }}</h4>
         {% if game.player1_score == -1 %}
@@ -33,7 +39,7 @@
         <p style="color:white; text-align: center;">Time & Date : {{ game.date_time}} </h4>
     </div>
     <div class="perso-button" style="top: 90%">
-        <button type="submit" onclick="window.location.href = '{% url 'matchmaking_remote' %}'" style="margin-right: 20px;"> <span></span>
+        <button type="submit" onclick="loadPageMatchmaking('matchmaking_remote')" style="margin-right: 20px;"> <span></span>
             <span></span>
             <span></span>PLAY AGAIN
         </button>
@@ -42,7 +48,8 @@
             <span></span>LEAVE
         </button>
     </div>
-    
+</div>
 </body>
 <script src="{% static 'js/router.js' %}"></script>
+<script src="{% static 'js/localgame.js' %}" data-arg1="{% csrf_token %}"></script>
 </html>

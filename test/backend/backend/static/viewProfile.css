@@ -54,6 +54,11 @@
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+    overflow-y: scroll;
+    max-height: 70vh;
+    max-width: 70vw;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
 }
 
 .match-history-container h2 {
@@ -88,7 +93,7 @@
     border-bottom: 1px solid #ddd;
 }
 
-.match-history-container .circle_status {
+.circle_status {
     display: inline-block;
     width: 10px;
     height: 10px;
@@ -97,11 +102,11 @@
     background-color: #03e9f4;
 }
 
-.match-history-container .circle_status.online {
+.circle_status.online {
     background-color: green;
 }
 
-.match-history-container .circle_status.ingame {
+.circle_status.ingame {
     background-color: yellow;
 }
 
