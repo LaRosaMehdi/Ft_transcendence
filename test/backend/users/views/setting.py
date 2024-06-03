@@ -39,14 +39,28 @@ def setting_change_username(request):
                 request.user.username = new_username
                 request.user.save()
                 messages.success(request, 'Username changed successfully.', extra_tags='change_username_tag')
-                return redirect('settings')
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'status': 'success',
+                        'message': 'Setting change User-Name',
+                        'redirectUrl': 'settings',
+                    })
+                else:
+                    return redirect('settings')
         else:
             for field, field_errors in form.errors.items():
                 for error in field_errors:
                     errors.append(f'{field}: {error}')
     for error in errors:
         messages.error(request, error, extra_tags='change_username_tag')
-    return redirect('settings')
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Setting change User-Name',
+            'redirectUrl': 'settings',
+        })
+    else:
+        return redirect('settings')
 
 @jwt_login_required
 def setting_change_image(request):
@@ -56,14 +70,28 @@ def setting_change_image(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Image changed successfully.', extra_tags='change_image_tag')
-            return redirect('settings')
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'status': 'success',
+                    'message': 'Setting change Image',
+                    'redirectUrl': 'settings',
+                })
+            else:
+                return redirect('settings')
         else:
             for field, field_errors in form.errors.items():
                 for error in field_errors:
                     errors.append(f'{field}: {error}')
     for error in errors:
         messages.error(request, error, extra_tags='change_image_tag')
-    return redirect('settings')
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Setting change Image',
+            'redirectUrl': 'settings',
+        })
+    else:
+        return redirect('settings')
 
 @login_required
 def setting_change_password(request):
@@ -85,7 +113,14 @@ def setting_change_password(request):
                         update_session_auth_hash(request, user)
                         messages.success(request, 'Your password was successfully updated!', extra_tags='change_password_tag')
                         logger.debug(f"twofactor_setting: Your password was successfully updated!")
-                        return redirect('settings')
+                        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                            return JsonResponse({
+                                'status': 'success',
+                                'message': 'Setting change Password',
+                                'redirectUrl': 'settings',
+                            })
+                        else:
+                            return redirect('settings')
                 else:
                     errors.append('New passwords do not match!')
             else:
@@ -96,7 +131,14 @@ def setting_change_password(request):
                     errors.append(f"{field}: {error}")
     for error in errors:
         messages.error(request, error, extra_tags='change_password_tag')
-    return redirect('settings')
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Setting change Password',
+            'redirectUrl': 'settings',
+        })
+    else:
+        return redirect('settings')
 
 @jwt_login_required
 def setting_change_2fa(request):
@@ -108,14 +150,12 @@ def setting_change_2fa(request):
             user_update_twofactor(request=request, user=request.user, enabled=enable_2fa)
             messages.success(request, f'2FA {"enabled" if enable_2fa is True else "disabled"} successfully.', extra_tags='change_2fa_tag')
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                logger.info("REDIRECT_JSON__2")
                 return JsonResponse({
                     'status': 'success',
                     'message': 'Setting change 2FA',
                     'redirectUrl': 'settings',
                 })
             else:
-                logger.info("REDIRECT_02")
                 return redirect('settings')
         else:
             for field, field_errors in form.errors.items():
@@ -124,12 +164,10 @@ def setting_change_2fa(request):
     for error in errors:
         messages.error(request, error, extra_tags='change_2fa_tag')
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        logger.info("REDIRECT_JSON__05")
         return JsonResponse({
             'status': 'success',
             'message': 'Setting change 2FA',
             'redirectUrl': 'settings',
         })
     else:
-        logger.info("REDIRECT__05")
         return redirect('settings')

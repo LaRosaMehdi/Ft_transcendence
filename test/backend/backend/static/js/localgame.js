@@ -27,11 +27,9 @@ function drawPlayers(ctx, player1, player2) {
 }
 
 function initializeGame() {
-    console.log("localgame.js is called"); 
 
     const canvas = document.getElementById('pongCanvas');
     if (!canvas) {
-        console.log('Canvas element not found');
         return;
     }
     const ctx = canvas.getContext('2d');
@@ -46,8 +44,6 @@ function initializeGame() {
         window.location.href = '/login';  // Redirect to login page or handle appropriately
         return;
     }
-    
-    console.log("csrfToken: ", csrfToken);
 
 
     const player1 = {
@@ -90,11 +86,6 @@ function initializeGame() {
             player2Chosen = true;
         }
 
-        // console.log('Player selected:', player);
-        // if (player1Chosen && player2Chosen) {
-        //     canvas.style.visibility = 'visible';
-        //     startGame();
-        // }
     }
 
     document.getElementById('play-btn').addEventListener('click', function() {
@@ -354,7 +345,6 @@ function initializeGame() {
     }
 
     if (document.body.classList.contains('pong-game-page')) {
-        console.log("localgame.js loaded");
         setInterval(enfOfGameLoop, 1000);
     }
 }

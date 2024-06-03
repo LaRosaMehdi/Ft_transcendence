@@ -81,7 +81,6 @@ def twofactor_oauth(request):
                     }
 
                     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                        logger.info("DEBUG 2factor::")
                         return JsonResponse(response_data)
                     else:
                         response = redirect('home')

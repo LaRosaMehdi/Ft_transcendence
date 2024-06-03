@@ -96,7 +96,6 @@ function loadPageBlockchain(pagePath, pushState = true) {
 
 //SPA Request GET, load page /Aouth/...
 function loadPageAouth(pagePath, pushState = true) {
-    console.log("load page Aouth", pagePath)
     $.ajax({
         url: `/aouth/${pagePath}/`,
         success: function(response) {
@@ -134,7 +133,6 @@ function bindFormEvent() {
     //REgister
     $('#registerForm').off('submit').on('submit', function(e) {
         e.preventDefault();
-        console.log("Form submit event caught");
         const formData = new FormData(this);
 
         $.ajax({
@@ -144,7 +142,6 @@ function bindFormEvent() {
             processData: false,
             contentType: false,
             success: function(response) {
-                console.log("Response received:", response);
                 if (response.status === 'success') {
                     loadPageAouth(response.redirectUrl.replace(/^\//, ''), true);
                 } else {
@@ -187,11 +184,72 @@ function bindFormEvent() {
         });
     });
 
+    $('#Set_image').off('submit').on('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        $.ajax({
+            type: 'POST',
+            url: this.action,
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log("Success image changed");
+               
+            },
+            error: function(xhr, status, error) {
+                console.error("Error submitting form:", error);
+            }
+        });
+    });
+
+    $('#Set_username').off('submit').on('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        $.ajax({
+            type: 'POST',
+            url: this.action,
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log("Success username changed");
+               
+            },
+            error: function(xhr, status, error) {
+                console.error("Error submitting form:", error);
+            }
+        });
+    });
+    
+
+    // Setting change the Password
+    $('#Set_password').off('submit').on('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        $.ajax({
+            type: 'POST',
+            url: this.action,
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log("Success password changed");
+               
+            },
+            error: function(xhr, status, error) {
+                console.error("Error submitting form:", error);
+            }
+        });
+    });
+
     // Setting change the 2factor
     $('#2faForm').off('submit').on('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(this);
-        console.log("2faForm call");
 
         $.ajax({
             type: 'POST',
@@ -209,9 +267,11 @@ function bindFormEvent() {
         });
     });
 
-    $('#enable_2fa').change(function(e) {
+    $('#enable_2fa').off('change').on('change', function(e) {
         e.preventDefault();
+        bindFormEvent()
         $('#2faForm').submit();
+        
     });
 
     //Auth login 
@@ -286,9 +346,29 @@ function bindFormEvent() {
     });
 }
 
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        
+        reader.onload = function(e) {
+            $('#imagePreview').attr('src', e.target.result);
+        }
+        
+        reader.readAsDataURL(input.files[0]); // convert to base64 string
+    }
+}
 
 $(document).ready(function() {
     bindFormEvent();
+
+    $("#file-upload").change(function() {
+        readURL(this);
+    });
+
+    $(document).on('pjax:end', function() {
+        bindFormEvent();
+    });
+
     history.replaceState({ path: window.location.pathname, content: $('#app-content').html() }, '', window.location.pathname);
 
     $('body').on('click', '#goBackButton', function()
@@ -312,37 +392,5 @@ function setupGoBackButton() {
     $('#goBackButton').on('click', function() {
         window.history.back();
     });
-}
-
-function loadProfileDataJson() {
-    event.preventDefault();
-    var profileData = $('#profileData');
-
-    if (profileData.is(':visible')) {
-        profileData.hide();
-    } else {
-        $.ajax({
-            url: `generate_profile_json/`,
-            type: 'GET',
-            success: function(data) {
-                var profileDiv = $('<div>').addClass('profile-section');
-
-                Object.keys(data).forEach(function(key) {
-                    var propertyDiv = $('<div>').addClass('profile-property');
-                    propertyDiv.append('<span class="property-label">' + key + ': </span>');
-                    propertyDiv.append('<span class="property-value">' + data[key] + '</span>');
-                    profileDiv.append(propertyDiv);
-                });
-                // profileDiv.append('<h3>Username</h3><div class="profile-data">' + data.username + '</div>');
-                // profileDiv.append('<h3>Email</h3><div class="profile-data">' + data.email + '</div>');
-                // profileDiv.append('<h3>Age</h3><div class="profile-data">' + data.age + '</div>');
-                $('#profileData').html(profileDiv);
-                $('#profileData').show();
-            },
-            error: function(xhr, status, error) {
-                console.error(error);
-            }
-        });
-    }
 }
 

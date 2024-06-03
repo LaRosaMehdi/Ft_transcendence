@@ -7,7 +7,6 @@ from django.http import JsonResponse
 import logging
 
 logger = logging.getLogger(__name__)
-# logger.info("DEBUG 0000 suuuupppper : ")
 
 w3 = Web3(Web3.HTTPProvider('http://container_ganache:8545'))
 # w3.eth.chainId = 345
