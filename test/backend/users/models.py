@@ -34,7 +34,7 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser):
     username = models.CharField(max_length=100, unique=True)
     email = models.EmailField(unique=True)
-    elo = models.IntegerField(default=0)
+    elo = models.IntegerField(default=1000)
     password = models.CharField(max_length=100, null=True)
     image = models.ImageField(upload_to='', null=True)
 
@@ -51,7 +51,7 @@ class User(AbstractBaseUser):
     current_game = models.ForeignKey('games.Game', on_delete=models.SET_NULL, null=True, blank=True, related_name='current_game_user')
     match_history = models.ManyToManyField('games.Game', related_name="match_history_user", blank=True) 
     friends = models.ManyToManyField('self', symmetrical=False, related_name='added_by')
-
+    draw = models.IntegerField(default=0)
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'
 
@@ -63,7 +63,6 @@ class User(AbstractBaseUser):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='offline')
 
     validation_code = models.CharField(max_length=64, null=True, blank=True)
-    validation_code_expiration = models.DateTimeField(null=True, blank=True)
 
     twofactor_enabled = models.BooleanField(default=True)
 

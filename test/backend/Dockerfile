@@ -14,6 +14,7 @@ RUN apk add --no-cache postgresql-client libpq vim curl nodejs npm \
 COPY requirements.txt ./
 
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install typing_extensions --upgrade
 
 COPY . .
 

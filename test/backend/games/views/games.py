@@ -63,3 +63,79 @@ def check_status_user(request):
     logger.info(f"request: {request.user.status}")
     context = request.user.status
     return JsonResponse({'context': context})
+
+
+# Tournament games
+# ----------------
+
+@jwt_login_required
+def game_tournament_init(request,  tournament, level, player1_id, player2_id):
+    try:
+        player1 = None if player1_id == None else User.objects.get(pk=player1_id.id)
+        player2 = None if player2_id == None else User.objects.get(pk=player2_id.id)
+        new_game = Game.objects.create(
+            player1=player1,
+            player2=player2,
+            player1_score=0,
+            player2_score=0,
+            winner_id=None
+        )
+        new_game.tournament = tournament
+        new_game.level = level
+        new_game.save()
+        return new_game
+    except Exception as e:
+        logger.error(f"game_tournament_init error: {e}")
+        return None
+
+@jwt_login_required
+def game_tournament_start(request, game):
+    try:
+        logger.debug("again")
+        if game.winner is None:
+            user_update_status(request, game.player1, "ingame")
+            user_add_to_match_history(request, game.player1, game)
+            user_add_current_game(request, game.player1, game)
+            user_update_status(request, game.player2, "ingame")
+            user_add_to_match_history(request, game.player2, game)
+            user_add_current_game(request, game.player2, game)
+    except Exception as e:
+        logger.error(f"game_tournament_start error: {e}")
+        return None
+
+@jwt_login_required
+def game_tournament_end(request, game, player1_score, player2_score):
+    try:
+        winner = game.player1 if player1_score > player2_score else game.player2
+        loser = game.player1 if winner == game.player2 else game.player2
+        game.player1_score = player1_score
+        game.player2_score = player2_score
+        game.winner = winner
+        game.save()
+    
+        place_mappings = {
+            4: ['fourth_place', 'third_place', 'second_place', 'first_place'],
+            8: ['eighth_place', 'seventh_place', 'sixth_place', 'fifth_place', 'fourth_place', 'third_place', 'second_place', 'first_place']
+        }
+
+        tournament = game.tournament
+        places = place_mappings.get(tournament.nb_players, [])
+
+        for place in places:
+            if getattr(tournament, place) is None:
+                setattr(tournament, place, loser if place != 'first_place' else winner)
+                if place == 'second_place':
+                    setattr(tournament, 'first_place', winner)
+                break
+
+        tournament.save()
+
+        user_update_status(request, game.player1, "online")
+        user_update_status(request, game.player2, "online")
+        user_remove_current_game(request, game.player1)
+        user_remove_current_game(request, game.player2)
+        return JsonResponse({'status': 'success'})
+
+    except Exception as e:
+        logger.error(f"game_tournament_end error: {e}")
+        return None

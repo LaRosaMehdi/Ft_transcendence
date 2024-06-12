@@ -1,4 +1,4 @@
-// Fichier create_tournament.js
+// Fichier tournament_generate.js
 
 // Ajoutez un écouteur d'événements lorsque le document est chargé
 document.addEventListener('DOMContentLoaded', function() {
@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const tournamentName = document.getElementById('name').value;
 
         // Envoie d'une requête AJAX pour créer un tournoi
-        fetch('/api/create_tournament/', {
+        fetch('/api/tournament_generate/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

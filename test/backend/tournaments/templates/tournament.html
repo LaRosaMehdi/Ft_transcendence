@@ -18,19 +18,13 @@
         <h2>Tournament</h2>
     </div>
     <div class="tournament-box">
-        <button type="submit" onclick="window.location.href = '{% url 'createPrivateTournament' %}'" style="right:10%"> <span></span>
-        <span></span>
-        <span></span>
-        <span></span>Create Private Tournament</button>
-    </div>
-    <div class="tournament-box">
-        <button type="submit" onclick="window.location.href = '{% url 'createPublicTournament' %}'" style="right:10%"> <span></span>
+        <button type="submit" onclick="window.location.href = '{% url 'createTournament' %}'" style="right:10%"> <span></span>
         <span></span>
         <span></span>
         <span></span>Create Public Tournament</button>
     </div>
     <div class="tournament-box">
-        <button type="submit" onclick="window.location.href = '{% url 'join_tournament' %}'" style="right:10%"> <span></span>
+        <button type="submit" onclick="window.location.href = '{% url 'joinTournament' %}'" style="right:10%"> <span></span>
         <span></span>
         <span></span>
         <span></span>Join Tournament</button>

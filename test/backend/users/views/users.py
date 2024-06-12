@@ -59,8 +59,23 @@ def user_update_status(request=None, user=None, new_status=None):
     else:
         logger.error("Invalid arguments for user_update_status")
 
+
+@jwt_login_required
+def user_update_alias(request=None, user=None, new_alias=None):
+    if request is not None and user is not None:
+        logger.debug(f"Updating alias of {user.username} to {new_alias}")
+        user.alias = new_alias
+        user.save()
+    elif user is not None:
+        logger.debug(f"Updating alias of {user.username} to {new_alias}")
+        user.alias = new_alias
+        user.save()
+    else:
+        logger.error("Invalid arguments for user_update_alias")
+
 # User security
 # -------------
+
 
 @jwt_login_required
 def user_update_twofactor(request=None, user=None, enabled=None):
