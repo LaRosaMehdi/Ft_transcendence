@@ -17,16 +17,10 @@
     <link rel="stylesheet" href="{% static 'setting.css' %}">
     <link rel="stylesheet" href="{% static 'scoreTournament.css' %}">
     <link rel="stylesheet" href="{% static 'chats.css' %}">
+    <link rel="stylesheet" href="{% static 'tournament.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .container{
-            /* position: absolute !important; */
-            top: 100px!important;
-            left: 5px!important;
-        }
-    </style>
 </head>
 <body>
     <div class="hero">
@@ -34,7 +28,7 @@
         <div class="cube"></div><div class="cube"></div><div class="cube"></div>
     </div>
     <div id="app-content">
-    <div class="container">
+    <div class="container1">
         <button type="submit" onclick="loadPageAouth('register')"><span></span>
             <span></span>
             <span></span>
@@ -86,6 +80,7 @@
     </div>
     </div>
     <script src="{% static 'js/router.js' %}"></script>
+    <script src="{% static 'js/localgame.js' %}"></script>
     <script src="{% static 'js/localgame.js' %}" data-arg1="{% csrf_token %}"></script>
 </body>
 </html>

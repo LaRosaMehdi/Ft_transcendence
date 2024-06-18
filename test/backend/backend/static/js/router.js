@@ -15,6 +15,29 @@ function loadPageUsers(pagePath, pushState = true) {
     });
 }
 
+//SPA Request GET, load page /tournaments/...
+function loadPageTournament(pagePath, pushState = true) {
+    if(!pagePath) {
+        return(console.log("I got you haha: ", pagePath));}
+    $.ajax({
+        url: `/tournaments/${pagePath}`,
+        success: function(response) {
+            $('#app-content').html(response.html);
+            if (pushState) {
+                history.pushState({ path: pagePath, content: response.html }, '', `/tournaments/${pagePath}`);
+            }
+            bindFormEvent();
+            if (document.getElementById('tournament-name')) {
+                initTournamentPage();
+            }
+
+        },
+        error: function(error) {
+            console.error('Error loading the page:', error);
+        }
+    });
+}
+
 //SPA Request GET, load page /matchmaking/...
 function loadPageMatchmaking(pagePath, pushState = true) {
     $.ajax({
@@ -86,7 +109,7 @@ function loadPageBlockchain(pagePath, pushState = true) {
             if (pushState) {
                 history.pushState({ path: pagePath, content: response.html }, '', `/blockchain/${pagePath}`);
             }
-            bindFormEvent(); 
+            bindFormEvent();
         },
         error: function(error) {
             console.error('Error loading the page:', error);
@@ -127,6 +150,27 @@ function loadPageFriendProfile(username, pushState = true) {
         }
     });
 }
+
+//set localstorage for connection via 42AOUTH with 2FA enable
+function setLocalStorageAndLoadPage() {
+    const accessToken = document.getElementById('access_token').value;
+    const refreshToken = document.getElementById('refresh_token').value;
+    const csrfToken = document.getElementById('csrf_token').value;
+    const redirectUrl = document.getElementById('redirect_url').value;
+
+    if (accessToken && refreshToken && csrfToken) {
+        localStorage.setItem('access_token', accessToken);
+        localStorage.setItem('refresh_token', refreshToken);
+        localStorage.setItem('csrf_token', csrfToken);
+
+        loadPageUsers(redirectUrl.replace(/^\//, ''), true);
+    } else {
+        console.error('Missing tokens');
+        window.location.href = '/login';  // Redirect to login page or handle appropriately
+    }
+}
+
+
 
 //SPA Request POST, Form register, login, 2FA
 function bindFormEvent() {
@@ -177,6 +221,49 @@ function bindFormEvent() {
                     console.log('Success with unexpected status:', response.message);
                     loadPageAouth(response.redirectUrl.replace(/^\//, ''), true);
                 }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error submitting form:", error);
+            }
+        });
+    });
+    
+
+    //connectTournament
+    $('#connectTournament').off('submit').on('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        $.ajax({
+            type: 'POST',
+            url: this.action,
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if (response.status === 'success')
+                    loadPageTournament(response.redirectUrl.replace(/^\//, ''), true);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error submitting form:", error);
+            }
+        });
+    });
+
+    //generateTournament
+    $('#generateTournament').off('submit').on('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        $.ajax({
+            type: 'POST',
+            url: this.action,
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if (response.status === 'success')
+                    loadPageTournament(response.redirectUrl.replace(/^\//, ''), true);
             },
             error: function(xhr, status, error) {
                 console.error("Error submitting form:", error);
@@ -358,8 +445,14 @@ function readURL(input) {
     }
 }
 
+
 $(document).ready(function() {
     bindFormEvent();
+    // window.onbeforeunload = function() {
+    //     console.log("oo")
+    //     async function leave(){leaveMatchmaking2(); }
+        
+    // }
 
     $("#file-upload").change(function() {
         readURL(this);
@@ -375,12 +468,14 @@ $(document).ready(function() {
     {
         window.history.back();
     });
+    
 
     window.addEventListener('popstate', function(event) {
         if (window.location.pathname === '/aouth/twofactor/') {
             loadPageAouth('aouth_logout'); 
         }
         else if (event.state) {
+            console.log("aloura2");
             $('#app-content').html(event.state.content);
             bindFormEvent();
         }

@@ -229,19 +229,13 @@ def aouth_login(request, user):
     
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         return JsonResponse(response_data)
-    
-    response = redirect('home')
-    response.set_cookie('access_token', request.session.get('access_token'))
-    response.set_cookie('refresh_token', request.session.get('refresh_token'))
-    response.set_cookie('csrf_token', request.META.get('CSRF_COOKIE'))
-    return response
-    # if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-    #     return JsonResponse({
-    #         'status': 'success',
-    #         'message': 'Login Sucess, welcome',
-    #         'redirectUrl': 'home',
-    #     })
-    # return redirect('home')
+    return render(request, 'loading_connection.html', {
+        'access_token': response_data['access_token'],
+        'refresh_token': response_data['refresh_token'],
+        'csrf_token': response_data['csrf_token'],
+        'redirect_url': 'home',
+    })
+
 
 # LOUGOUT
 # -------

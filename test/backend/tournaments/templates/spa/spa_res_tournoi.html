@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'buttons.css' %}">
+    <link rel="stylesheet" href="{% static 'animations.css' %}">
+    <link rel="stylesheet" href="{% static 'logos.css' %}">
+    <link rel="stylesheet" href="{% static 'perso.css' %}">
+    <link rel="stylesheet" href="{% static 'matchmaking.css' %}">
+    <link rel="stylesheet" href="{% static 'stylesheet.css' %}">>
+    <title>Résultats du tournoi</title>
+</head>
+<body>
+    <div class="tournament-results">
+        <h1>Résultats du tournoi</h1>
+        <form id="player-form">
+            <label for="num-players">Nombre de joueurs (max 8) :</label>
+            <input type="number" id="num-players" name="num-players" min="1" max="8" value="5">
+            <button type="submit">Générer</button>
+        </form>
+        <table>
+            <thead>
+                <tr>
+                    <th>Position</th>
+                    <th>Joueur</th>
+                    <th>Victoires</th>
+                    <th>Nulles</th>
+                    <th>Défaites</th>
+                </tr>
+            </thead>
+            <tbody id="results-body">
+                <!-- Les lignes seront générées dynamiquement ici -->
+            </tbody>
+        </table>
+    </div>
+    <script src="resultat_tournoi.js"></script>
+</body>
+</html>

@@ -40,20 +40,40 @@
     </div>
     <div id="app-content">
         <script>
-            window.onbeforeunload = function() {
-                var xhr = new XMLHttpRequest();
-                var jwtToken = localStorage.getItem('access_token');
-                
-                if (jwtToken) {
-                    xhr.open('POST', '/matchmaking/matchmaking_remote_leave/', false); // false makes the request synchronous
-                    xhr.setRequestHeader('Authorization', 'Bearer ' + jwtToken);
-                    xhr.send(null);
-
-                    if (xhr.status !== 200) {
-                        console.error('Failed to leave matchmaking queue');
-                    }
-                }
+            function leaveMatchmaking() {
+                fetch('/matchmaking/matchmaking_remote_leave/');
             }
+
+            window.onbeforeunload = function() {
+                console.log("YOUPI")
+                async function leave(){leaveMatchmaking(); }
+              
+            }
+        
+            document.addEventListener('click', function(event) {
+                var target = event.target;
+        
+                while (target && target.nodeName !== 'A') {
+                    target = target.parentNode;
+                }
+        
+                if (target && target.nodeName === 'a') {
+                    event.preventDefault();
+                    leaveMatchmaking();
+                    console.log("Leaving matchmaking due to link click");
+                    setTimeout(() => {
+                        window.location.href = target.href;
+                    }, 100); // Slight delay to ensure the fetch completes
+                }
+            });
+        
+        
+
+            window.addEventListener('popstate', function(event) {
+                console.log("super1")
+                handleLeaveMatchmaking();
+            });
+
             function showConfirmation() {
                 document.getElementById('confirmationModal').style.display = 'block';
             }
@@ -88,10 +108,10 @@
                     }
                 }
         
-            function handleLeaveMatchmaking(page) {
+            function handleLeaveMatchmaking() {
                 stopMatchmaking();
-                leaveMatchmaking()
-                loadPageUsers(page);
+                leaveMatchmaking();
+                loadPageUsers('home');
             }
         </script>
         <div class="login-box">

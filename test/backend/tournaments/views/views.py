@@ -17,23 +17,54 @@ def view_resTournoi(request):
 
 @jwt_login_required
 def view_tournament(request):
-    return render(request, 'tournament.html')
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        html = render_to_string('spa_tournament.html', request=request)
+        return JsonResponse({'html': html})
+    else:
+        return render(request, 'tournament.html')
 
 @jwt_login_required
 def view_tournament_generate(request):
-    return render(request, 'createTournament.html', {'current_user': request.user, 'form': generateTournamentForm()})
+    logger.info("DEBUG_view_tournament_generate")
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        html = render_to_string('spa_createTournament.html', {'current_user': request.user, 'form': generateTournamentForm()}, request=request)
+        return JsonResponse({'html': html})
+    else:
+        return render(request, 'createTournament.html', {'current_user': request.user, 'form': generateTournamentForm()})
 
 @jwt_login_required
 def view_tournament_join(request):
-    return render(request, 'joinTournament.html', {'current_user': request.user, 'form': ConnectTournamentForm()})
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        html = render_to_string('joinTournament.html', {'current_user': request.user, 'form': ConnectTournamentForm()}, request=request)
+        return JsonResponse({'html': html})
+    else:
+        return render(request, 'joinTournament.html', {'current_user': request.user, 'form': ConnectTournamentForm()})
+
+# @jwt_login_required
+# def view_tournament_dashboard(request, tournament_name):
+#     logger.info("DEBUG_dashborad")
+#     tournament = Tournament.objects.get(name=tournament_name)
+#     if tournament and tournament.players.filter(username=request.user.username).exists() is False:
+#         messages.error(request, 'Please join the tournament before accessing the dashboard', extra_tags='tournament_join')
+#         return render(request, 'joinTournament.html', {'current_user': request.user, 'form': ConnectTournamentForm()})
+#     return render(request, 'dashboardTournament.html', {'tournament_name': tournament_name})
 
 @jwt_login_required
 def view_tournament_dashboard(request, tournament_name):
     tournament = Tournament.objects.get(name=tournament_name)
-    if tournament and tournament.players.filter(username=request.user.username).exists() is False:
+    if tournament and not tournament.players.filter(username=request.user.username).exists():
         messages.error(request, 'Please join the tournament before accessing the dashboard', extra_tags='tournament_join')
-        return render(request, 'joinTournament.html', {'current_user': request.user, 'form': ConnectTournamentForm()})
-    return render(request, 'dashboardTournament.html', {'tournament_name': tournament_name})
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            html = render_to_string('joinTournament.html', {'current_user': request.user, 'form': ConnectTournamentForm()}, request)
+            return JsonResponse({'html': html, 'redirect': 'joinTournament'})
+        else:
+            return render(request, 'joinTournament.html', {'current_user': request.user, 'form': ConnectTournamentForm()})
+    
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        html = render_to_string('dashboardTournament.html', {'tournament_name': tournament_name}, request)
+        return JsonResponse({'html': html, 'redirect': 'dashboardTournament'})
+    else:
+        return render(request, 'dashboardTournament.html', {'tournament_name': tournament_name})
 
 @jwt_login_required
 def view_tournament_play(request, tournament_name, game_id):

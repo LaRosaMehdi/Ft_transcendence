@@ -34,7 +34,7 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser):
     username = models.CharField(max_length=100, unique=True)
     email = models.EmailField(unique=True)
-    elo = models.IntegerField(default=1000)
+    elo = models.IntegerField(default=0)
     password = models.CharField(max_length=100, null=True)
     image = models.ImageField(upload_to='', null=True)
 

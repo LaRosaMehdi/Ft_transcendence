@@ -19,6 +19,6 @@ class Game(models.Model):
     date_time = models.DateTimeField(auto_now_add=True)
     tournament = models.ForeignKey('tournaments.Tournament', on_delete=models.CASCADE, related_name='tournament_game', null=True, blank=True)
     level = models.CharField(max_length=20, choices=LEVEL_CHOICES, default='none')
-
+    draw = models.IntegerField(default=0)
     def __str__(self):
         return f"[{self.tournament.name if  self.tournament is not None else 'DEFAULT GAME'}] {'Undefined' if self.player1 is None else self.player1.username} vs {'Undefined' if self.player2 is None else self.player2.username} : {self.player1_score} - {self.player2_score}"
