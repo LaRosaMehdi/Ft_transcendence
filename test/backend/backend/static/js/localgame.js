@@ -12,11 +12,13 @@ function enfOfGameLoop() {
     .then(response => response.json())
     .then(data => {
         if (data.current_game === null) {
+            console.log("spirit loop");
             window.location.href = '/games/results/';
         }
     })
     .catch(error => console.error('Error:', error));
 }
+
 
 function drawPlayers(ctx, player1, player2) {
     ctx.fillStyle = player1.color;
@@ -27,7 +29,7 @@ function drawPlayers(ctx, player1, player2) {
 }
 
 function initializeGame() {
-
+    
     const canvas = document.getElementById('pongCanvas');
     if (!canvas) {
         return;

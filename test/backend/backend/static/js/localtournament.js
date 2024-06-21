@@ -37,12 +37,13 @@ function drawPlayers(ctx, player1, player2) {
     ctx.fillRect(player2.x, player2.y, player2.width, player2.height);
 }
 
-function initializeGame() {
-
+function initializeGameTournament() {
+    console.log("localtournament.js call");
     const canvas = document.getElementById('pongCanvas');
     if (!canvas) {
         return;
     }
+    console.log("localtournament.js call2");
     const ctx = canvas.getContext('2d');
 
     //new modfi JWT
@@ -101,6 +102,7 @@ function initializeGame() {
 
     document.getElementById('play-btn').addEventListener('click', function() {
         canvas.style.visibility = 'visible';
+        console.log("play btn call");
         startGame();
     });
 
@@ -307,7 +309,8 @@ function initializeGame() {
         .then(data => {
             console.log('Game finished successfully:', data);
             if (data.status === 'success') {
-                window.location.href = '/tournaments/' + tournament_name + '/';
+                loadPageTournament(tournament_name);
+                // window.location.href = '/tournaments/' + tournament_name + '/';
             } else {
                 console.error('Error ending game:', data.message);
             }

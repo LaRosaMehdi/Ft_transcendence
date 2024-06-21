@@ -73,4 +73,20 @@ def view_tournament_play(request, tournament_name, game_id):
         'player1': game.player1,
         'player2': game.player2
     }
-    return render(request, 'playTournament.html', {'tournament_name': tournament_name, 'game_id': game_id, 'game': players})
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        html = render_to_string('playTournament.html', {'tournament_name': tournament_name, 'game_id': game_id, 'game': players}, request)
+        return JsonResponse({'html': html})
+    else:
+        return render(request, 'playTournament.html', {'tournament_name': tournament_name, 'game_id': game_id, 'game': players})
+
+@jwt_login_required
+def view_tournament_in_progress(request):
+    tournament_name = request.GET.get('tournament_name', '')
+    context = {'tournament_name': tournament_name}
+
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        html = render_to_string('tournament_in_progress.html', context=context, request=request)
+        return JsonResponse({'html': html})
+    else:
+        logger.info("View tournament progress call")
+        return render(request, 'tournament_in_progress.html', context)

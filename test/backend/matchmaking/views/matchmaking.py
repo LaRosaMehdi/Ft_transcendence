@@ -41,7 +41,7 @@ def matchmaking_remote_make(request):
 @jwt_login_required
 def matchmaking_remote(request):
     if request.user.status == "ingame":
-        return redirect('play')
+        return redirect('home')
     try:
         default_queue = MatchmakingQueue.objects.get(name="remote queue")
     except ObjectDoesNotExist:

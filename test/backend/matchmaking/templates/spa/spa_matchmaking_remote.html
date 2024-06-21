@@ -14,6 +14,8 @@
     }
 </style>
 <script>
+    var previousUrl = true;
+
     function leaveMatchmaking() {
         fetch('/matchmaking/matchmaking_remote_leave/');
     }
@@ -41,8 +43,13 @@
     });
 
     window.addEventListener('popstate', function(event) {
-        console.log("super0")
-        handleLeaveMatchmaking();
+        if (previousUrl === true && window.location.pathname === "/users/home/"){
+            console.log("check");
+            handleLeaveMatchmaking();
+            previousUrl = false;
+        }
+        console.log("var: ",previousUrl);
+        
     });
 
     function showConfirmation() {

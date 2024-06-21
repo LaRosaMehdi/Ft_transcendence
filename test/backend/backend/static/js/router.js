@@ -1,5 +1,15 @@
+function clearAllIntervals() {
+    var id = window.setInterval(function() {}, 0);
+    while (id--) {
+        window.clearInterval(id);
+    }
+}
+
 //SPA Request GET, load page /user/...
 function loadPageUsers(pagePath, pushState = true) {
+    if(pagePath === "home")
+        clearAllIntervals(); 
+
     $.ajax({
         url: `/users/${pagePath}/`,
         success: function(response) {
@@ -16,11 +26,11 @@ function loadPageUsers(pagePath, pushState = true) {
 }
 
 //SPA Request GET, load page /tournaments/...
-function loadPageTournament(pagePath, pushState = true) {
+function loadPageTournament(pagePath, tournamentName = '', pushState = true) {
     if(!pagePath) {
         return(console.log("I got you haha: ", pagePath));}
     $.ajax({
-        url: `/tournaments/${pagePath}`,
+        url: `/tournaments/${pagePath}/?tournament_name=${tournamentName}`,
         success: function(response) {
             $('#app-content').html(response.html);
             if (pushState) {
@@ -30,13 +40,36 @@ function loadPageTournament(pagePath, pushState = true) {
             if (document.getElementById('tournament-name')) {
                 initTournamentPage();
             }
-
+            initializeGameTournament();
         },
         error: function(error) {
             console.error('Error loading the page:', error);
         }
     });
 }
+
+//SPA Request GET, load play tournament `/${response.tournament_name}/play/${response.game_id}/`
+function loadPagePlayTournament(tournament_name, game_id, pushState = true) {
+    if(!tournament_name || !game_id) {
+        return(console.error("tournamet_name or game_id doesn't exist", pagePath));}
+    let pagePath = `${tournament_name}/play/${game_id}`
+    $.ajax({
+        url: `/tournaments/${pagePath}`,
+        success: function(response) {
+            $('#app-content').html(response.html);
+            if (pushState) {
+                history.pushState({ path: pagePath, content: response.html }, '', `/tournaments/${pagePath}`);
+            }
+            console.log("loadpage play tournament call sucess")
+            bindFormEvent();
+            initializeGameTournament();
+        },
+        error: function(error) {
+            console.error('Error loading the page:', error);
+        }
+    });
+}
+
 
 //SPA Request GET, load page /matchmaking/...
 function loadPageMatchmaking(pagePath, pushState = true) {

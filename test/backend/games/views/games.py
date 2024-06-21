@@ -59,7 +59,7 @@ def game_update(request, game, player1_score, player2_score):
         return None
 
 @jwt_login_required
-def check_status_user(request):
+def check_status_user(request, status = ""):
     logger.info(f"request: {request.user.status}")
     context = request.user.status
     return JsonResponse({'context': context})
@@ -91,7 +91,7 @@ def game_tournament_init(request,  tournament, level, player1_id, player2_id):
 @jwt_login_required
 def game_tournament_start(request, game):
     try:
-        logger.debug("again")
+        # logger.debug("again")
         if game.winner is None:
             user_update_status(request, game.player1, "ingame")
             user_add_to_match_history(request, game.player1, game)

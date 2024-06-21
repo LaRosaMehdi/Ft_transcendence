@@ -1,38 +1,65 @@
-function tournamentLaunchGame() {
-    const tournamentName = window.tournamentName;
-    if (!tournamentName) {
-        console.log("Tournament name is not set");
-        return;
-    }
-    fetch(`/tournaments/${tournamentName}/launch/`)
-        .then(response => {
-            if (response.redirected) {
-                const path = new URL(response.url).pathname.replace('/tournaments/', '');
-                loadPageTournament(path);
-            }
-            else
-                console.log("Nothing change")
-        })
-        .catch(error => console.error('Error:', error));
-}
-
-function fetchTournamentDetails() {
-    const tournamentName = window.tournamentName;
-    if (!tournamentName) {
-        console.log("Tournament name is not set");
-        return;
-    }
-
-    fetch(`/tournaments/${tournamentName}/get/`)
+function loopDashboard(){    
+    function tournamentLaunchGame() {
+        const tournamentName = window.tournamentName;
+        if (!tournamentName) {
+            console.log("Tournament name is not set");
+            return;
+        }
+        fetch(`/tournaments/${tournamentName}/launch/`)
         .then(response => response.json())
         .then(data => {
-            renderName(data.name);
-            renderLevel(data.level);
-            renderNbPlayers(data.nb_players);
-            renderPlayersRanking(data.players);
-            renderGames(data.games);
+            if (data.current_game !== null && data.context === 1 && data.message === 'play_tournament') {
+                stopLoop();
+                console.log("play");
+                loadPagePlayTournament(data.redirectUrl, data.game_id);
+            }
+            else if(data.current_game !== null && data.message === 'tournament_in_progress' ) {
+                stopLoop();
+                console.log("progress");
+                loadPageTournament('tournament_in_progress', tournamentName);
+            }
+            else if (data.redirected) { // This else if might not be necessary if data.redirected is not being set
+                console.log("elseif: ", data.redirected);
+                const path = new URL(data.url).pathname.replace('/tournaments/', '');
+                stopLoop();
+                loadPageTournament(path);
+            }
+            else if(data.message === 'finished')
+                stopLoop();
+            else {
+                console.log("Nothing changed");
+            }
         })
-        .catch(error => console.error('Failed to fetch tournament details', error));
+        .catch(error => console.error('Error Lauch:', error));
+    }
+    launch_interval = setInterval(fetchTournamentDetails, 5000);
+
+    function fetchTournamentDetails() {
+        const tournamentName = window.tournamentName;
+        if (!tournamentName) {
+            console.log("Tournament name is not set");
+            return;
+        }
+        fetch(`/tournaments/${tournamentName}/get/`)
+            .then(response => response.json())
+            .then(data => {
+                renderName(data.name);
+                renderLevel(data.level);
+                renderNbPlayers(data.nb_players);
+                renderPlayersRanking(data.players);
+                renderGames(data.games);
+            })
+            .catch(error => console.error('Failed to fetch tournament details', error));
+    }
+    get_interval = setInterval(tournamentLaunchGame, 10000);
+
+    function stopLoop() {
+        console.log("out");
+        if (get_interval && launch_interval) {
+            clearInterval(get_interval);
+            clearInterval(launch_interval);
+        }
+    }
 }
 
 function renderName(name) {
@@ -134,10 +161,8 @@ function initTournamentPage() {
         return;
     }
 
-    fetchTournamentDetails();
-    setInterval(fetchTournamentDetails, 5000);
-    tournamentLaunchGame();
-    setInterval(tournamentLaunchGame, 10000);
+    loopDashboard();
+    
 }
 
 

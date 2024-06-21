@@ -148,9 +148,25 @@ def tournament_launch(request, tournament_name):
             tournament.current_game = game
             if tournament_user_is_current_game(request, tournament) is True:
                 game_tournament_start(request, game)
-                return redirect('playTournament', tournament_name=tournament_name, game_id=game.id)
+                if game.player1 == request.user:
+                    return JsonResponse({
+                        'status': 'success',
+                        'message': 'play_tournament',
+                        'redirectUrl': tournament_name,
+                        'game_id': game.id,
+                        'context': 1
+                    })
+                elif game.player2 == request.user:
+                    return JsonResponse({
+                        'status': 'success',
+                        'message': 'tournament_in_progress',
+                        'current_game': game.id,
+                        'context': 0
+                    })
             return JsonResponse({'status': 'success','message': 'success'})
     tournament_level_up(request, tournament)
+    if  tournament.level == 'finished':
+        return JsonResponse({'status': 'success','message': 'finished'})
     return JsonResponse({'status': 'success','message': 'success'})
     
 # Play
@@ -162,7 +178,12 @@ def tournament_play_quit(request, tournament_name, game_id):
         game_update(request, game, -1, game.player2_score)
     else:
         game_update(request, game, game.player1_score, -1)
-    return redirect('dashboardTournament', tournament_name=tournament_name)
+    return JsonResponse({
+            'status': 'success',
+            'message': 'Tournament created successfully',
+            'redirectUrl': tournament_name
+    })
+    
 
 @jwt_login_required
 def tournament_play_end(request, tournament_name, game_id):  # Update function parameter
@@ -172,7 +193,8 @@ def tournament_play_end(request, tournament_name, game_id):  # Update function p
         player2_score = data.get('player2_score')
         game = get_object_or_404(Game, id=game_id)
         game_tournament_end(request, game, player1_score, player2_score)
-        return redirect('dashboardTournament', tournament_name=tournament_name)
+        # return redirect_spa_tournament_dashboard(request, tournament_name)
+        return JsonResponse({'status': 'success','message': 'success'})
     except Exception as e:
         logger.error(f"Erreur lors de la fin du jeu : {e}")
         return JsonResponse({'status': 'error', 'message': 'Une erreur est survenue'}, status=500)
@@ -223,14 +245,14 @@ def tournament_get(request, tournament_name):
         classement.append(tournament.eighth_place)
 
     players_ranking = []
-    logger.debug(f"Players ranking: {players_ranking}")
+    # logger.debug(f"Players ranking: {players_ranking}")
     for player in players:
         if player not in classement:
             players_ranking.append({'username': player.username, 'alias': player.alias, 'image': '/users/media/' + str(player.image), 'rank': '?'}) 
     for classement_player in classement:
         players_ranking.append({'username': classement_player.username, 'alias': classement_player.alias, 'image': '/users/media/' + str(classement_player.image), 'rank': classement.index(classement_player) + tournament.nb_players - len(classement) + 1})
 
-    logger.debug(f"-> {tournament.name}")
+    # logger.debug(f"-> {tournament.name}")
     response_data = {
         'tournament': tournament.name,
         'nb_players': tournament.nb_players,
@@ -280,7 +302,7 @@ def tournament_level_up(request, tournament):
             player1 = winners[i * 2]
             player2 = winners[i * 2 + 1]
             tournament.games.add(game_tournament_init(request, tournament, tournament.level, player1, player2))
-            
+        logger.info("#############################")
         return JsonResponse({'status': 'success', 'new_games_ids': [game.id for game in new_games]})
     else:
         return JsonResponse({'status': 'success', 'message': 'Tournament level has reached the end.'})
@@ -297,4 +319,5 @@ def tournament_user_is_current_game(request, tournament):
 @jwt_login_required
 def tournament_list(request, tournament_name):
     tournaments = Tournament.objects.all()
+    logger.info("///////////////////////")
     return render(request, 'tournaments/tournament_list.html', {'tournaments': tournaments})
