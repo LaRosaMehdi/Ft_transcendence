@@ -265,4 +265,15 @@ def aouth_logout(request, redirect_url='login'):
         return JsonResponse({'html': html})
     else: 
         return response
+
+@jwt_login_required
+def aouth_logout_popstate(request, redirect_url='login'):
+    logger.info("YUU")
+    response = redirect(redirect_url)
+    if request.user.is_authenticated:
+        user_update_status(request, request.user, 'offline')
+        jwt_destroy(request, response)
+        logout(request)
+    
+    return JsonResponse({'message': 'loggout'})
     

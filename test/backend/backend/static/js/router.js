@@ -17,6 +17,8 @@ function loadPageUsers(pagePath, pushState = true) {
             if (pushState) {
                 history.pushState({ path: pagePath, content: response.html }, '', `/users/${pagePath}`);
             }
+            localStorage.setItem('current_url', `/users/${pagePath}/`);
+            // urls = localStorage.getItem('current_url');
             bindFormEvent();
         },
         error: function(error) {
@@ -36,6 +38,8 @@ function loadPageTournament(pagePath, tournamentName = '', pushState = true) {
             if (pushState) {
                 history.pushState({ path: pagePath, content: response.html }, '', `/tournaments/${pagePath}`);
             }
+            localStorage.setItem('current_url', `/tournaments/${pagePath}/?tournament_name=${tournamentName}`);
+            // urls = localStorage.getItem('current_url');
             bindFormEvent();
             if (document.getElementById('tournament-name')) {
                 initTournamentPage();
@@ -60,7 +64,8 @@ function loadPagePlayTournament(tournament_name, game_id, pushState = true) {
             if (pushState) {
                 history.pushState({ path: pagePath, content: response.html }, '', `/tournaments/${pagePath}`);
             }
-            console.log("loadpage play tournament call sucess")
+            localStorage.setItem('current_url', `/tournaments/${pagePath}`);
+            // urls = localStorage.getItem('current_url');
             bindFormEvent();
             initializeGameTournament();
         },
@@ -80,6 +85,8 @@ function loadPageMatchmaking(pagePath, pushState = true) {
             if (pushState) {
                  history.pushState({ path: pagePath, content: response.html }, '', `/matchmaking/${pagePath}`);
             }
+            localStorage.setItem('current_url', `/matchmaking/${pagePath}/`);
+            // urls = localStorage.getItem('current_url');
             bindFormEvent();
             if (typeof initializeGame === 'function') {
                 initializeGame();
@@ -97,9 +104,12 @@ function loadPageGames(pagePath, pushState = true) {
         url: `/games/${pagePath}/`,
         success: function(response) {
             $('#app-content').html(response.html);
+            console.log("pagePath: ", pagePath);
             if (pushState) {
                 history.pushState({ path: pagePath, content: response.html }, '', `/games/${pagePath}`);
             }
+            localStorage.setItem('current_url', `/games/${pagePath}/`);
+            // urls = localStorage.getItem('current_url');
             bindFormEvent();
             if (typeof initializeGame === 'function' && pagePath === 'play') {
                 initializeGame();
@@ -124,6 +134,8 @@ function loadPageUsersSettings(pagePath, pushState = true) {
             success: function(response) {
                 $('#profileData').html(response.html);
                 $('#profileData').show();
+                localStorage.setItem('current_url', `/users/${pagePath}/`);
+                // urls = localStorage.getItem('current_url');
                 bindFormEvent(); 
             },
             error: function(error) {
@@ -142,6 +154,8 @@ function loadPageBlockchain(pagePath, pushState = true) {
             if (pushState) {
                 history.pushState({ path: pagePath, content: response.html }, '', `/blockchain/${pagePath}`);
             }
+            localStorage.setItem('current_url', `/blockchain/${pagePath}/`);
+            // urls = localStorage.getItem('current_url');
             bindFormEvent();
         },
         error: function(error) {
@@ -159,7 +173,10 @@ function loadPageAouth(pagePath, pushState = true) {
             if (pushState) {
                 history.pushState({ path: pagePath, content: response.html }, '', `/${pagePath}`);
             }
-            bindFormEvent(); 
+            localStorage.setItem('current_url', `/aouth/${pagePath}/`);
+            localStorage.setItem('last_url_from_popstate', "");
+            // urls = localStorage.getItem('current_url');
+            bindFormEvent();
         },
         error: function(error) {
             console.error('Error loading the page:', error);
@@ -176,6 +193,8 @@ function loadPageFriendProfile(username, pushState = true) {
             if (pushState) {
                 history.pushState({ path: `/users/friend-profile/${username}`, content: response.html }, '', `/users/friend-profile/${username}`);
             }
+            localStorage.setItem('current_url', `/users/friend-profile/${username}/`);
+            // urls = localStorage.getItem('current_url');
             bindFormEvent(); 
         },
         error: function(error) {
@@ -203,10 +222,80 @@ function setLocalStorageAndLoadPage() {
     }
 }
 
-
+function clean_matchmaking(){
+    fetch('/users/redirect/')
+    .then(response => response.json())
+    .then(data => {
+        if (data.redirect === 'home') {
+            console.log("pourquoi")
+        }     
+    })
+    .catch(error => {
+        console.error('Error Clean:', error);
+    });
+}
+function leaveMatchmakingQueu() {
+    fetch('/matchmaking/matchmaking_remote_leave/');
+}
 
 //SPA Request POST, Form register, login, 2FA
 function bindFormEvent() {
+
+    window.onbeforeunload = async function() {
+        urls = localStorage.getItem('current_url');
+        if (urls === "/matchmaking/matchmaking_remote" || urls === "/matchmaking/matchmaking_remote/") {
+            const message = "Are you sure you want to leave the matchmaking queue?";
+            event.returnValue = message;  // Standard way to set a confirmation dialog message
+    
+            // This return statement is required for some browsers to display the dialog
+            return message;
+        }
+    }
+    window.addEventListener('unload', async function() {
+        urls = localStorage.getItem('current_url');
+    
+        if (urls === "/matchmaking/matchmaking_remote" || urls === "/matchmaking/matchmaking_remote/") {
+            leaveMatchmakingQueu();
+            clean_matchmaking();
+            console.log("You left the matchmaking Queue ><");
+        }
+    });
+
+    window.addEventListener('popstate', async function(event)
+    {
+        last_url = localStorage.getItem('last_url_from_popstate');
+        urls = localStorage.getItem('current_url');
+        if (last_url){
+            if(last_url === urls){
+                console.log("solutionare");
+                localStorage.setItem('last_url_from_popstate', "");
+                return ;
+            }
+        }
+        console.log("POpypstate urls: ", urls);
+        localStorage.setItem('last_url_from_popstate', urls);
+
+        if (urls === "/users/home" || urls === "/users/home/") {
+            console.log("joja");
+            window.history.pushState(null, null, window.location.href);
+            loadPageUsers('home');
+            // window.history.pushState(null, null, window.location.href);
+        }
+        else if (urls === "/games/results" || urls === "/games/results/"){
+            window.history.pushState(null, null, window.location.href);
+            loadPageUsers('home');
+        }
+        else if (window.location.pathname === '/aouth/twofactor/') {
+            window.history.pushState(null, null, window.location.href);
+            loadPageAouth('aouth_logout');
+        }
+        else if (event.state) {
+            console.log("aloura2 et: ")
+            $('#app-content').html(event.state.content);
+            bindFormEvent();
+        }
+    },{ once: true });
+
     //REgister
     $('#registerForm').off('submit').on('submit', function(e) {
         e.preventDefault();
@@ -457,7 +546,7 @@ function bindFormEvent() {
             contentType: false,
             success: function(response) {
                 loadPageUsers('friend', true);
-                bindFormEvent();
+                // bindFormEvent();
             },
             error: function(xhr, status, error) {
                 console.error("Error submitting form:", error);
@@ -481,11 +570,6 @@ function readURL(input) {
 
 $(document).ready(function() {
     bindFormEvent();
-    // window.onbeforeunload = function() {
-    //     console.log("oo")
-    //     async function leave(){leaveMatchmaking2(); }
-        
-    // }
 
     $("#file-upload").change(function() {
         readURL(this);
@@ -503,16 +587,8 @@ $(document).ready(function() {
     });
     
 
-    window.addEventListener('popstate', function(event) {
-        if (window.location.pathname === '/aouth/twofactor/') {
-            loadPageAouth('aouth_logout'); 
-        }
-        else if (event.state) {
-            console.log("aloura2");
-            $('#app-content').html(event.state.content);
-            bindFormEvent();
-        }
-    });
+      
+    
 });
 
 

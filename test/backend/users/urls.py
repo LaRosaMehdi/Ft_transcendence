@@ -15,7 +15,7 @@ urlpatterns = [
     path('perso-content/', view_perso, name='perso-content'),
     path('viewProfile/', view_profile, name='viewProfile'),
     path('friends/', TemplateView.as_view(template_name='friends.html'), name='friends'),
-
+    
     
     # Settings
     path('settings/', view_setting, name='settings'),
@@ -26,6 +26,7 @@ urlpatterns = [
 
     # Other 
     path('generate_profile_json/', generate_profile_json, name='generate_profile_json'),
+    path('redirect/', redirect_user, name='redirect_user'),
 
     # Tools
     path('get_last_game/', user_get_last_game, name='tools'),

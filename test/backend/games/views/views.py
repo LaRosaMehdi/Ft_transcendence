@@ -12,10 +12,13 @@ logger = logging.getLogger(__name__)
 
 @jwt_login_required
 def view_play(request, game_id=None):
+    
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         html = render_to_string('spa_play.html', {'game_id': game_id, 'game': user_get_last_game(request)})
+        logger.info("play view call spa")
         return JsonResponse({'html': html})
     else:
+        logger.info("play view call render")
         return render(request, 'play.html', {'game_id': game_id, 'game': user_get_last_game(request)})
 
 @jwt_login_required

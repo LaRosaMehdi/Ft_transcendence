@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Profile</title>
     {% include 'head_elements.html' %}
-    <link rel="stylesheet" href="{% static 'css/fontawesome.min.css' %}">
 </head>
 <body>
     <div class="hero">
@@ -82,7 +81,9 @@
             </div>
         </div>
     </div>
-    <script src="{% static 'js/router.js' %}"></script>
     <script src="{% static 'js/localgame.js' %}" data-arg1="{% csrf_token %}"></script>
+    <script src="{% static 'js/router.js' %}"></script>
+    <script src="{% static 'js/dashboardTournament.js' %}"></script>
+    <script src="{% static 'js/localtournament.js' %}"></script>
 </body>
 </html>

@@ -24,6 +24,8 @@ urlpatterns = [
 	path('aouth_register_form/', aouth_register_form, name='aouth_register_form'),
 	path('aouth_login_form/', aouth_login_form, name='aouth_login_form'),
     path('aouth_logout/', aouth_logout, name='aouth_logout'),
+    
+    path('aouth_logout_popstate/', aouth_logout_popstate, name='aouth_logout'),
     path('aouth_callback_register/', aouth_callback_register, name='aouth_callback_register'),
     path('aouth_callback_login/', aouth_callback_login, name='aouth_callback_login'),
 

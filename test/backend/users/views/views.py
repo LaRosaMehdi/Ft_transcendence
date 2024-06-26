@@ -3,7 +3,11 @@ from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib.auth.forms import PasswordChangeForm
 from django.http import HttpResponseRedirect, HttpResponseBadRequest, JsonResponse
+from users.models import *
+from matchmaking.models import MatchmakingQueue
+from matchmaking.views.queue import queue_remote_add, queue_remote_remove
 from games.models import Game
+from games.views import *
 from django.db.models import Q
 from users.views.forms import *
 from aouth.views.jwt import jwt_login_required
@@ -89,3 +93,32 @@ def view_profile_friend(request, friend_user):
         return JsonResponse({'html': html})
     else:
         return render(request, 'viewProfile.html', {'current_user': user_profile, 'matches': matches, 'context': ''})
+    
+@jwt_login_required
+def redirect_user(request):
+    current_game = request.user.current_game
+    logger.info("##############################################")
+    logger.info(request.user.status)
+    if request.user.status == 'ingame':
+        score1 = current_game.player1_score
+        score2 = current_game.player2_score
+        # logger.info(current_game.tournament)
+        # logger.info(current_game.current_game)
+        # if current_game.tournament != 0:
+        #     logger.info("tournament in progress")
+        #     #user have to lose 
+        
+        logger.info("match in progress")
+        if current_game.player1 == request.user:
+            score1 = -1
+        else:
+            score2 = -1
+        game_update(request, current_game, score1, score2)
+        
+        #user have to lose
+        # default_queue = MatchmakingQueue.objects.get(name="remote queue")
+        # for i in default_queue.players:
+            # if i == request.user:
+                # queue_remote_remove(request, request.user)
+
+    return JsonResponse({'redirect': 'home', 'message': 'success'})

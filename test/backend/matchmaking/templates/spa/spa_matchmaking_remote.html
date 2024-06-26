@@ -14,18 +14,16 @@
     }
 </style>
 <script>
-    var previousUrl = true;
-
     function leaveMatchmaking() {
         fetch('/matchmaking/matchmaking_remote_leave/');
     }
 
-    window.onbeforeunload = function() {
+   /* window.onbeforeunload = function() {
         console.log("YOUPI")
-        async function leave(){leaveMatchmaking(); }
-    }
+        //async function leave(){leaveMatchmaking(); }
+    }*/
 
-    document.addEventListener('click', function(event) {
+    {% comment %} document.addEventListener('click', function(event) {
         var target = event.target;
 
         while (target && target.nodeName !== 'A') {
@@ -40,15 +38,17 @@
                 window.location.href = target.href;
             }, 100); // Slight delay to ensure the fetch completes
         }
-    });
+    }); {% endcomment %}
 
     window.addEventListener('popstate', function(event) {
-        if (previousUrl === true && window.location.pathname === "/users/home/"){
+        
+        urlss = localStorage.getItem('current_url');
+        if ((urlss === "/matchmaking/matchmaking_remote" || urlss === "/matchmaking/matchmaking_remote/")
+                && (window.location.pathname === "/users/home" || window.location.pathname === "/users/home/")){
             console.log("check");
             handleLeaveMatchmaking();
             previousUrl = false;
         }
-        console.log("var: ",previousUrl);
         
     });
 
@@ -64,6 +64,7 @@
         fetch('/users/get_current_game/')
         .then(response => response.json())
         .then(data => {
+            console.log(data.context);
             if (data.current_game !== null && data.context === 1) {
                 stopMatchmaking();
                 loadPageGames('play');

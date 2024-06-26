@@ -16,10 +16,10 @@
     <link rel="stylesheet" href="{% static 'sidebarStyle.css' %}">
     <link rel="stylesheet" href="{% static 'setting.css' %}">
     <link rel="stylesheet" href="{% static 'scoreTournament.css' %}">
+    <link rel="stylesheet" href="{% static 'tournament.css' %}">
     <link rel="stylesheet" href="{% static 'chats.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         /* Style for the confirmation modal */
         #confirmationModal {
@@ -40,17 +40,19 @@
     </div>
     <div id="app-content">
         <script>
+
+            var previousUrl = true;
             function leaveMatchmaking() {
                 fetch('/matchmaking/matchmaking_remote_leave/');
             }
 
-            window.onbeforeunload = function() {
+            /*window.onbeforeunload = function() {
                 console.log("YOUPI")
-                async function leave(){leaveMatchmaking(); }
+                //async function leave(){leaveMatchmaking(); }
               
-            }
+            }*/
         
-            document.addEventListener('click', function(event) {
+            {% comment %} document.addEventListener('click', function(event) {
                 var target = event.target;
         
                 while (target && target.nodeName !== 'A') {
@@ -65,13 +67,15 @@
                         window.location.href = target.href;
                     }, 100); // Slight delay to ensure the fetch completes
                 }
-            });
+            }); {% endcomment %}
         
-        
-
             window.addEventListener('popstate', function(event) {
-                console.log("super1")
-                handleLeaveMatchmaking();
+                console.log("var: ",previousUrl, window.location.pathname);
+                if (previousUrl === true && (window.location.pathname === "/users/home" || window.location.pathname === "/users/home/")){
+                    console.log("check");
+                    handleLeaveMatchmaking();
+                    previousUrl = false;
+                }
             });
 
             function showConfirmation() {
@@ -134,7 +138,9 @@
             </div>
         </div>
     </div>
-<script src="{% static 'js/router.js' %}"></script>
-<script src="{% static 'js/localgame.js' %}" data-arg1="{% csrf_token %}"></script>
+    <script src="{% static 'js/localgame.js' %}" data-arg1="{% csrf_token %}"></script>
+    <script src="{% static 'js/router.js' %}"></script>
+    <script src="{% static 'js/dashboardTournament.js' %}"></script>
+    <script src="{% static 'js/localtournament.js' %}"></script>
 </body>
 </html>
