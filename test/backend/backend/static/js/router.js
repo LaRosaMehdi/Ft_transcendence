@@ -1,3 +1,5 @@
+var current_url = location.href;
+
 function clearAllIntervals() {
     var id = window.setInterval(function() {}, 0);
     while (id--) {
@@ -17,8 +19,7 @@ function loadPageUsers(pagePath, pushState = true) {
             if (pushState) {
                 history.pushState({ path: pagePath, content: response.html }, '', `/users/${pagePath}`);
             }
-            localStorage.setItem('current_url', `/users/${pagePath}/`);
-            // urls = localStorage.getItem('current_url');
+            current_url = `/users/${pagePath}/`;
             bindFormEvent();
         },
         error: function(error) {
@@ -38,8 +39,7 @@ function loadPageTournament(pagePath, tournamentName = '', pushState = true) {
             if (pushState) {
                 history.pushState({ path: pagePath, content: response.html }, '', `/tournaments/${pagePath}`);
             }
-            localStorage.setItem('current_url', `/tournaments/${pagePath}/?tournament_name=${tournamentName}`);
-            // urls = localStorage.getItem('current_url');
+            current_url = `/tournaments/${pagePath}/?tournament_name=${tournamentName}`;
             bindFormEvent();
             if (document.getElementById('tournament-name')) {
                 initTournamentPage();
@@ -64,8 +64,7 @@ function loadPagePlayTournament(tournament_name, game_id, pushState = true) {
             if (pushState) {
                 history.pushState({ path: pagePath, content: response.html }, '', `/tournaments/${pagePath}`);
             }
-            localStorage.setItem('current_url', `/tournaments/${pagePath}`);
-            // urls = localStorage.getItem('current_url');
+            current_url = `/tournaments/${pagePath}`;
             bindFormEvent();
             initializeGameTournament();
         },
@@ -74,7 +73,6 @@ function loadPagePlayTournament(tournament_name, game_id, pushState = true) {
         }
     });
 }
-
 
 //SPA Request GET, load page /matchmaking/...
 function loadPageMatchmaking(pagePath, pushState = true) {
@@ -85,8 +83,7 @@ function loadPageMatchmaking(pagePath, pushState = true) {
             if (pushState) {
                  history.pushState({ path: pagePath, content: response.html }, '', `/matchmaking/${pagePath}`);
             }
-            localStorage.setItem('current_url', `/matchmaking/${pagePath}/`);
-            // urls = localStorage.getItem('current_url');
+            current_url = `/matchmaking/${pagePath}/`;
             bindFormEvent();
             if (typeof initializeGame === 'function') {
                 initializeGame();
@@ -108,8 +105,7 @@ function loadPageGames(pagePath, pushState = true) {
             if (pushState) {
                 history.pushState({ path: pagePath, content: response.html }, '', `/games/${pagePath}`);
             }
-            localStorage.setItem('current_url', `/games/${pagePath}/`);
-            // urls = localStorage.getItem('current_url');
+            current_url = `/games/${pagePath}/`;
             bindFormEvent();
             if (typeof initializeGame === 'function' && pagePath === 'play') {
                 initializeGame();
@@ -134,8 +130,7 @@ function loadPageUsersSettings(pagePath, pushState = true) {
             success: function(response) {
                 $('#profileData').html(response.html);
                 $('#profileData').show();
-                localStorage.setItem('current_url', `/users/${pagePath}/`);
-                // urls = localStorage.getItem('current_url');
+                current_url = `/users/${pagePath}/`;
                 bindFormEvent(); 
             },
             error: function(error) {
@@ -154,8 +149,7 @@ function loadPageBlockchain(pagePath, pushState = true) {
             if (pushState) {
                 history.pushState({ path: pagePath, content: response.html }, '', `/blockchain/${pagePath}`);
             }
-            localStorage.setItem('current_url', `/blockchain/${pagePath}/`);
-            // urls = localStorage.getItem('current_url');
+            current_url = `/blockchain/${pagePath}/`;
             bindFormEvent();
         },
         error: function(error) {
@@ -173,9 +167,7 @@ function loadPageAouth(pagePath, pushState = true) {
             if (pushState) {
                 history.pushState({ path: pagePath, content: response.html }, '', `/${pagePath}`);
             }
-            localStorage.setItem('current_url', `/aouth/${pagePath}/`);
-            localStorage.setItem('last_url_from_popstate', "");
-            // urls = localStorage.getItem('current_url');
+            current_url = `/aouth/${pagePath}/`;
             bindFormEvent();
         },
         error: function(error) {
@@ -193,8 +185,7 @@ function loadPageFriendProfile(username, pushState = true) {
             if (pushState) {
                 history.pushState({ path: `/users/friend-profile/${username}`, content: response.html }, '', `/users/friend-profile/${username}`);
             }
-            localStorage.setItem('current_url', `/users/friend-profile/${username}/`);
-            // urls = localStorage.getItem('current_url');
+            current_url = `/users/friend-profile/${username}/`;
             bindFormEvent(); 
         },
         error: function(error) {
@@ -218,84 +209,13 @@ function setLocalStorageAndLoadPage() {
         loadPageUsers(redirectUrl.replace(/^\//, ''), true);
     } else {
         console.error('Missing tokens');
-        window.location.href = '/login';  // Redirect to login page or handle appropriately
+        window.location.href = '/login';
+        current_url = '/aouth/login/';
     }
-}
-
-function clean_matchmaking(){
-    fetch('/users/redirect/')
-    .then(response => response.json())
-    .then(data => {
-        if (data.redirect === 'home') {
-            console.log("pourquoi")
-        }     
-    })
-    .catch(error => {
-        console.error('Error Clean:', error);
-    });
-}
-function leaveMatchmakingQueu() {
-    fetch('/matchmaking/matchmaking_remote_leave/');
 }
 
 //SPA Request POST, Form register, login, 2FA
 function bindFormEvent() {
-
-    window.onbeforeunload = async function() {
-        urls = localStorage.getItem('current_url');
-        if (urls === "/matchmaking/matchmaking_remote" || urls === "/matchmaking/matchmaking_remote/") {
-            const message = "Are you sure you want to leave the matchmaking queue?";
-            event.returnValue = message;  // Standard way to set a confirmation dialog message
-    
-            // This return statement is required for some browsers to display the dialog
-            return message;
-        }
-    }
-    window.addEventListener('unload', async function() {
-        urls = localStorage.getItem('current_url');
-    
-        if (urls === "/matchmaking/matchmaking_remote" || urls === "/matchmaking/matchmaking_remote/") {
-            leaveMatchmakingQueu();
-            clean_matchmaking();
-            console.log("You left the matchmaking Queue ><");
-        }
-    });
-
-    window.addEventListener('popstate', async function(event)
-    {
-        last_url = localStorage.getItem('last_url_from_popstate');
-        urls = localStorage.getItem('current_url');
-        if (last_url){
-            if(last_url === urls){
-                console.log("solutionare");
-                localStorage.setItem('last_url_from_popstate', "");
-                return ;
-            }
-        }
-        console.log("POpypstate urls: ", urls);
-        localStorage.setItem('last_url_from_popstate', urls);
-
-        if (urls === "/users/home" || urls === "/users/home/") {
-            console.log("joja");
-            window.history.pushState(null, null, window.location.href);
-            loadPageUsers('home');
-            // window.history.pushState(null, null, window.location.href);
-        }
-        else if (urls === "/games/results" || urls === "/games/results/"){
-            window.history.pushState(null, null, window.location.href);
-            loadPageUsers('home');
-        }
-        else if (window.location.pathname === '/aouth/twofactor/') {
-            window.history.pushState(null, null, window.location.href);
-            loadPageAouth('aouth_logout');
-        }
-        else if (event.state) {
-            console.log("aloura2 et: ")
-            $('#app-content').html(event.state.content);
-            bindFormEvent();
-        }
-    },{ once: true });
-
     //REgister
     $('#registerForm').off('submit').on('submit', function(e) {
         e.preventDefault();
@@ -321,7 +241,6 @@ function bindFormEvent() {
             }
         });
     });
-
     //TwoFactor'twoFactorAouth"
     $('#twoFactorAouth').off('submit').on('submit', function(e) {
         e.preventDefault();
@@ -349,8 +268,6 @@ function bindFormEvent() {
             }
         });
     });
-    
-
     //connectTournament
     $('#connectTournament').off('submit').on('submit', function(e) {
         e.preventDefault();
@@ -371,7 +288,6 @@ function bindFormEvent() {
             }
         });
     });
-
     //generateTournament
     $('#generateTournament').off('submit').on('submit', function(e) {
         e.preventDefault();
@@ -392,7 +308,6 @@ function bindFormEvent() {
             }
         });
     });
-
     $('#Set_image').off('submit').on('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(this);
@@ -432,8 +347,6 @@ function bindFormEvent() {
             }
         });
     });
-    
-
     // Setting change the Password
     $('#Set_password').off('submit').on('submit', function(e) {
         e.preventDefault();
@@ -454,7 +367,6 @@ function bindFormEvent() {
             }
         });
     });
-
     // Setting change the 2factor
     $('#2faForm').off('submit').on('submit', function(e) {
         e.preventDefault();
@@ -468,7 +380,6 @@ function bindFormEvent() {
             contentType: false,
             success: function(response) {
                 console.log("Success 2faForm");
-               
             },
             error: function(xhr, status, error) {
                 console.error("Error submitting form:", error);
@@ -482,7 +393,6 @@ function bindFormEvent() {
         $('#2faForm').submit();
         
     });
-
     //Auth login 
     $('#loginForm').off('submit').on('submit', function(e) {
         e.preventDefault();
@@ -562,7 +472,6 @@ function readURL(input) {
         reader.onload = function(e) {
             $('#imagePreview').attr('src', e.target.result);
         }
-        
         reader.readAsDataURL(input.files[0]); // convert to base64 string
     }
 }
@@ -578,17 +487,12 @@ $(document).ready(function() {
     $(document).on('pjax:end', function() {
         bindFormEvent();
     });
-
     history.replaceState({ path: window.location.pathname, content: $('#app-content').html() }, '', window.location.pathname);
 
     $('body').on('click', '#goBackButton', function()
     {
         window.history.back();
     });
-    
-
-      
-    
 });
 
 
@@ -598,3 +502,104 @@ function setupGoBackButton() {
     });
 }
 
+function clean_matchmaking(){
+    console.log("clean_match call");
+    const data = new FormData();
+
+    const csrfToken = localStorage.getItem('csrf_token');
+    data.append('csrfmiddlewaretoken', csrfToken);
+    const success = navigator.sendBeacon('/users/redirect/', data);
+    if (!success) {
+        console.error('Error sending matchmaking clean request');
+    }
+}
+
+function leaveMatchmakingQueue() {
+    console.log("leaveMatchmaking call");
+    const data = new FormData();
+    const csrfToken = localStorage.getItem('csrf_token');
+    data.append('csrfmiddlewaretoken', csrfToken);
+
+    const success = navigator.sendBeacon('/matchmaking/matchmaking_remote_leave/', data);
+    if (!success) {
+        console.error('Error sending leave matchmaking queue request');
+    }
+}
+
+window.addEventListener('popstate', async function(event)
+{
+    // console.log("new url", current_url);
+ 
+    
+    if ((current_url === "/matchmaking/matchmaking_remote" || current_url === "/matchmaking/matchmaking_remote/")
+        && (window.location.pathname === "/users/home" || window.location.pathname === "/users/home/")){
+        console.log("check1");
+        window.history.pushState(null, null, window.location.href);
+        if (typeof handleLeaveMatchmaking === 'function') {
+            clean_matchmaking();
+            handleLeaveMatchmaking();
+        }
+        else {
+            clean_matchmaking();
+            loadPageUsers('home');
+        }
+    }
+    else if ((current_url === "/matchmaking/matchmaking_remote" || current_url === "/matchmaking/matchmaking_remote/")
+        && (window.location.pathname === "/matchmaking/matchmaking_remote" || window.location.pathname === "/matchmaking/matchmaking_remote/")){
+        console.log("check2");
+        clean_matchmaking();
+        window.history.pushState(null, null, window.location.href);
+        loadPageUsers('home');
+
+    }
+    else if (current_url === "/games/results" || current_url === "/games/results/"){
+        window.history.pushState(null, null, window.location.href);
+        loadPageUsers('home');
+    }
+    else if (window.location.pathname === '/aouth/twofactor/') {
+        window.history.pushState(null, null, window.location.href);
+        loadPageAouth('aouth_logout');
+    }
+    else if (current_url === "/games/game-in-progress" || current_url === "/games/game-in-progress/"){
+        window.history.pushState(null, null, window.location.href);
+        loadPageUsers('home');
+    }
+    else if (current_url === "/users/home" || current_url === "/users/home/" 
+        || window.location.pathname === "/users/home" || window.location.pathname === "/users/home/") {
+        window.history.pushState(null, null, window.location.href);
+        loadPageUsers('home');
+    }
+    else if (event.state) {
+        console.log("WTF");
+        $('#app-content').html(event.state.content);
+        bindFormEvent();
+    }
+});
+
+
+window.onbeforeunload = function() {
+    // console.log("event ombeforeunnload call url:", current_url);
+    // console.log("event ombeforeunnload call2 url:", window.location.pathname);
+
+    if (current_url === "/matchmaking/matchmaking_remote" || current_url === "/matchmaking/matchmaking_remote/") {
+        console.log("You left the matchmaking Queue <<");
+        clean_matchmaking();
+        leaveMatchmakingQueue();
+    }
+    else if(window.location.pathname === "/matchmaking/matchmaking_remote" || window.location.pathname === "/matchmaking/matchmaking_remote/")
+    {
+        console.log("You left the matchmaking Queue <<");
+        clean_matchmaking();
+        leaveMatchmakingQueue();
+    }
+}
+
+window.addEventListener('unload', async function(event){
+ // console.log("Unload event call: ",current_url);
+
+ // if (current_url === "/matchmaking/matchmaking_remote" || current_url === "/matchmaking/matchmaking_remote/") {
+     // await clean_matchmaking();
+     // leaveMatchmakingQueu();
+     // console.log("You left the matchmaking Queue <<");
+ // }
+});

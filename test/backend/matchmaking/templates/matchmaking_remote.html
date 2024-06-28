@@ -45,38 +45,7 @@
             function leaveMatchmaking() {
                 fetch('/matchmaking/matchmaking_remote_leave/');
             }
-
-            /*window.onbeforeunload = function() {
-                console.log("YOUPI")
-                //async function leave(){leaveMatchmaking(); }
-              
-            }*/
         
-            {% comment %} document.addEventListener('click', function(event) {
-                var target = event.target;
-        
-                while (target && target.nodeName !== 'A') {
-                    target = target.parentNode;
-                }
-        
-                if (target && target.nodeName === 'a') {
-                    event.preventDefault();
-                    leaveMatchmaking();
-                    console.log("Leaving matchmaking due to link click");
-                    setTimeout(() => {
-                        window.location.href = target.href;
-                    }, 100); // Slight delay to ensure the fetch completes
-                }
-            }); {% endcomment %}
-        
-            window.addEventListener('popstate', function(event) {
-                console.log("var: ",previousUrl, window.location.pathname);
-                if (previousUrl === true && (window.location.pathname === "/users/home" || window.location.pathname === "/users/home/")){
-                    console.log("check");
-                    handleLeaveMatchmaking();
-                    previousUrl = false;
-                }
-            });
 
             function showConfirmation() {
                 document.getElementById('confirmationModal').style.display = 'block';
@@ -104,7 +73,7 @@
                 })
                 .catch(error => console.error('Error:', error));
             }
-            matchmakingInterval = setInterval(matchmakingLoop, 2000);
+            matchmakingInterval = setInterval(matchmakingLoop, 1000);
         
             function stopMatchmaking() {
                     if (matchmakingInterval) {
