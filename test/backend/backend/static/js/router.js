@@ -1,4 +1,5 @@
 var current_url = location.href;
+var tournament_name_bis = "";
 
 function clearAllIntervals() {
     var id = window.setInterval(function() {}, 0);
@@ -45,6 +46,8 @@ function loadPageTournament(pagePath, tournamentName = '', pushState = true) {
                 initTournamentPage();
             }
             initializeGameTournament();
+            tournament_name_bis = window.tournamentName;
+            localStorage.setItem('tournament_name_refresh', tournament_name_bis);
         },
         error: function(error) {
             console.error('Error loading the page:', error);
@@ -526,12 +529,32 @@ function leaveMatchmakingQueue() {
     }
 }
 
+function remove_from_waiting_queue_tournament(tournament_n){
+   
+    const data = new FormData();
+    const csrfToken = localStorage.getItem('csrf_token');
+    data.append('csrfmiddlewaretoken', csrfToken);
+    data.append('tournament_name', tournament_n);
+    data.append('user_alias', "floki");
+
+
+    const success = navigator.sendBeacon('/tournaments/remove_player_from_tournament/', data);
+    if (!success) {
+        console.log('Error sending remove from tournament queue request');
+    }
+    
+    console.log("remove from tournament have been call");
+}
+
+
 window.addEventListener('popstate', async function(event)
 {
     // console.log("new url", current_url);
  
-    
-    if ((current_url === "/matchmaking/matchmaking_remote" || current_url === "/matchmaking/matchmaking_remote/")
+    if (current_url.startsWith(`/tournaments/${tournament_name_bis}`) || current_url.startsWith("/tournaments/tournament_in_progress") ){
+        remove_from_waiting_queue_tournament(tournament_name_bis);
+    }
+    else if ((current_url === "/matchmaking/matchmaking_remote" || current_url === "/matchmaking/matchmaking_remote/")
         && (window.location.pathname === "/users/home" || window.location.pathname === "/users/home/")){
         console.log("check1");
         window.history.pushState(null, null, window.location.href);
@@ -578,9 +601,8 @@ window.addEventListener('popstate', async function(event)
 
 
 window.onbeforeunload = function() {
-    // console.log("event ombeforeunnload call url:", current_url);
-    // console.log("event ombeforeunnload call2 url:", window.location.pathname);
-
+    const tournament_name_refresh = localStorage.getItem('tournament_name_refresh');
+    console.log(tournament_name_refresh);
     if (current_url === "/matchmaking/matchmaking_remote" || current_url === "/matchmaking/matchmaking_remote/") {
         console.log("You left the matchmaking Queue <<");
         clean_matchmaking();
@@ -591,6 +613,11 @@ window.onbeforeunload = function() {
         console.log("You left the matchmaking Queue <<");
         clean_matchmaking();
         leaveMatchmakingQueue();
+    }
+    else if (window.location.pathname.startsWith(`/tournaments`) || window.location.pathname.startsWith("/tournaments/tournament_in_progress") ){
+        console.log("debug");
+        remove_from_waiting_queue_tournament(tournament_name_refresh);
+    
     }
 }
 

@@ -18,7 +18,8 @@ urlpatterns = [
     path('generateTournament/', tournament_generate, name='generateTournament'),  # Générer un tournoi public
     path('connectTournament/', tournament_join, name='connectTournament'),  # Rejoindre un tournoi public
     path('tournament_in_progress/', view_tournament_in_progress, name='tournament_in_progress'),
-    
+    path('remove_player_from_tournament/', remove_player_from_tournament, name='remove_player_from_tournament'),
+
     # path
     path('<str:tournament_name>/', view_tournament_dashboard, name='dashboardTournament'),  # Page de tournoi
     path('<str:tournament_name>/get/', tournament_get, name='detailsTournament'),  # Détails d'un tournoi

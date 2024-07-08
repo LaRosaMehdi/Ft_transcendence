@@ -40,14 +40,6 @@ def view_tournament_join(request):
     else:
         return render(request, 'joinTournament.html', {'current_user': request.user, 'form': ConnectTournamentForm()})
 
-# @jwt_login_required
-# def view_tournament_dashboard(request, tournament_name):
-#     logger.info("DEBUG_dashborad")
-#     tournament = Tournament.objects.get(name=tournament_name)
-#     if tournament and tournament.players.filter(username=request.user.username).exists() is False:
-#         messages.error(request, 'Please join the tournament before accessing the dashboard', extra_tags='tournament_join')
-#         return render(request, 'joinTournament.html', {'current_user': request.user, 'form': ConnectTournamentForm()})
-#     return render(request, 'dashboardTournament.html', {'tournament_name': tournament_name})
 
 @jwt_login_required
 def view_tournament_dashboard(request, tournament_name):
@@ -61,7 +53,7 @@ def view_tournament_dashboard(request, tournament_name):
             return render(request, 'joinTournament.html', {'current_user': request.user, 'form': ConnectTournamentForm()})
     
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        html = render_to_string('dashboardTournament.html', {'tournament_name': tournament_name}, request)
+        html = render_to_string('spa_dashboardTournament.html', {'tournament_name': tournament_name}, request)
         return JsonResponse({'html': html, 'redirect': 'dashboardTournament'})
     else:
         return render(request, 'dashboardTournament.html', {'tournament_name': tournament_name})
@@ -74,7 +66,7 @@ def view_tournament_play(request, tournament_name, game_id):
         'player2': game.player2
     }
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        html = render_to_string('playTournament.html', {'tournament_name': tournament_name, 'game_id': game_id, 'game': players}, request)
+        html = render_to_string('spa_playTournament.html', {'tournament_name': tournament_name, 'game_id': game_id, 'game': players}, request)
         return JsonResponse({'html': html})
     else:
         return render(request, 'playTournament.html', {'tournament_name': tournament_name, 'game_id': game_id, 'game': players})

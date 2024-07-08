@@ -38,12 +38,10 @@ function drawPlayers(ctx, player1, player2) {
 }
 
 function initializeGameTournament() {
-    console.log("localtournament.js call");
     const canvas = document.getElementById('pongCanvas');
     if (!canvas) {
         return;
     }
-    console.log("localtournament.js call2");
     const ctx = canvas.getContext('2d');
 
     //new modfi JWT
@@ -100,7 +98,7 @@ function initializeGameTournament() {
 
     }
 
-    document.getElementById('play-btn').addEventListener('click', function() {
+    document.getElementById('play-btn1').addEventListener('click', function() {
         canvas.style.visibility = 'visible';
         console.log("play btn call");
         startGame();
@@ -116,6 +114,7 @@ function initializeGameTournament() {
 
     document.getElementById('quit_game').addEventListener('click', function() {
         canvas.style.visibility = 'visible';
+        scorePlayer1 = -1;
         endGame(getGameIdFromUrl());
     });
 
@@ -359,7 +358,6 @@ function initializeGameTournament() {
         countdownInterval = setInterval(updateTimer, 1000);
     }
 
-    
 
     function startGame() {
         draw();
@@ -370,4 +368,4 @@ function initializeGameTournament() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', initializeGame);
+// document.addEventListener('DOMContentLoaded', initializeGame);

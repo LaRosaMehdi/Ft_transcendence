@@ -29,6 +29,9 @@ class Tournament(models.Model):
     seventh_place = models.ForeignKey(User, on_delete=models.CASCADE, related_name='seventh_place', null=True, blank=True)
     eighth_place = models.ForeignKey(User, on_delete=models.CASCADE, related_name='eighth_place', null=True, blank=True)
 
+    force_end_tournament = models.IntegerField(default=0)
+
+
     def __str__(self):
         return f"{self.name} - {self.nb_players} player tournament"
 

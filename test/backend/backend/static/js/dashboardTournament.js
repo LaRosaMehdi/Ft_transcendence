@@ -24,15 +24,18 @@ function loopDashboard(){
                 stopLoop();
                 loadPageTournament(path);
             }
-            else if(data.message === 'finished')
+            else if(data.message === 'forced-finish'){
                 stopLoop();
-            else {
-                console.log("Nothing changed");
+                loadPageUsers('home');
+            }
+            else if(data.message === 'finished'){
+                stopLoop();
+                fetchTournamentDetails();
             }
         })
         .catch(error => console.error('Error Lauch:', error));
     }
-    launch_interval = setInterval(fetchTournamentDetails, 5000);
+    launch_interval = setInterval(fetchTournamentDetails, 3000);
 
     function fetchTournamentDetails() {
         const tournamentName = window.tournamentName;
@@ -51,7 +54,7 @@ function loopDashboard(){
             })
             .catch(error => console.error('Failed to fetch tournament details', error));
     }
-    get_interval = setInterval(tournamentLaunchGame, 10000);
+    get_interval = setInterval(tournamentLaunchGame, 3000);
 
     function stopLoop() {
         console.log("out");
@@ -147,7 +150,7 @@ function renderGames(games) {
         }
     }
 }
-
+ 
 function initTournamentPage() {
     const tournamentElement = document.getElementById('tournament-name');
     if (!tournamentElement) {
@@ -164,5 +167,4 @@ function initTournamentPage() {
     loopDashboard();
     
 }
-
 

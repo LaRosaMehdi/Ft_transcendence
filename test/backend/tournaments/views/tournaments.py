@@ -131,14 +131,44 @@ def tournament_join(request):
 
 
 
+#cancel tournament
+@jwt_login_required
+def remove_player_from_tournament(request):
+    if request.method == 'POST':    
+        form = ConnectTournamentForm(request.POST)
+        if form.is_valid():
+            tournament_name = form.cleaned_data['tournament_name']
+            try:
+                logger.info("/-------------------------------------------------/")
+                tournament = Tournament.objects.get(name=tournament_name)
+                tournament.force_end_tournament = 1
+                players = tournament.players.all()
+                for users_in_tournament in players:
+                    user_update_status(request, users_in_tournament, 'online')
+                tournament.level = 'finished'
+                tournament.save()
+                return JsonResponse({'status': 'success', 'message': 'Player removed successfully'})   
+                
+            except Tournament.DoesNotExist:
+                logger.info(f"Tournament does not exist.")
+                return JsonResponse({'status': 'error', 'message': 'Tournament does not exist'})
+
+            except User.DoesNotExist:
+                messages.error(request, 'User does not exist.', extra_tags='tournament_remove')
+                logger.info(f"User {request.user.username} does not exist.")
+                return JsonResponse({'status': 'error', 'message': 'User does not exist'})
+    return JsonResponse({'redirect': 'home', 'message': 'success'})
+
+
 
 # Launch
 
 @jwt_login_required
 def tournament_launch(request, tournament_name):
     tournament = get_object_or_404(Tournament, name=tournament_name)
-    if tournament.level == "finished":
-        return JsonResponse({'status': 'success','message': 'success'})
+    if tournament.level == "finished" and tournament.force_end_tournament == 1:
+
+        return JsonResponse({'status': 'success','message': 'forced-finish'})
     if tournament.players.all().count() != tournament.nb_players:
         return JsonResponse({'status': 'success','message': 'success'})
     logger.info(f"Tournament full, ready for games!")

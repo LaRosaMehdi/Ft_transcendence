@@ -1,16 +1,38 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Status</title>
     <link rel="stylesheet" href="{% static 'stylesheet.css' %}">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="{% static 'jeu.css' %}">
+    <link rel="stylesheet" href="{% static 'buttons.css' %}">
+    <link rel="stylesheet" href="{% static 'animations.css' %}">
+    <link rel="stylesheet" href="{% static 'logos.css' %}">
+    <link rel="stylesheet" href="{% static 'perso.css' %}">
+    <link rel="stylesheet" href="{% static 'viewProfile.css' %}">
+    <link rel="stylesheet" href="{% static 'friend_list.css' %}">
+    <link rel="stylesheet" href="{% static 'sidebarStyle.css' %}">
+    <link rel="stylesheet" href="{% static 'setting.css' %}">
+    <link rel="stylesheet" href="{% static 'scoreTournament.css' %}">
+    <link rel="stylesheet" href="{% static 'tournament.css' %}">
+    <link rel="stylesheet" href="{% static 'chats.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <title>Tournament Dashboard</title>
 </head>
+<body>
+    {% csrf_token %}
+    <div class="hero">
+        <div class="cube"></div><div class="cube"></div><div class="cube"></div>
+        <div class="cube"></div><div class="cube"></div><div class="cube"></div>
+    </div>
     <div id="app-content">
     <script>
         var tournamentName = "{{ tournament_name }}";
+        if (tournamentName === "") {
+            tournamentName = localStorage.getItem('tournament_name_refresh');
+        }
         function matchmakingLoop() {
             fetch('/games/check_status_user/')
             .then(response => response.json())
@@ -36,5 +58,8 @@
     </div>
 </body>
 </div>
-<script src="{% static 'js/router.js' %}"></script>
+    <script src="{% static 'js/localgame.js' %}" data-arg1="{% csrf_token %}"></script>
+    <script src="{% static 'js/router.js' %}"></script>
+    <script src="{% static 'js/dashboardTournament.js' %}"></script>
+    <script src="{% static 'js/localtournament.js' %}"></script>
 </html>

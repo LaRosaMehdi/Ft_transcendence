@@ -1,38 +1,18 @@
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pong Game</title>
-    <link rel="stylesheet" href="{% static 'stylesheet.css' %}">
-    <link rel="stylesheet" href="{% static 'buttons.css' %}">
-    <link rel="stylesheet" href="{% static 'chats.css' %}">
-    <link rel="stylesheet" href="{% static 'jeu.css' %}">
-    <link rel="stylesheet" href="{% static 'animations.css' %}">
-    <link rel="stylesheet" href="{% static 'logos.css' %}">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        /* Style for the confirmation modal */
-        #confirmationModal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 20px;
-            border: 1px solid #ccc;
-            z-index: 1000; /* Ensure modal is above other elements */
-        }
-    </style> 
-</head>
-<div class="hero">
-    <div class="cube"></div><div class="cube"></div><div class="cube"></div>
-    <div class="cube"></div><div class="cube"></div><div class="cube"></div>
-</div>
-<div id="app-content">
+<style>
+    /* Style for the confirmation modal */
+    #confirmationModal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 20px;
+        border: 1px solid #ccc;
+        z-index: 1000; /* Ensure modal is above other elements */
+    }
+</style> 
 <body class="pong-game-page">
     {% csrf_token %}
     <div class="container">
@@ -40,7 +20,7 @@
         <div class="player-buttons">
             <button class="player-button" id="player1-btn">{{ game.player1.alias }}</button>
             <button class="player-button" id="player2-btn">{{ game.player2.alias }}</button>
-            <button class="player-button" id="play-btn">Play</button>
+            <button class="player-button" id="play-btn1">Play</button>
         </div>
         <canvas id="pongCanvas" width="800", height="400"></canvas>
         
@@ -60,11 +40,4 @@
             </div>
         </div>
     </div>
-</div>
-<!-- <script src="{% static 'js/router.js' %}"></script> -->
-<script src="{% static 'js/localtournament.js' %}"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', initializeGame);
-</script>
 </body>
-</html>
