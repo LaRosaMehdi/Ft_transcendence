@@ -1,12 +1,12 @@
 
 .perso-button {
-background-color: transparent;
-border: none;
-border-radius: 50%; 
-position: absolute;
-top: 100px; 
-right: 0; 
-font-size: 2vw;
+  background-color: transparent;
+  border: none;
+  border-radius: 50%; 
+  position: absolute;
+  top: 100px; 
+  right: 0; 
+  font-size: 2vw;
 }
 
 /* .logout-button { */
@@ -20,37 +20,43 @@ font-size: 2vw;
   /* } */
 
 .custom-button::before {
-content: "";
-display: block;
-width: 100%;
-height: 100%;
-background-image: url('votre-image.jpg');
-background-size: cover;
-background-repeat: no-repeat;
-background-position: center;
-border-radius: 50%;
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-image: url('votre-image.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 50%;
 }
 
 button[type="submit"] {
-position: relative;
-display: inline-block;
-padding: 10px 20px;
-color: #03e9f4;
-font-size: 16px;
-text-decoration: none;
-text-transform: uppercase;
-overflow: hidden;
-transition: .5s;
-letter-spacing: 4px;
-border: none;
-background: transparent;
-cursor: pointer;
-outline: none;
+  position: relative;
+  display: inline-block;
+  padding: 10px 20px;
+  color: #03e9f4;
+  font-size: 16px;
+  text-decoration: none;
+  text-transform: uppercase;
+  overflow: hidden;
+  transition: .5s;
+  letter-spacing: 4px;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
 }
 
 button[type="submit"]:hover {
-color: #fff;
+    background-color: #03e9f4;
+    color: #000;
 }
+
+/* button[type="submit"]:hover {
+color: #fff;
+} */
 
 button[type="submit"] span {
 position: absolute;
@@ -156,9 +162,27 @@ transform-origin: left;
 transform: scaleX(1);
 }
 
+
+#loginbutton {
+  /* position: fixed; */
+  top: 20px; 
+  left: 20px; 
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.buttons-accueil {
+  display: flex;
+  justify-content: space-between; /* Espace égal entre les boutons */
+  width: 100%;
+  margin-top: 20px; /* Espace entre le titre et les boutons */
+}
+
 .back-button {
-    /* Vos styles spécifiques au bouton de retour ici */
-    position: fixed !important;
-    bottom: 20px !important;
-    right: 20px !important;
-  }
+  /* Vos styles spécifiques au bouton de retour ici */
+  position: fixed !important;
+  bottom: 20px !important;
+  right: 20px !important;
+}

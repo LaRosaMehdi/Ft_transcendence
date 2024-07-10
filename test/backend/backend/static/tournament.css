@@ -148,6 +148,13 @@
   color: #fff;
 }
 
+/* Media query pour les petites fenêtres */
+@media screen and (max-width: 800px) {
+  .dashboard-ranking p {
+    font-size: 10px; /* taille de police réduite pour les petites fenêtres */
+  }
+}
+
 /* GAMES */
 
 .dashboard-game {

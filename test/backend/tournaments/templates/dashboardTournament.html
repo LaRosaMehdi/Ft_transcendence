@@ -23,34 +23,36 @@
 </head>
 <body>
     {% csrf_token %}
-    <div class="hero">
-        <div class="cube"></div><div class="cube"></div><div class="cube"></div>
-        <div class="cube"></div><div class="cube"></div><div class="cube"></div>
-    </div>
-    <div id="app-content">
-        <div class="dashboard">
-            <div class="dashboard-data">
-                <div id="tournament-name" data-tournament-name="{{ tournament_name }}"></div>
-                <div>
-                    <div id="tournament-level"></div>
-                    <div id="tournament-nb-players"></div>
+    <div class="container1">
+        <div class="hero">
+            <div class="cube"></div><div class="cube"></div><div class="cube"></div>
+            <div class="cube"></div><div class="cube"></div><div class="cube"></div>
+        </div>
+        <div id="app-content">
+            <div class="dashboard">
+                <div class="dashboard-data">
+                    <div id="tournament-name" data-tournament-name="{{ tournament_name }}"></div>
+                    <div>
+                        <div id="tournament-level"></div>
+                        <div id="tournament-nb-players"></div>
+                    </div>
+                </div>
+
+                <div class="dashboard-ranking-game">    
+                    <div id="tournament-ranking"></div>
+                    <div class="dashboard-game" id="tournament-games"></div> 
                 </div>
             </div>
 
-            <div class="dashboard-ranking-game">    
-                <div id="tournament-ranking"></div>
-                <div class="dashboard-game" id="tournament-games"></div> 
-            </div>
+            <button type="submit" onclick="remove_from_waiting_queue_tournament('{{ tournament_name }}')" class="button back-button"><span></span>
+                <span></span>
+     cript src="{% static 'js/router.js' %}"></script>
+    <script src           <span></span>Back
+            </button>
         </div>
-
-        <button type="submit" onclick="remove_from_waiting_queue_tournament('{{ tournament_name }}')" class="button back-button"><span></span>
-            <span></span>
-            <span></span>Back
-        </button>
     </div>
     <script src="{% static 'js/localgame.js' %}" data-arg1="{% csrf_token %}"></script>
-    <script src="{% static 'js/router.js' %}"></script>
-    <script src="{% static 'js/dashboardTournament.js' %}"></script>
+    <s="{% static 'js/dashboardTournament.js' %}"></script>
     <script src="{% static 'js/localtournament.js' %}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', initTournamentPage);

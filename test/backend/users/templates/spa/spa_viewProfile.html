@@ -1,68 +1,70 @@
 {% load static %}
 {% include 'header.html' %}
-<div class="profile-page-container">
-    <div class="profile-container">
-        <!-- Profile Image and Basic Info -->
-        <div class="profile-image-container">
-            <img src="{{ current_user.image.url }}" alt="{{ current_user.username }}'s Profile Picture" class="profile-image">
+<div class="container1">
+    <div class="profile-page-container">
+        <div class="profile-container">
+            <!-- Profile Image and Basic Info -->
+            <div class="profile-image-container">
+                <img src="{{ current_user.image.url }}" alt="{{ current_user.username }}'s Profile Picture" class="profile-image">
+            </div>
+            <div class="profile-info">
+                <h1 class="username">{{ current_user.username }}</h1>
+                <div class="info-item">
+                    <i class="fas fa-trophy"></i>
+                    <span>ELO Score: {{ current_user.elo }}</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-user-friends"></i>
+                    <span>Friends: {{ current_user.friends.count }}</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-thumbs-up"></i>
+                    <span>Wins: {{ current_user.wins }}</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-thumbs-down"></i>
+                    <span>Losses: {{ current_user.losses }}</span>
+                </div>
+                <div class="status-container">
+                    Status: 
+                    <i class="circle_status {{ current_user.get_status_display|lower }}"></i>
+                </div>
+            </div>
         </div>
-        <div class="profile-info">
-            <h1 class="username">{{ current_user.username }}</h1>
-            <div class="info-item">
-                <i class="fas fa-trophy"></i>
-                <span>ELO Score: {{ current_user.elo }}</span>
-            </div>
-            <div class="info-item">
-                <i class="fas fa-user-friends"></i>
-                <span>Friends: {{ current_user.friends.count }}</span>
-            </div>
-            <div class="info-item">
-                <i class="fas fa-thumbs-up"></i>
-                <span>Wins: {{ current_user.wins }}</span>
-            </div>
-            <div class="info-item">
-                <i class="fas fa-thumbs-down"></i>
-                <span>Losses: {{ current_user.losses }}</span>
-            </div>
-            <div class="status-container">
-                Status: 
-                <i class="circle_status {{ current_user.get_status_display|lower }}"></i>
-            </div>
+        <div class="match-history-container">
+            <h2>Match History</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Players</th>
+                        <th>Score</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for match in matches %}
+                    <tr>
+                        <td>{{ match.date_time|date:"d/m/Y" }}</td>
+                        <td>{{ match.player1.username }} vs {{ match.player2.username }}</td>
+                        <td>{{ match.player1_score }} - {{ match.player2_score }}</td>
+                        <td>
+                            {% if match.winner == current_user %}
+                                <i class="fas fa-trophy" title="Won"></i>
+                            {% elif match.winner %}
+                                <i class="fas fa-times-circle" title="Defeat"></i>
+                            {% else %}
+                                <i class="fas fa-handshake" title="Draw"></i>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">No matches played yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-    </div>
-    <div class="match-history-container">
-        <h2>Match History</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Players</th>
-                    <th>Score</th>
-                    <th>Result</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for match in matches %}
-                <tr>
-                    <td>{{ match.date_time|date:"d/m/Y" }}</td>
-                    <td>{{ match.player1.username }} vs {{ match.player2.username }}</td>
-                    <td>{{ match.player1_score }} - {{ match.player2_score }}</td>
-                    <td>
-                        {% if match.winner == current_user %}
-                            <i class="fas fa-trophy" title="Won"></i>
-                        {% elif match.winner %}
-                            <i class="fas fa-times-circle" title="Defeat"></i>
-                        {% else %}
-                            <i class="fas fa-handshake" title="Draw"></i>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="4">No matches played yet.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
     </div>
 </div>

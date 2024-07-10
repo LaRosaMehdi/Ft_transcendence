@@ -39,6 +39,8 @@ function initializeGame() {
     //new modfi JWT
     const csrfToken = localStorage.getItem('csrf_token');
     const jwtToken = localStorage.getItem('access_token');
+     const player1Name = localStorage.getItem('username');
+    const player2Name = localStorage.getItem('opponent_name');
     //manage the NULL
     if (!csrfToken || !jwtToken) {
         console.error('CSRF token or JWT token is missing');
@@ -54,8 +56,8 @@ function initializeGame() {
         width: canvas.width / 50,
         height: canvas.height / 3,
         color: 'blue',
-        speed: 5,
-        keys: ['ArrowUp', 'ArrowDown']
+        speed: 10,
+        keys: ['w', 's']
     };
 
     const player2 = {
@@ -64,8 +66,8 @@ function initializeGame() {
         width: canvas.width / 50,
         height: canvas.height / 3,
         color: 'red',
-        speed: 5,
-        keys: ['w', 's']
+        speed: 10,
+        keys: ['ArrowUp', 'ArrowDown']
     };
 
     const keysPressed = {
@@ -75,6 +77,9 @@ function initializeGame() {
         's': false
     };
 
+    let gamePaused = false;
+    let savedBallPosition = { dx: 0, dy: 0 };
+    let savedBallSpeed = 0;
     let scorePlayer1 = 0;
     let scorePlayer2 = 0;
 
@@ -127,6 +132,23 @@ function initializeGame() {
     function handleKeyDownLocal(event) {
         if (keysPressed.hasOwnProperty(event.key)) {
             keysPressed[event.key] = true;
+        if (event.key === ' ') {
+                gamePaused = !gamePaused;
+                if (gamePaused) {
+                    // Save current ball speed and position, then stop the ball
+                    savedBallSpeed = currentBallSpeed;
+                    savedBallPosition.dx = ball.dx;
+                    savedBallPosition.dy = ball.dy;
+                    currentBallSpeed = 0;  
+                    ball.dx = 0;
+                    ball.dy = 0;
+                } else {
+                    // Restore ball speed and position
+                    currentBallSpeed = savedBallSpeed;
+                    ball.dx = savedBallPosition.dx;
+                    ball.dy = savedBallPosition.dy;
+                }
+            }
         }
     }
 
@@ -140,22 +162,16 @@ function initializeGame() {
     document.addEventListener('keyup', handleKeyUpLocal);
 
     function movePlayersLocal() {
-        if (keysPressed['ArrowUp'] && player1.y > 0) {
-            player1.y -= player1.speed;
-        }
-        if (keysPressed['ArrowDown'] && player1.y + player1.height < canvas.height) {
-            player1.y += player1.speed;
-        }
-        if (keysPressed['w'] && player2.y > 0) {
-            player2.y -= player2.speed;
-        }
-        if (keysPressed['s'] && player2.y + player2.height < canvas.height) {
-            player2.y += player2.speed;
+     if (!gamePaused) {
+            if (keysPressed['w'] && player1.y > 0) player1.y -= player1.speed;
+            if (keysPressed['s'] && player1.y + player1.height < canvas.height) player1.y += player1.speed;
+            if (keysPressed['ArrowUp'] && player2.y > 0) player2.y -= player2.speed;
+            if (keysPressed['ArrowDown'] && player2.y + player2.height < canvas.height) player2.y += player2.speed;
         }
     }
 
-    const accelerationRate = 0.1;
-    const baseBallSpeed = 1;
+    const accelerationRate = 0.01;
+    const baseBallSpeed = 0.1;
     let currentBallSpeed = baseBallSpeed;
 
     const ball = {
@@ -226,36 +242,38 @@ function initializeGame() {
     function drawScoresLocal() {
         ctx.font = '24px Arial';
         ctx.fillStyle = 'white';
-        ctx.fillText('Player 1: ' + scorePlayer1, 20, 30);
-        ctx.fillText('Player 2: ' + scorePlayer2, canvas.width - 150, 30);
+        ctx.fillText(player1Name + ': ' + scorePlayer1, 20, 30);
+        ctx.fillText(player2Name + ': ' + scorePlayer2, canvas.width - 150, 30);
 
     }
 
     function drawLocal() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = 'black';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.beginPath();
-        ctx.strokeStyle = 'white';
-        ctx.lineWidth = 2;
-        ctx.moveTo(canvas.width / 2, 0);
-        ctx.lineTo(canvas.width / 2, canvas.height);
-        ctx.stroke();
-        drawPlayersLocal(ctx, player1, player2);
-        drawBallLocal();
-        drawScoresLocal();
-        movePlayersLocal();
-        handleCollisionLocal();
-        if (scorePlayer1 >= 2 || scorePlayer2 >= 2) {
-            endGameLocal();
-            return;
+          if (!gamePaused) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 2;
+            ctx.moveTo(canvas.width / 2, 0);
+            ctx.lineTo(canvas.width / 2, canvas.height);
+            ctx.stroke();
+            drawPlayersLocal(ctx, player1, player2);
+            drawBallLocal();
+            drawScoresLocal();
+            movePlayersLocal();
+            handleCollisionLocal();
+            if (scorePlayer1 >= 2 || scorePlayer2 >= 2) {
+                endGameLocal();
+                return;
+            }
+
+            ball.dx += accelerationRate * Math.sign(ball.dx);
+            ball.dy += accelerationRate * Math.sign(ball.dy);
+
+            ball.x += ball.dx;
+            ball.y += ball.dy;
         }
-
-        ball.dx += accelerationRate * Math.sign(ball.dx);
-        ball.dy += accelerationRate * Math.sign(ball.dy);
-
-        ball.x += ball.dx;
-        ball.y += ball.dy;
         requestAnimationFrame(drawLocal);
         
     }
@@ -305,7 +323,6 @@ function initializeGame() {
             winner = "Personne (égalité)";
             loser = "Personne (égalité)";
         }
-        alert(`Le temps est écoulé! ${winner} remporte la partie avec ${Math.max(scorePlayer1, scorePlayer2)} points contre ${loser} avec ${Math.min(scorePlayer1, scorePlayer2)} points.`);
         resetBallLocal();
         stopBallLocal();
     }

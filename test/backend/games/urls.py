@@ -31,4 +31,5 @@ urlpatterns = [
     path('main_chat/', view_main_chat, name='main_chat'),
     path('game-in-progress/', view_game_in_progress, name='game_in_progress'),
     path('check_status_user/', check_status_user, name='check_status_user'),
+    path('get_opponent_name/', get_opponent_name, name='get_opponent_name'),
 ]

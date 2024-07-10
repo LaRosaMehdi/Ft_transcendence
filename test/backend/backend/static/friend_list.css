@@ -34,6 +34,15 @@
     color: #fff;  /* Consistent color for visibility */
 }
 
+.search-container input:-webkit-autofill,
+.search-container input:-webkit-autofill:hover,
+.search-container input:-webkit-autofill:focus,
+.search-container input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px transparent inset !important;
+  -webkit-text-fill-color: #fff !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
 .friends-list-page .search-container button {
     background-color: linear-gradient(#141e30, #243b55);  /* Cyan for buttons, consistent with profile page */
 }

@@ -14,7 +14,7 @@ urlpatterns = [
     path('perso/', view_perso, name='perso'),
     path('perso-content/', view_perso, name='perso-content'),
     path('viewProfile/', view_profile, name='viewProfile'),
-    path('friends/', TemplateView.as_view(template_name='friends.html'), name='friends'),
+    # path('friends/', TemplateView.as_view(template_name='friends.html'), name='friends'),
     
     
     # Settings

@@ -47,6 +47,8 @@ function initializeGameTournament() {
     //new modfi JWT
     const csrfToken = localStorage.getItem('csrf_token');
     const jwtToken = localStorage.getItem('access_token');
+    const player1Name = localStorage.getItem('username');
+    const player2Name = localStorage.getItem('opponent_name');
     //manage the NULL
     if (!csrfToken || !jwtToken) {
         console.error('CSRF token or JWT token is missing');
@@ -62,8 +64,8 @@ function initializeGameTournament() {
         width: canvas.width / 50,
         height: canvas.height / 3,
         color: 'blue',
-        speed: 5,
-        keys: ['ArrowUp', 'ArrowDown']
+        speed: 10,
+        keys: ['w', 's']
     };
 
     const player2 = {
@@ -72,8 +74,8 @@ function initializeGameTournament() {
         width: canvas.width / 50,
         height: canvas.height / 3,
         color: 'red',
-        speed: 5,
-        keys: ['w', 's']
+        speed: 10,
+        keys: ['ArrowUp', 'ArrowDown']
     };
 
     const keysPressed = {
@@ -237,8 +239,8 @@ function initializeGameTournament() {
     function drawScores() {
         ctx.font = '24px Arial';
         ctx.fillStyle = 'white';
-        ctx.fillText('Player 1: ' + scorePlayer1, 20, 30);
-        ctx.fillText('Player 2: ' + scorePlayer2, canvas.width - 150, 30);
+        ctx.fillText(player1Name + ': ' + scorePlayer1, 20, 30);
+        ctx.fillText(player2Name + ': '  + scorePlayer2, canvas.width - 150, 30);
 
     }
 
@@ -323,7 +325,6 @@ function initializeGameTournament() {
             winner = "No one (draw)";
             loser = "No one (draw)";
         }
-        alert(`Time is up! ${winner} wins the game with ${Math.max(scorePlayer1, scorePlayer2)} points against ${loser} with ${Math.min(scorePlayer1, scorePlayer2)} points.`);
         resetBall();
         stopBall();
     }
@@ -331,26 +332,26 @@ function initializeGameTournament() {
 
     
 
-    function startTimer(durationInSeconds) {
-        let timer = durationInSeconds;
+    // function startTimer(durationInSeconds) {
+    //     let timer = durationInSeconds;
 
-        function updateTimer() {
-            const minutes = Math.floor(timer / 60);
-            let seconds = timer % 60;
+    //     function updateTimer() {
+    //         const minutes = Math.floor(timer / 60);
+    //         let seconds = timer % 60;
 
-            seconds = seconds < 10 ? '0' + seconds : seconds;
+    //         seconds = seconds < 10 ? '0' + seconds : seconds;
 
-            document.getElementById('chrono-button').textContent = minutes + ':' + seconds;
+    //         document.getElementById('chrono-button').textContent = minutes + ':' + seconds;
 
-            if (timer-- <= 0) {
-                clearInterval(countdownInterval);
-                endGame();
-            }
-        }
+    //         if (timer-- <= 0) {
+    //             clearInterval(countdownInterval);
+    //             endGame();
+    //         }
+    //     }
 
-        updateTimer();
-        countdownInterval = setInterval(updateTimer, 1000);
-    }
+    //     updateTimer();
+    //     countdownInterval = setInterval(updateTimer, 1000);
+    // }
 
 
     function startGame() {

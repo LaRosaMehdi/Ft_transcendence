@@ -1,18 +1,4 @@
 {% load static %}
-<style>
-    /* Style for the confirmation modal */
-    #confirmationModal {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: white;
-        padding: 20px;
-        border: 1px solid #ccc;
-        z-index: 1000; /* Ensure modal is above other elements */
-    }
-</style> 
 <body class="pong-game-page">
     {% csrf_token %}
     <div class="container">
@@ -36,7 +22,7 @@
                 <h4>Are you sure you want to quit this game? </h4>
                 <p>Quitting automatically set your score at -1 and make your opponant the winner.</p>
                 <button id="quit_game">Yes</button>
-                <button onclick="hideConfirmation()">Cancel</button>
+                <button id="confirmationModalButton" onclick="hideConfirmation()">Cancel</button>
             </div>
         </div>
     </div>

@@ -3,7 +3,7 @@
     padding: 10px 20px 10px 20px;
     top: 20px;
     left: 20px;
-    z-index: 1000;
+    z-index: 100;
     background: rgba(0, 0, 0, 0.5);
     box-sizing: border-box;
     box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);

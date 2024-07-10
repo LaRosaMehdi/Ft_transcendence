@@ -14,31 +14,37 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="hero">
-        <div class="cube"></div><div class="cube"></div><div class="cube"></div>
-        <div class="cube"></div><div class="cube"></div><div class="cube"></div>
+    <div class="container1">
+        <div class="hero">
+            <div class="cube"></div><div class="cube"></div><div class="cube"></div>
+            <div class="cube"></div><div class="cube"></div><div class="cube"></div>
+        </div>
+        <div id="app-content">
+            <div class="logo-box">
+                <h2>Tournament</h2>
+            </div>
+            <div class="tournament-box">
+                <button type="submit" onclick="loadPageTournament('create')" style="right:10%"> <span></span>
+                <span></span>
+                <span></span>
+                <span></span>Create Public Tournament</button>
+            </div>
+            <div class="tournament-box">
+                <button type="submit" onclick="loadPageTournament('join')" style="right:10%"> <span></span>
+                <span></span>
+                <span></span>
+                <span></span>Join Tournament</button>
+            </div>
+            <button type="submit" onclick="javascript:history.go(-1);" class="button back-button"><span></span>
+                <span></span>
+                <span></span>
+                <span></span>Back
+            </button>
+        </div>
     </div>
-    <div id="app-content">
-        <div class="logo-box">
-            <h2>Tournament</h2>
-        </div>
-        <div class="tournament-box">
-            <button type="submit" onclick="loadPageTournament('create')" style="right:10%"> <span></span>
-            <span></span>
-            <span></span>
-            <span></span>Create Public Tournament</button>
-        </div>
-        <div class="tournament-box">
-            <button type="submit" onclick="loadPageTournament('join')" style="right:10%"> <span></span>
-            <span></span>
-            <span></span>
-            <span></span>Join Tournament</button>
-        </div>
-        <button type="submit" onclick="javascript:history.go(-1);" class="button back-button"><span></span>
-            <span></span>
-            <span></span>
-            <span></span>Back
-        </button>
-    </div>
+    <script src="{% static 'js/localgame.js' %}" data-arg1="{% csrf_token %}"></script>
+    <script src="{% static 'js/router.js' %}"></script>
+    <script src="{% static 'js/dashboardTournament.js' %}"></script>
+    <script src="{% static 'js/localtournament.js' %}"></script>
 </body>
 </html>

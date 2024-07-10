@@ -139,3 +139,20 @@ def game_tournament_end(request, game, player1_score, player2_score):
     except Exception as e:
         logger.error(f"game_tournament_end error: {e}")
         return None
+
+
+@jwt_login_required
+def get_opponent_name(request):
+    try:
+        current_game = request.user.current_game
+        username = request.user.username
+        if current_game:
+            if current_game.player1 == request.user:
+                opponent_name = current_game.player2.username
+            else:
+                opponent_name = current_game.player1.username
+            return JsonResponse({'status': 'success', 'username': username, 'opponent_name': opponent_name})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'No current game found'})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)})

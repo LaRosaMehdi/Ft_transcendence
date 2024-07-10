@@ -90,7 +90,28 @@ function loadPageMatchmaking(pagePath, pushState = true) {
             bindFormEvent();
             if (typeof initializeGame === 'function') {
                 initializeGame();
-            } 
+            }
+             $.ajax({
+                type: 'GET',
+                url: '/games/get_opponent_name/',  // L'URL de la vue créée pour obtenir le nom de l'adversaire
+                success: function(response) {
+                    if (response.status === 'success') {
+                        localStorage.setItem('opponent_name', response.opponent_name);
+                        localStorage.setItem('username', response.username);
+                        const player1Name = localStorage.getItem('username');
+                        const player2Name = localStorage.getItem('opponent_name');
+                        console.log('Player 1 Name:', player1Name);
+                        console.log('Player 2 Name:', player2Name);
+
+                        // Initialiser le jeu après avoir récupéré le nom de l'adversaire
+                        if (typeof initializeGame === 'function') {
+                            initializeGame();
+                        }
+                    } else {
+                        console.error('Error fetching opponent name:', response.message);
+                    }
+                },
+            }); 
         },
         error: function(error) {
             console.error('Error loading the page:', error);
@@ -205,6 +226,7 @@ function setLocalStorageAndLoadPage() {
     const redirectUrl = document.getElementById('redirect_url').value;
 
     if (accessToken && refreshToken && csrfToken) {
+         localStorage.setItem('username', response.username);
         localStorage.setItem('access_token', accessToken);
         localStorage.setItem('refresh_token', refreshToken);
         localStorage.setItem('csrf_token', csrfToken);

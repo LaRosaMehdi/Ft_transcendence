@@ -1,6 +1,6 @@
 body {
   height: 100vh;
-  display: grid;
+  /* display: grid; */
   place-content: center;
   margin: 0;
   padding: 0;
@@ -18,9 +18,11 @@ body {
 }
 
 .container1{
-    position: absolute !important;
-    top: 10px!important;
-    right: 5px!important;
+  min-height: 100vh; /* Ensure the container takes at least the full height of the viewport */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center horizontally */
+  justify-content: center;
 }
 
 .login-box {
@@ -30,6 +32,7 @@ body {
   box-sizing: border-box;
   box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
   border-radius: 10px;
+  margin-top: 60px;
 }
 
 .login-box h2 {
@@ -52,6 +55,15 @@ body {
   border-bottom: 1px solid #fff;
   outline: none;
   background: transparent;
+}
+
+.user-box input:-webkit-autofill,
+.user-box input:-webkit-autofill:hover,
+.user-box input:-webkit-autofill:focus,
+.user-box input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px transparent inset !important;
+  -webkit-text-fill-color: #fff !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 .user-box label {
@@ -132,12 +144,62 @@ ul li a:hover {
   top: 200px;
   left: 45%;
   transform: translateX(-50%);
-  z-index: 1000;
+  z-index: 100;
   max-height: 70vh;
+  text-align: center !important;
 }
 
 .accueil-box h2 {
   margin: 0 0 30px;
+  padding: 0;
+  color: #fff;
+}
+
+
+#confirmationModal {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  border: 1px solid #03e9f4;
+  transform: translate(-50%, -50%);
+  background: #243b55;
+  border-radius: 10px;
+  color: #03e9f4;
+  z-index: 1000; /* Ensure modal is above other elements */
+  text-align: center;
+}
+
+#confirmationModalButton, #quit_game_local, #quit_game {
+  background-color: #03e9f4;
+  color:  rgba( 0, 0, 0.5);
+  border-radius: 5px;
+}
+
+#confirmationModalButton:hover, 
+#quit_game_local:hover,
+#quit_game:hover {
+  background-color: #03e9f4;
+  color: #000;
+}
+
+
+.setting-box {
+  display: flex;
+  width: 400px;
+  height: 100px;
+  padding: 40px;
+  background: rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+  margin-top: 100px;
+  align-items: center;
+  justify-content: center;
+}
+
+.setting-box h2 {
+  text-align: center;
   padding: 0;
   color: #fff;
 }
