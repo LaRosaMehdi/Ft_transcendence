@@ -19,8 +19,8 @@ logger = logging.getLogger(__name__)
 
 @jwt_login_required
 def view_accueil(request):
-    logger.debug(f"ACCEUIL JWT tokens: {request.session.get('access_token')} {request.session.get('refresh_token')}")
-    logger.debug(f"ACCEUIL User ID: {request.user}")
+    # logger.debug(f"ACCEUIL JWT tokens: {request.session.get('access_token')} {request.session.get('refresh_token')}")
+    # logger.debug(f"ACCEUIL User ID: {request.user}")
     if request.is_ajax():
         html = render_to_string('spa_accueil.html', {'current_user': request.user, 'context': 'ajax'}, request=request)
         return JsonResponse({'html': html})
@@ -29,8 +29,8 @@ def view_accueil(request):
 
 @jwt_login_required
 def view_perso(request):
-    logger.debug(f"PERSO JWT tokens: {request.session.get('access_token')} {request.session.get('refresh_token')}")
-    logger.debug(f"PERSO User ID: {request.user}")
+    # logger.debug(f"PERSO JWT tokens: {request.session.get('access_token')} {request.session.get('refresh_token')}")
+    # logger.debug(f"PERSO User ID: {request.user}")
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         html = render_to_string('spa_perso.html', {'current_user': request.user, 'context': 'ajax'}, request=request)
         return JsonResponse({'html': html})
@@ -70,7 +70,7 @@ def view_setting(request):
 @jwt_login_required
 def view_profile(request):
     user = request.user
-    matches = Game.objects.filter(Q(player1=user) | Q(player2=user)).order_by('-date_time')
+    matches = Game.objects.filter((Q(player1=user) | Q(player2=user)) & Q(tournament__isnull=True)).order_by('-date_time')
 
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         html = render_to_string('spa_viewProfile.html', {'current_user': user, 'matches': matches, 'context': 'ajax'}, request=request)

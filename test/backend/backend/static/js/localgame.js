@@ -7,20 +7,20 @@ function hideConfirmation() {
 }
 
 
-function enfOfGameLoop() {
-    fetch('/users/get_current_game/')
-    .then(response => response.json())
-    .then(data => {
-        if (data.current_game === null) {
-            console.log("spirit loop");
-            window.location.href = '/games/results/';
-        }
-    })
-    .catch(error => console.error('Error:', error));
-}
+// function enfOfGameLoop() {
+//     fetch('/users/get_current_game/')
+//     .then(response => response.json())
+//     .then(data => {
+//         if (data.current_game === null) {
+//             console.log("spirit loop");
+//             window.location.href = '/games/results/';
+//         }
+//     })
+//     .catch(error => console.error('Error:', error));
+// }
 
 
-function drawPlayers(ctx, player1, player2) {
+function drawPlayersLocal(ctx, player1, player2) {
     ctx.fillStyle = player1.color;
     ctx.fillRect(player1.x, player1.y, player1.width, player1.height);
 
@@ -90,26 +90,19 @@ function initializeGame() {
 
     }
 
-    document.getElementById('play-btn').addEventListener('click', function() {
+    document.getElementById('play-btn1').addEventListener('click', function() {
         canvas.style.visibility = 'visible';
-        startGame();
+        startGameLocal();
     });
 
-    document.getElementById('player1-btn').addEventListener('click', function() {
-        choosePlayer('player1');
-    });
 
-    document.getElementById('player2-btn').addEventListener('click', function() {
-        choosePlayer('player2');
-    });
-
-    document.getElementById('quit_game').addEventListener('click', function() {
+    document.getElementById('quit_game_local').addEventListener('click', function() {
         canvas.style.visibility = 'visible';
-        endGame();
+        endGameLocal();
     });
 
 
-    function handleKeyEvents(event) {
+    function handleKeyEventsLocal(event) {
         if (player1.keys.includes(event.key)) {
             event.preventDefault();
             if (event.key === player1.keys[0] && player1.y > 0) {
@@ -129,24 +122,24 @@ function initializeGame() {
         }
     }
 
-    document.addEventListener('keydown', handleKeyEvents);
+    document.addEventListener('keydown', handleKeyEventsLocal);
 
-    function handleKeyDown(event) {
+    function handleKeyDownLocal(event) {
         if (keysPressed.hasOwnProperty(event.key)) {
             keysPressed[event.key] = true;
         }
     }
 
-    function handleKeyUp(event) {
+    function handleKeyUpLocal(event) {
         if (keysPressed.hasOwnProperty(event.key)) {
             keysPressed[event.key] = false;
         }
     }
 
-    document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('keyup', handleKeyUp);
+    document.addEventListener('keydown', handleKeyDownLocal);
+    document.addEventListener('keyup', handleKeyUpLocal);
 
-    function movePlayers() {
+    function movePlayersLocal() {
         if (keysPressed['ArrowUp'] && player1.y > 0) {
             player1.y -= player1.speed;
         }
@@ -173,7 +166,7 @@ function initializeGame() {
         dy: -2
     };
 
-    function drawBall() {
+    function drawBallLocal() {
         ctx.beginPath();
         ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
         ctx.fillStyle = 'red';
@@ -181,12 +174,12 @@ function initializeGame() {
         ctx.closePath();
     }
 
-    function stopBall() {
+    function stopBallLocal() {
         ball.dx = 0;
         ball.dy = 0;
     }
 
-    function resetBall() {
+    function resetBallLocal() {
         ball.x = canvas.width / 2;
         ball.y = canvas.height / 2;
         ball.dx = -ball.dx;
@@ -198,18 +191,18 @@ function initializeGame() {
         player2.y = canvas.height / 2 - 50;
     }
 
-    function handleCollision() {
+    function handleCollisionLocal() {
         if (ball.y - ball.radius <= 0 || ball.y + ball.radius >= canvas.height) {
             ball.dy = -ball.dy;
         }
         if (ball.x - ball.radius <= 1) {
             scorePlayer2++;
-            resetBall();
+            resetBallLocal();
             return;
         }
         if (ball.x + ball.radius >= canvas.width - 1) {
             scorePlayer1++;
-            resetBall();
+            resetBallLocal();
             return;
         }
         if (ball.x - ball.radius <= player1.x + player1.width &&
@@ -230,7 +223,7 @@ function initializeGame() {
         }
     }
 
-    function drawScores() {
+    function drawScoresLocal() {
         ctx.font = '24px Arial';
         ctx.fillStyle = 'white';
         ctx.fillText('Player 1: ' + scorePlayer1, 20, 30);
@@ -238,7 +231,7 @@ function initializeGame() {
 
     }
 
-    function draw() {
+    function drawLocal() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = 'black';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -248,13 +241,13 @@ function initializeGame() {
         ctx.moveTo(canvas.width / 2, 0);
         ctx.lineTo(canvas.width / 2, canvas.height);
         ctx.stroke();
-        drawPlayers(ctx, player1, player2);
-        drawBall();
-        drawScores();
-        movePlayers();
-        handleCollision();
+        drawPlayersLocal(ctx, player1, player2);
+        drawBallLocal();
+        drawScoresLocal();
+        movePlayersLocal();
+        handleCollisionLocal();
         if (scorePlayer1 >= 2 || scorePlayer2 >= 2) {
-            endGame();
+            endGameLocal();
             return;
         }
 
@@ -263,11 +256,11 @@ function initializeGame() {
 
         ball.x += ball.dx;
         ball.y += ball.dy;
-        requestAnimationFrame(draw);
+        requestAnimationFrame(drawLocal);
         
     }
 
-    function endGame(game) {
+    function endGameLocal(game) {
         const player1Score = scorePlayer1;
         const player2Score = scorePlayer2;
 
@@ -313,42 +306,42 @@ function initializeGame() {
             loser = "Personne (égalité)";
         }
         alert(`Le temps est écoulé! ${winner} remporte la partie avec ${Math.max(scorePlayer1, scorePlayer2)} points contre ${loser} avec ${Math.min(scorePlayer1, scorePlayer2)} points.`);
-        resetBall();
-        stopBall();
+        resetBallLocal();
+        stopBallLocal();
     }
 
     
 
-    function startTimer(durationInSeconds) {
-        let timer = durationInSeconds;
+    // function startTimer(durationInSeconds) {
+    //     let timer = durationInSeconds;
 
-        function updateTimer() {
-            const minutes = Math.floor(timer / 60);
-            let seconds = timer % 60;
+    //     function updateTimer() {
+    //         const minutes = Math.floor(timer / 60);
+    //         let seconds = timer % 60;
 
-            seconds = seconds < 10 ? '0' + seconds : seconds;
+    //         seconds = seconds < 10 ? '0' + seconds : seconds;
 
-            document.getElementById('chrono-button').textContent = minutes + ':' + seconds;
+    //         document.getElementById('chrono-button').textContent = minutes + ':' + seconds;
 
-            if (timer-- <= 0) {
-                clearInterval(countdownInterval);
-                endGame();
-            }
-        }
+    //         if (timer-- <= 0) {
+    //             clearInterval(countdownInterval);
+    //             endGame();
+    //         }
+    //     }
 
-        updateTimer();
-        countdownInterval = setInterval(updateTimer, 1000);
-    }
+    //     updateTimer();
+    //     countdownInterval = setInterval(updateTimer, 1000);
+    // }
 
     
 
-    function startGame() {
-        draw();
+    function startGameLocal() {
+        drawLocal();
     }
 
-    if (document.body.classList.contains('pong-game-page')) {
-        setInterval(enfOfGameLoop, 1000);
-    }
+    // if (document.body.classList.contains('pong-game-page')) {
+    //     setInterval(enfOfGameLoop, 1000);
+    // }
 }
 
 document.addEventListener('DOMContentLoaded', initializeGame);

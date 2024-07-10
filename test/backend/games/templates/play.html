@@ -47,7 +47,7 @@
         <div class="player-buttons">
             <button class="player-button" id="player1-btn">{{ game.player1.username }}</button>
             <button class="player-button" id="player2-btn">{{ game.player2.username }}</button>
-            <button class="player-button" id="play-btn">Play</button>
+            <button class="player-button" id="play-btn1">Play</button>
         </div>
         <canvas id="pongCanvas" width="800", height="400"></canvas>
         
@@ -62,7 +62,7 @@
             <div>
                 <h4>Are you sure you want to quit this game? </h4>
                 <p>Quitting automatically set your score at -1 and make your opponant the winner.</p>
-                <button id="quit_game">Yes</button>
+                <button id="quit_game_local">Yes</button>
                 <button onclick="hideConfirmation()">Cancel</button>
             </div>
         </div>

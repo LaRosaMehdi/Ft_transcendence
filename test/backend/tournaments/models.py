@@ -28,6 +28,10 @@ class Tournament(models.Model):
     sixth_place = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sixth_place', null=True, blank=True)
     seventh_place = models.ForeignKey(User, on_delete=models.CASCADE, related_name='seventh_place', null=True, blank=True)
     eighth_place = models.ForeignKey(User, on_delete=models.CASCADE, related_name='eighth_place', null=True, blank=True)
+    is_finished = models.BooleanField(default=False)
+    blockchain_stored = models.BooleanField(default=False)
+    transaction_hashes = models.JSONField(default=list)
+
 
     force_end_tournament = models.IntegerField(default=0)
 

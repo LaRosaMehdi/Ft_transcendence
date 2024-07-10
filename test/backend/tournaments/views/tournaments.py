@@ -167,7 +167,7 @@ def remove_player_from_tournament(request):
 def tournament_launch(request, tournament_name):
     tournament = get_object_or_404(Tournament, name=tournament_name)
     if tournament.level == "finished" and tournament.force_end_tournament == 1:
-
+        logger.info(f"User: {request.user.username} DEBUG TOURNAMENT LEAVE")
         return JsonResponse({'status': 'success','message': 'forced-finish'})
     if tournament.players.all().count() != tournament.nb_players:
         return JsonResponse({'status': 'success','message': 'success'})
@@ -196,6 +196,8 @@ def tournament_launch(request, tournament_name):
             return JsonResponse({'status': 'success','message': 'success'})
     tournament_level_up(request, tournament)
     if  tournament.level == 'finished':
+        tournament.is_finished = True
+        tournament.save()
         return JsonResponse({'status': 'success','message': 'finished'})
     return JsonResponse({'status': 'success','message': 'success'})
     
@@ -332,8 +334,7 @@ def tournament_level_up(request, tournament):
             player1 = winners[i * 2]
             player2 = winners[i * 2 + 1]
             tournament.games.add(game_tournament_init(request, tournament, tournament.level, player1, player2))
-        logger.info("#############################")
-        return JsonResponse({'status': 'success', 'new_games_ids': [game.id for game in new_games]})
+        return JsonResponse({'status': 'success', 'message': 'Tournament level has reached the end.'})
     else:
         return JsonResponse({'status': 'success', 'message': 'Tournament level has reached the end.'})
 

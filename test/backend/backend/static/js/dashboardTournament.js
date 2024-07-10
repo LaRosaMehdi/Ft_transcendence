@@ -29,7 +29,7 @@ function loopDashboard(){
                 loadPageUsers('home');
             }
             else if(data.message === 'finished'){
-                stopLoop();
+                // stopLoop();
                 fetchTournamentDetails();
             }
         })

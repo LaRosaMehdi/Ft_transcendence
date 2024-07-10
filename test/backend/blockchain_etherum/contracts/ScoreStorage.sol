@@ -1,31 +1,31 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
+pragma experimental ABIEncoderV2;
 
 contract ScoreStorage {
     struct Player {
         string name;
-        uint eloScore;
     }
 
     struct Tournament {
         uint id;
+        string name;
         Player[] players;
-        uint startTime;
-        string status; // "upcoming", "ongoing", "completed"
+        string[] rankings; // Store player names according to their ranks
     }
 
     Tournament[] public tournaments;
 
-    function addTournament(uint _id, uint _startTime, string memory _status) public {
+    function addTournament(uint _id, string memory _name, string[] memory _playerNames) public {
         Tournament storage newTournament = tournaments.push();
         newTournament.id = _id;
-        newTournament.startTime = _startTime;
-        newTournament.status = _status;
-    }
+        newTournament.name = _name;
 
-    function addPlayerToTournament(uint _tournamentId, string memory _name, uint _eloScore) public {
-        require(_tournamentId < tournaments.length, "Tournament does not exist.");
-        tournaments[_tournamentId].players.push(Player(_name, _eloScore));
+        // Add players and rankings in a single transaction
+        for (uint i = 0; i < _playerNames.length; i++) {
+            newTournament.players.push(Player(_playerNames[i]));
+            newTournament.rankings.push(_playerNames[i]);
+        }
     }
 
     function getTournamentPlayerCount(uint _tournamentId) public view returns (uint) {
@@ -33,15 +33,19 @@ contract ScoreStorage {
         return tournaments[_tournamentId].players.length;
     }
 
-    function getTournamentPlayer(uint _tournamentId, uint _playerIndex) public view returns (string memory name, uint eloScore) {
+    function getTournamentPlayer(uint _tournamentId, uint _playerIndex) public view returns (string memory name) {
         require(_tournamentId < tournaments.length, "Tournament does not exist.");
         require(_playerIndex < tournaments[_tournamentId].players.length, "Player does not exist.");
         Player storage player = tournaments[_tournamentId].players[_playerIndex];
-        return (player.name, player.eloScore);
+        return player.name;
     }
 
     function getTournamentsCount() public view returns (uint) {
-    return tournaments.length;
-}
-}
+        return tournaments.length;
+    }
 
+    function getRankings(uint _tournamentId) public view returns (string[] memory) {
+        require(_tournamentId < tournaments.length, "Tournament does not exist.");
+        return tournaments[_tournamentId].rankings;
+    }
+}

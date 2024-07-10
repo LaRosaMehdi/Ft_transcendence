@@ -16,18 +16,18 @@ function getGameIdFromUrl() {
     return urlParts[4];
 }
 
-function enfOfGameLoop() {
-    fetch('/users/get_current_game/')
-    .then(response => response.json())
-    .then(data => {
-        if (data.current_game === null) {
-            let tournament_name = getTournamentNameFromUrl();
-            window.location.href = '/tournaments/' + tournament_name + '/';
-            return;
-        }
-    })
-    .catch(error => console.error('Error:', error));
-}
+// function enfOfGameLoop() {
+//     fetch('/users/get_current_game/')
+//     .then(response => response.json())
+//     .then(data => {
+//         if (data.current_game === null) {
+//             let tournament_name = getTournamentNameFromUrl();
+//             window.location.href = '/tournaments/' + tournament_name + '/';
+//             return;
+//         }
+//     })
+//     .catch(error => console.error('Error:', error));
+// }
 
 function drawPlayers(ctx, player1, player2) {
     ctx.fillStyle = player1.color;
@@ -98,19 +98,13 @@ function initializeGameTournament() {
 
     }
 
-    document.getElementById('play-btn1').addEventListener('click', function() {
+    document.getElementById('play-btn').addEventListener('click', function() {
         canvas.style.visibility = 'visible';
         console.log("play btn call");
         startGame();
     });
 
-    document.getElementById('player1-btn').addEventListener('click', function() {
-        choosePlayer('player1');
-    });
-
-    document.getElementById('player2-btn').addEventListener('click', function() {
-        choosePlayer('player2');
-    });
+  
 
     document.getElementById('quit_game').addEventListener('click', function() {
         canvas.style.visibility = 'visible';
@@ -363,9 +357,9 @@ function initializeGameTournament() {
         draw();
     }
 
-    if (document.body.classList.contains('pong-game-page')) {
-        setInterval(enfOfGameLoop, 1000);
-    }
+    // if (document.body.classList.contains('pong-game-page')) {
+    //     setInterval(enfOfGameLoop, 1000);
+    // }
 }
 
 // document.addEventListener('DOMContentLoaded', initializeGame);
