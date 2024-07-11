@@ -26,9 +26,11 @@ def get_contract():
 def blockchain_tournament_list_view(request):
     contract = get_contract()
     tournaments = Tournament.objects.all()
-
+    tournamentFinished = []
+    
     for t in tournaments:
         if t.is_finished and not t.blockchain_stored:  # Check if the tournament is finished and not already stored
+ 
             # Prepare player names and rankings for the top 4 positions
             player_names = []
             rankings = []
@@ -51,8 +53,10 @@ def blockchain_tournament_list_view(request):
             t.blockchain_stored = True
             t.transaction_hashes = tx_hashes
             t.save()
+        if t.is_finished is True:
+            tournamentFinished.append(t)
 
-    context = {'tournaments': tournaments}
+    context = {'tournaments': tournamentFinished}
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         html = render_to_string('spa_scoreTournament.html', context, request=request)
         return JsonResponse({'html': html})

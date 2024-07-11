@@ -167,7 +167,8 @@ def remove_player_from_tournament(request):
 def tournament_launch(request, tournament_name):
     tournament = get_object_or_404(Tournament, name=tournament_name)
     if tournament.level == "finished" and tournament.force_end_tournament == 1:
-        logger.info(f"User: {request.user.username} DEBUG TOURNAMENT LEAVE")
+        logger.info(f"User: {request.user.username} DEBUG TOURNAMENT LEAVE FORCEFINISH")
+
         return JsonResponse({'status': 'success','message': 'forced-finish'})
     if tournament.players.all().count() != tournament.nb_players:
         return JsonResponse({'status': 'success','message': 'success'})

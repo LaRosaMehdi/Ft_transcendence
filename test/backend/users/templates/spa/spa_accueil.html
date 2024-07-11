@@ -1,9 +1,9 @@
 {% load static %}
 {% csrf_token %}
+<title>Accueil Page</title>
 <div id="profileData">
 </div>
 {% include 'header.html' %}
-
 <div class="accueil-box">
     <h2 style="text-align: center;">Welcome, {{ current_user.username }}</h2>
     <div class="buttons-accueil">    
