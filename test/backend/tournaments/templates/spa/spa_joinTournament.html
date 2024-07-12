@@ -1,55 +1,30 @@
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'buttons.css' %}">
-    <link rel="stylesheet" href="{% static 'animations.css' %}">
-    <link rel="stylesheet" href="{% static 'logos.css' %}">
-    <link rel="stylesheet" href="{% static 'perso.css' %}">
-    <link rel="stylesheet" href="{% static 'matchmaking.css' %}">
-    <link rel="stylesheet" href="{% static 'stylesheet.css' %}">
-    <link rel="stylesheet" href="{% static 'tournament.css' %}">
-    <title>Join Open Tournament</title>
-    <style>
-        .container_form {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-evenly;
-            align-items: center;
-        }
-    </style>
-</head>
-<body>
-    <div class="container1">
-        <div class="tournament-results">
-            <h1 style="color: white;">Join tournament</h1>
-            {% if messages %}
-                {% for message in messages %}
-                    {% if message.tags == 'tournament_join error' %}
-                        <p style="color: red;">ERROR: {{ message }}</p>
-                    {% endif %}
-                    {% if message.tags == 'tournament_join success' %}
-                        <p style="color: green;">SUCCESS: {{ message }}</p>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-            <form class="container_form" id="connectTournament" action="{% url 'connectTournament' %}" method="post">
-                {% csrf_token %}
-                <div class="user-box">
-                    <input type="text" id="{{ form.tournament_name.id_for_label }}" name="{{ form.tournament_name.html_name }}" placeholder="Tournament name">
-                </div>
-                <div class="user-box">
-                    <input type="text" id="{{ form.user_alias.id_for_label }}" name="{{ form.user_alias.html_name }}" placeholder="Nickname">
-                </div>
-                <button type="submit">Join</button>
-            </form>
-            <button type="submit" onclick="javascript:history.go(-1);" class="button back-button"><span></span>
-                <span></span>
-                <span></span>Back
-            </button>
-        </div>
+<div class="container1">
+    <div class="tournament-results">
+        <h1 style="color: white;">Join tournament</h1>
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'tournament_join error' %}
+                    <p style="color: red;">ERROR: {{ message }}</p>
+                {% endif %}
+                {% if message.tags == 'tournament_join success' %}
+                    <p style="color: green;">SUCCESS: {{ message }}</p>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        <form class="container_form" id="connectTournament" action="{% url 'connectTournament' %}" method="post">
+            {% csrf_token %}
+            <div class="user-box">
+                <input type="text" id="{{ form.tournament_name.id_for_label }}" name="{{ form.tournament_name.html_name }}" placeholder="Tournament name">
+            </div>
+            <div class="user-box">
+                <input type="text" id="{{ form.user_alias.id_for_label }}" name="{{ form.user_alias.html_name }}" placeholder="Nickname">
+            </div>
+            <button type="submit">Join</button>
+        </form>
+        <button type="submit" onclick="loadPageTournament('tournament')" class="button back-button"><span></span>
+            <span></span>
+            <span></span>Back
+        </button>
     </div>
-</body>
-</html>
+</div>

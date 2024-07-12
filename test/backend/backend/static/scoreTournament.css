@@ -12,7 +12,7 @@
     left: 50%; /* Centering by moving it halfway across the screen */
     right: 50%;
     transform: translateX(-50%); /* Offset by half its width to truly center */
-    z-index: 1000; /* Ensure it's above other content */
+    z-index: 100; /* Ensure it's above other content */
     overflow-y: scroll; /* Allow internal scrolling */
     max-height: 70vh; /* Limit the height to the viewport */
 }

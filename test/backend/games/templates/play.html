@@ -50,6 +50,23 @@
                 <button  id="confirmationModalButton" onclick="hideConfirmation()">Cancel</button>
             </div>
         </div>
+        <div id="noticeModal">
+            <h4>Game Instructions</h4>
+          <p>
+                <span class="notice-line">Hello Newbies! Maybe it's your first time here. <br> A Stratoshperic Pong-Game will begin. <br> </span>
+                <span class="notice-line">Here are the instructions for the game: <br><br> </span>
+                <span class="notice-line">- Use the following keys to move your paddle.<br> Player1 (Left) will move with 'w' and 's'. <br> Player2 (Right) will move with 'arrowsUp' and 'arrowsDown'.<br><br> </span>
+                <span class="notice-line">- The objective is to hit the ball past your opponent's paddle.<br><br></span>
+                <span class="notice-line">- The first player to reach 12 points wins.<br><br></span>
+                <span class="notice-line">- Avoid missing the ball to prevent the opponent from scoring.<br><br></span>
+                <span class="notice-line">- Both of you can put the game on Pause State with ' ' A.K.A the space-bar!<br><br></span>
+                <span class="notice-line">- Have fun and good luck!</span>
+            </p>
+            <button id="noticeModalButton" onclick="hideNotice()">Close</button>
+        </div>
+        <button id="notice-button" class="notice-button" onclick="showNotice()">
+            <i class="fas fa-file-alt"></i>
+        </button>
     </div>
 </div>
 <script src="{% static 'js/localgame.js' %}" data-arg1="{% csrf_token %}"></script>

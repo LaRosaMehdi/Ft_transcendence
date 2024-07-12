@@ -6,6 +6,18 @@ function hideConfirmation() {
     document.getElementById('confirmationModal').style.display = 'none';
 }
 
+function showNoticeTournament() {
+    document.getElementById('noticeModalTournament').style.display = 'block';
+    document.getElementById('noticeTournament-button').style.display = 'none';
+
+}
+
+function hideNoticeTournament() {
+    document.getElementById('noticeModalTournament').style.display = 'none';
+    document.getElementById('noticeTournament-button').style.display = 'block';
+
+}
+
 function getTournamentNameFromUrl() {
     const urlParts = window.location.pathname.split('/');
     return urlParts[2];
@@ -64,7 +76,7 @@ function initializeGameTournament() {
         width: canvas.width / 50,
         height: canvas.height / 3,
         color: 'blue',
-        speed: 10,
+        speed: 7,
         keys: ['w', 's']
     };
 
@@ -74,7 +86,7 @@ function initializeGameTournament() {
         width: canvas.width / 50,
         height: canvas.height / 3,
         color: 'red',
-        speed: 10,
+        speed: 7,
         keys: ['ArrowUp', 'ArrowDown']
     };
 
@@ -85,6 +97,9 @@ function initializeGameTournament() {
         's': false
     };
 
+    let gamePaused = false;
+    let savedBallPosition = { dx: 0, dy: 0 };
+    let savedBallSpeed = 0;
     let scorePlayer1 = 0;
     let scorePlayer2 = 0;
 
@@ -141,6 +156,23 @@ function initializeGameTournament() {
         if (keysPressed.hasOwnProperty(event.key)) {
             keysPressed[event.key] = true;
         }
+        if (event.key === ' ') {
+            gamePaused = !gamePaused;
+            if (gamePaused) {
+                // Save current ball speed and position, then stop the ball
+                savedBallSpeed = currentBallSpeed;
+                savedBallPosition.dx = ball.dx;
+                savedBallPosition.dy = ball.dy;
+                currentBallSpeed = 0;
+                ball.dx = 0;
+                ball.dy = 0;
+            } else {
+                // Restore ball speed and position
+                currentBallSpeed = savedBallSpeed;
+                ball.dx = savedBallPosition.dx;
+                ball.dy = savedBallPosition.dy;
+            }
+        }
     }
 
     function handleKeyUp(event) {
@@ -153,16 +185,16 @@ function initializeGameTournament() {
     document.addEventListener('keyup', handleKeyUp);
 
     function movePlayers() {
-        if (keysPressed['ArrowUp'] && player1.y > 0) {
+        if (keysPressed['w'] && player1.y > 0) {
             player1.y -= player1.speed;
         }
-        if (keysPressed['ArrowDown'] && player1.y + player1.height < canvas.height) {
+        if (keysPressed['s'] && player1.y + player1.height < canvas.height) {
             player1.y += player1.speed;
         }
-        if (keysPressed['w'] && player2.y > 0) {
+        if (keysPressed['ArrowUp'] && player2.y > 0) {
             player2.y -= player2.speed;
         }
-        if (keysPressed['s'] && player2.y + player2.height < canvas.height) {
+        if (keysPressed['ArrowDown'] && player2.y + player2.height < canvas.height) {
             player2.y += player2.speed;
         }
     }
@@ -245,31 +277,33 @@ function initializeGameTournament() {
     }
 
     function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = 'black';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.beginPath();
-        ctx.strokeStyle = 'white';
-        ctx.lineWidth = 2;
-        ctx.moveTo(canvas.width / 2, 0);
-        ctx.lineTo(canvas.width / 2, canvas.height);
-        ctx.stroke();
-        drawPlayers(ctx, player1, player2);
-        drawBall();
-        drawScores();
-        movePlayers();
-        handleCollision();
-        if (scorePlayer1 >= 2 || scorePlayer2 >= 2) {
-            
-            endGame(getGameIdFromUrl());
-            return;
+        if (!gamePaused) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 2;
+            ctx.moveTo(canvas.width / 2, 0);
+            ctx.lineTo(canvas.width / 2, canvas.height);
+            ctx.stroke();
+            drawPlayers(ctx, player1, player2);
+            drawBall();
+            drawScores();
+            movePlayers();
+            handleCollision();
+            if (scorePlayer1 >= 2 || scorePlayer2 >= 2) {
+                
+                endGame(getGameIdFromUrl());
+                return;
+            }
+
+            ball.dx += accelerationRate * Math.sign(ball.dx);
+            ball.dy += accelerationRate * Math.sign(ball.dy);
+
+            ball.x += ball.dx;
+            ball.y += ball.dy;
         }
-
-        ball.dx += accelerationRate * Math.sign(ball.dx);
-        ball.dy += accelerationRate * Math.sign(ball.dy);
-
-        ball.x += ball.dx;
-        ball.y += ball.dy;
         requestAnimationFrame(draw);
         
     }

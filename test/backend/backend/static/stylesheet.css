@@ -55,6 +55,7 @@ body {
   border-bottom: 1px solid #fff;
   outline: none;
   background: transparent;
+  caret-color: #03e9f4 !important;
 }
 
 .user-box input:-webkit-autofill,
@@ -64,6 +65,8 @@ body {
   -webkit-box-shadow: 0 0 0 30px transparent inset !important;
   -webkit-text-fill-color: #fff !important;
   transition: background-color 5000s ease-in-out 0s;
+  caret-color: #03e9f4 !important;
+
 }
 
 .user-box label {
@@ -84,16 +87,20 @@ body {
   color: #03e9f4;
   font-size: 12px;
   display: none;
+  caret-color: #03e9f4 !important;
+
 }
 
 .user-box input::placeholder {
   color: transparent;
   transition: .5s;
+  caret-color: #03e9f4 !important;
 }
 
 .user-box input:focus::placeholder,
 .user-box input:valid::placeholder {
   color: #03e9f4;
+  caret-color: #03e9f4 !important;
 }
 
 ul {
@@ -181,6 +188,148 @@ ul li a:hover {
 #quit_game:hover {
   background-color: #03e9f4;
   color: #000;
+}
+
+
+#noticeModal {
+  display: none;
+  position: fixed;
+  height: 70%;
+  width: 50%;
+  border: 1px solid #03e9f4;
+  transform: translate(-50%, -50%);
+  background: #243b55;
+  border-radius: 10px;
+  color: #03e9f4;
+  z-index: 1000; /* Ensure modal is above other elements */
+  text-align: center;
+  top: 50%;
+  left: 50%;
+}
+
+#noticeModalButton {
+  background-color: #03e9f4;
+  color:  rgba( 0, 0, 0.5);
+  border-radius: 5px;  
+  position: fixed;
+  bottom: 1%;
+  left: 45%;
+}
+
+#noticeModalButton:hover {
+  background-color: #03e9f4;
+  color: #000;
+}
+
+#noticeModal h4 {
+  font-size: 2vw; /* Taille de police relative à la largeur de la fenêtre */
+  text-align: center;
+  margin-bottom: 1em;
+}
+
+#noticeModal p {
+  font-size: 1.5vh; /*Taille de police relative à la largeur de la fenêtre*/
+  line-height: 1.6;
+}
+
+#noticeModal p .notice-line {
+  display: block;
+  margin-bottom: 0.5em;
+}
+
+#noticeModal p .notice-line:nth-child(odd) {
+  color: #03e9f4; /* Couleur pour les consignes impaires */
+}
+
+#noticeModal p .notice-line:nth-child(even) {
+  color: #141e30; /* Couleur pour les consignes paires */
+}
+
+#notice-button {
+  background-color: #03e9f4;
+  color:  rgba( 0, 0, 0.5);
+  border-radius: 5px; 
+  position: fixed; 
+  bottom: 10px;
+  left: 10px;
+}
+
+
+
+#noticeModalTournament {
+  display: none;
+  position: fixed;
+  height: 70%;
+  width: 50%;
+  border: 1px solid #03e9f4;
+  transform: translate(-50%, -50%);
+  background: #243b55;
+  border-radius: 10px;
+  color: #03e9f4;
+  z-index: 1000; /* Ensure modal is above other elements */
+  text-align: center;
+  /* bottom: 5% */
+  top: 50%;
+  left: 50%;
+}
+
+#noticeModalTournamentButton {
+  background-color: #03e9f4;
+  color:  rgba( 0, 0, 0.5);
+  border-radius: 5px;  
+  position: fixed;
+  bottom: 1%;
+  left: 45%;
+}
+
+#noticeModalTournamentButton:hover {
+  background-color: #03e9f4;
+  color: #000;
+}
+
+#noticeModalTournament h4 {
+  font-size: 2vw; /* Taille de police relative à la largeur de la fenêtre */
+  text-align: center;
+  margin-bottom: 1em;
+}
+
+#noticeModalTournament p {
+  font-size: 0.9vw; /* Taille de police relative à la largeur de la fenêtre */
+  line-height: 1.6;
+}
+
+.notice-text {
+  font-size: 1rem; /* Adjust the font size as needed */
+  line-height: 1.5; /* Adjust the line height to reduce spacing */
+}
+
+/* Tournament */
+.notice-line {
+  display: block;
+  margin-bottom: 0.5rem; /* Adjust the margin as needed */
+}
+
+/* Local */
+#noticeModalTournament p .notice-line {
+  display: block;
+  margin-bottom: 0.5em;
+}
+
+#noticeModalTournament p .notice-line:nth-child(odd) {
+  color: #03e9f4; /* Couleur pour les consignes impaires */
+}
+
+#noticeModalTournament p .notice-line:nth-child(even) {
+  color: #141e30; /* Couleur pour les consignes paires */
+}
+
+#noticeTournament-button {
+  background-color: #03e9f4;
+  color:  rgba( 0, 0, 0.5);
+  border-radius: 5px; 
+  position: fixed; 
+  bottom: 10px;
+  left: 10px;
 }
 
 
