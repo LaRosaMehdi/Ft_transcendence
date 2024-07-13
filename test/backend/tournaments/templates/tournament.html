@@ -28,26 +28,31 @@
             <div class="cube"></div><div class="cube"></div><div class="cube"></div>
         </div>
         <div id="app-content">
-            <div class="logo-box">
-                <h2>Tournament</h2>
+            <div class="tournament">
+                {% include 'header.html' %}
+                <div class="tournament-header">
+                    <h1>Tournament</h1>
+                </div>
+                <div class="tournament-select">
+                    <div class="tournament-box">
+                        <button type="submit" onclick="loadPageTournament('create')" style="text-align: center;"> <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>Create Public Tournament</button>
+                    </div>
+                    <div class="tournament-box">
+                        <button type="submit" onclick="loadPageTournament('join')" style="text-align: center;"> <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>Join Tournament</button>
+                    </div>
+                    <button type="submit" onclick="loadPageUsers('home')" class="button back-button"><span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>Home
+                    </button>
+                </div>
             </div>
-            <div class="tournament-box">
-                <button type="submit" onclick="loadPageTournament('create')" style="right:10%"> <span></span>
-                <span></span>
-                <span></span>
-                <span></span>Create Public Tournament</button>
-            </div>
-            <div class="tournament-box">
-                <button type="submit" onclick="loadPageTournament('join')" style="right:10%"> <span></span>
-                <span></span>
-                <span></span>
-                <span></span>Join Tournament</button>
-            </div>
-            <button type="submit" onclick="loadPageUsers('home')" class="button back-button"><span></span>
-                <span></span>
-                <span></span>
-                <span></span>Home
-            </button>
         </div>
     </div>
     <script src="{% static 'js/localgame.js' %}" data-arg1="{% csrf_token %}"></script>

@@ -1,5 +1,5 @@
 function loopDashboard(){    
-    function tournamentLaunchGame() {
+    async function tournamentLaunchGame() {
         const tournamentName = window.tournamentName;
         if (!tournamentName) {
             console.log("Tournament name is not set");
@@ -11,6 +11,8 @@ function loopDashboard(){
             if (data.current_game !== null && data.context === 1 && data.message === 'play_tournament') {
                 stopLoop();
                 console.log("play");
+                localStorage.setItem('tournament_username', data.player1);
+                localStorage.setItem('tournament_opponentname', data.player2);
                 loadPagePlayTournament(data.redirectUrl, data.game_id);
             }
             else if(data.current_game !== null && data.message === 'tournament_in_progress' ) {
@@ -26,6 +28,7 @@ function loopDashboard(){
             }
             else if(data.message === 'forced-finish'){
                 stopLoop();
+                console.log("DEBUG FORCE FINISHED********")
                 loadPageUsers('home');
             }
             else if(data.message === 'finished'){

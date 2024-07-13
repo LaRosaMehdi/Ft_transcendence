@@ -185,12 +185,15 @@ def tournament_launch(request, tournament_name):
                         'message': 'play_tournament',
                         'redirectUrl': tournament_name,
                         'game_id': game.id,
+                        'player1': tournament.current_game.player1.alias,
+                        'player2': tournament.current_game.player2.alias,
                         'context': 1
                     })
                 elif game.player2 == request.user:
                     return JsonResponse({
                         'status': 'success',
                         'message': 'tournament_in_progress',
+                        'player2': tournament.current_game.player2.alias,
                         'current_game': game.id,
                         'context': 0
                     })
@@ -287,7 +290,7 @@ def tournament_get(request, tournament_name):
 
     # logger.debug(f"-> {tournament.name}")
     response_data = {
-        'tournament': tournament.name,
+        'name': tournament.name,
         'nb_players': tournament.nb_players,
         'level': tournament.level,
         'players': players_ranking,

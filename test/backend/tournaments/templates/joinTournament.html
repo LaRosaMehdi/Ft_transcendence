@@ -31,7 +31,7 @@
 </head>
 <body>
     <div class="container1">
-        <div class="tournament-results">
+        <div class="create-join">
             <h1 style="color: white;">Join tournament</h1>
             {% if messages %}
                 {% for message in messages %}
@@ -43,7 +43,7 @@
                     {% endif %}
                 {% endfor %}
             {% endif %}
-            <form class="container_form" id="connectTournament" action="{% url 'connectTournament' %}" method="post">
+            <form id="connectTournament" action="{% url 'connectTournament' %}" method="post">
                 {% csrf_token %}
                 <div class="user-box">
                     <input type="text" id="{{ form.tournament_name.id_for_label }}" name="{{ form.tournament_name.html_name }}" placeholder="Tournament name">
@@ -55,10 +55,9 @@
             </form>
             <button type="submit" onclick="javascript:history.go(-1);" class="button back-button"><span></span>
                 <span></span>
-                <span></span>
                 <span></span>Back
             </button>
-        </div>
+        </div> 
     </div>
     <script src="{% static 'js/localgame.js' %}" data-arg1="{% csrf_token %}"></script>
     <script src="{% static 'js/router.js' %}"></script>

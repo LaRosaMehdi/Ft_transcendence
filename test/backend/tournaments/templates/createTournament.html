@@ -20,66 +20,58 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <title>Create Open Tournament</title>
+    <style>
+        .container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-evenly;
+            align-items: center;
+        }
+    </style>
 </head>
 <body>
     <div class="container1">
-        <div class="hero">
-            <div class="cube"></div><div class="cube"></div><div class="cube"></div>
-            <div class="cube"></div><div class="cube"></div><div class="cube"></div>
+        <div class="create-join">
+            <h1>Create tournament</h1>
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == 'tournament_generate error' %}
+                        <p style="color: red;">ERROR: {{ message }}</p>
+                    {% endif %}
+                    {% if message.tags == 'tournament_generate success' %}
+                        <p style="color: green;">SUCCESS: {{ message }}</p>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            <form id="generateTournament" action="{% url 'generateTournament' %}" method="post">
+                {% csrf_token %}
+                <div class="user-box">
+                    <input type="text" id="{{ form.name.id_for_label }}" name="{{ form.name.html_name }}" placeholder="Enter tournament name">
+                </div>
+                <div class="user-box">
+                    <input type="text" id="{{ form.user_alias.id_for_label }}" name="{{ form.user_alias.html_name }}" placeholder="Nickname">
+                </div>
+                <div class="user-box">
+                    <p>Select numbers of players</p>
+                    <select id="{{ form.nb_players.id_for_label }}" name="{{ form.nb_players.html_name }}">
+                        <option value="4">4 players</option>
+                        <option value="8">8 players</option>
+                    </select>
+                </div>
+                <br>
+                <button type="submit">Submit</button>
+            </form>
         </div>
-        <div id="app-content">
-            <div class="tournament-results">
-                <h1 style="color: white;">Creation du tournoi</h1>
-                {% if messages %}
-                    {% for message in messages %}
-                        {% if message.tags == 'tournament_generate error' %}
-                            <p style="color: red;">ERROR: {{ message }}</p>
-                        {% endif %}
-                        {% if message.tags == 'tournament_generate success' %}
-                            <p style="color: green;">SUCCESS: {{ message }}</p>
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
-                <form class="container2" id="generateTournament" action="{% url 'generateTournament' %}" method="post">
-                    {% csrf_token %}
-                    <div class="user-box">
-                        <input type="text" id="{{ form.name.id_for_label }}" name="{{ form.name.html_name }}" placeholder="Enter tournament name">
-                    </div>
-                    <div class="user-box">
-                        <input type="text" id="{{ form.user_alias.id_for_label }}" name="{{ form.user_alias.html_name }}" placeholder="Nickname">
-                    </div>
-                    <div class="user-box">
-                        <select id="{{ form.nb_players.id_for_label }}" name="{{ form.nb_players.html_name }}">
-                            <option value="4">4 players</option>
-                            <option value="8">8 players</option>
-                        </select>
-                    </div>
-                    <button type="submit">Submit</button>
-                </form>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Position</th>
-                            <th>Joueur</th>
-                            <th>Victoires</th>
-                            <th>Nulles</th>
-                            <th>Défaites</th>
-                        </tr>
-                    </thead>
-                    <tbody id="results-body">
-                        <!-- Les lignes seront générées dynamiquement ici -->
-                    </tbody>
-                </table>
-            </div>
-            <button type="submit" onclick="javascript:history.go(-1);" class="button back-button"><span></span>
-                <span></span>
-                <span></span>Back
-            </button>
-        </div>
+        <button type="submit" onclick="javascript:history.go(-1);" class="button back-button"><span></span>
+            <span></span>
+            <span></span>
+            <span></span>Back
+        </button>
     </div>
     <script src="{% static 'js/localgame.js' %}" data-arg1="{% csrf_token %}"></script>
     <script src="{% static 'js/router.js' %}"></script>
     <script src="{% static 'js/dashboardTournament.js' %}"></script>
     <script src="{% static 'js/localtournament.js' %}"></script>
+    <!-- <script src="{% static '/js/createTournament.js' %}"></script> -->
 </body>
 </html>

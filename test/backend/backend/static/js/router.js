@@ -226,7 +226,7 @@ function setLocalStorageAndLoadPage() {
     const redirectUrl = document.getElementById('redirect_url').value;
 
     if (accessToken && refreshToken && csrfToken) {
-         localStorage.setItem('username', response.username);
+        localStorage.setItem('username', response.username);
         localStorage.setItem('access_token', accessToken);
         localStorage.setItem('refresh_token', refreshToken);
         localStorage.setItem('csrf_token', csrfToken);

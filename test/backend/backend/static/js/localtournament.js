@@ -59,8 +59,8 @@ function initializeGameTournament() {
     //new modfi JWT
     const csrfToken = localStorage.getItem('csrf_token');
     const jwtToken = localStorage.getItem('access_token');
-    const player1Name = localStorage.getItem('username');
-    const player2Name = localStorage.getItem('opponent_name');
+    const player1NameT = localStorage.getItem('tournament_username');
+    const player2NameT = localStorage.getItem('tournament_opponentname');
     //manage the NULL
     if (!csrfToken || !jwtToken) {
         console.error('CSRF token or JWT token is missing');
@@ -271,8 +271,8 @@ function initializeGameTournament() {
     function drawScores() {
         ctx.font = '24px Arial';
         ctx.fillStyle = 'white';
-        ctx.fillText(player1Name + ': ' + scorePlayer1, 20, 30);
-        ctx.fillText(player2Name + ': '  + scorePlayer2, canvas.width - 150, 30);
+        ctx.fillText(player1NameT + ': ' + scorePlayer1, 20, 30);
+        ctx.fillText(player2NameT + ': '  + scorePlayer2, canvas.width - 150, 30);
 
     }
 
