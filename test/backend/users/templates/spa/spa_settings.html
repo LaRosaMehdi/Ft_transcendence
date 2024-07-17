@@ -14,19 +14,9 @@
                 </div>
                 <button type="submit">Change Username</button>
             </form>
-            {% if messages %}
-                {% for message in messages %}
-                    {% if message.tags == 'change_username_tag error' %}
-                        <p style="color: red;">ERROR: {{ message }}</p>
-                    {% endif %}
-                    {% if message.tags == 'change_username_tag warning' %}
-                        <p style="color: orange;">WARNING: {{ message }}</p>
-                    {% endif %}
-                    {% if message.tags == 'change_username_tag success' %}
-                        <p style="color: green;">SUCCESS: {{ message }}</p>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
+            <div id="settings_username_messages">
+                <!-- Error or success messages will be displayed here -->
+            </div>
         </div>
         <div class="login-box">
             <h2>Change Image</h2>
@@ -41,16 +31,9 @@
                 </div>
                 <button type="submit">Upload</button>
             </form>
-            {% if messages %}
-                {% for message in messages %}
-                    {% if message.tags == 'change_image_tag error' %}
-                        <p style="color: red;">ERROR: {{ message }}</p>
-                    {% endif %}
-                    {% if message.tags == 'change_image_tag success' %}
-                        <p style="color: green;">SUCCESS: {{ message }}</p>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
+            <div id="settings_image_messages">
+                <!-- Error or success messages will be displayed here -->
+            </div>
         </div>  
         <div class="login-box">
             <h2>Change Password</h2>
@@ -67,44 +50,25 @@
                 </div>
                 <button type="submit">Change Password</button>
             </form>
-            {% if messages %}
-                {% for message in messages %}
-                    {% if message.tags == 'change_password_tag error' %}
-                        <p style="color: red;">ERROR: {{ message }}</p>
-                    {% endif %}
-                    {% if message.tags == 'change_password_tag success' %}
-                        <p style="color: green;">SUCCESS: {{ message }}</p>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
+            <div id="settings_password_messages">
+                <!-- Error or success messages will be displayed here -->
+            </div>
         </div>
         <div class="login-box">
-            <div style="display: flex;justify-content: center; flex-direction: column; align-items: center;">
-                <h2>Two-factor Authentication</h2>
-                <div style="height: 100%;">
-                    <form id="2faForm" method="post" action="{% url 'setting_change_2fa' %}">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label class="switch">
-                                <input type="checkbox" id="enable_2fa" name="enable_2fa" {% if request.user.twofactor_enabled %}checked{% endif %}>
-                                <span class="slider"></span>
-                                <span class="toggle-text left-text">ON</span>
-                                <span class="toggle-text right-text">OFF</span>
-                            </label>
-                        </div>
-                    </form>
+            <h2>Two-factor Authentication</h2>
+            <form id="2faForm" method="post" action="{% url 'setting_change_2fa' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="switch">
+                        <input type="checkbox" id="enable_2fa" name="enable_2fa" {% if request.user.twofactor_enabled %}checked{% endif %}>
+                        <span class="slider"></span>
+                        <span class="toggle-text left-text">ON</span>
+                        <span class="toggle-text right-text">OFF</span>
+                    </label>
                 </div>
-            </div>
-                {% if messages %}
-                    {% for message in messages %}
-                        {% if message.tags == 'change_2fa_tag error' %}
-                            <p style="color: red;">ERROR: {{ message }}</p>
-                        {% endif %}
-                        {% if message.tags == 'change_2fa_tag success' %}
-                            <p style="color: green;">SUCCESS: {{ message }}</p>
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
+            </form>
+            <div id="settings_twofactor_messages">
+                <!-- Error or success messages will be displayed here -->
             </div>
         </div>
     {% else %}
@@ -118,19 +82,9 @@
                     </div>
                     <button type="submit">Change Username</button>
                 </form>
-                {% if messages %}
-                    {% for message in messages %}
-                        {% if message.tags == 'change_username_tag error' %}
-                            <p style="color: red;">ERROR: {{ message }}</p>
-                        {% endif %}
-                        {% if message.tags == 'change_username_tag warning' %}
-                            <p style="color: orange;">WARNING: {{ message }}</p>
-                        {% endif %}
-                        {% if message.tags == 'change_username_tag success' %}
-                            <p style="color: green;">SUCCESS: {{ message }}</p>
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
+                <div id="settings_username_messages">
+                    <!-- Error or success messages will be displayed here -->
+                </div>
             </div>
             <div class="login-box">
                 <h2>Change Image</h2>
@@ -145,44 +99,26 @@
                     </div>
                     <button type="submit">Upload</button>
                 </form>
-                {% if messages %}
-                    {% for message in messages %}
-                        {% if message.tags == 'change_image_tag error' %}
-                            <p style="color: red;">ERROR: {{ message }}</p>
-                        {% endif %}
-                        {% if message.tags == 'change_image_tag success' %}
-                            <p style="color: green;">SUCCESS: {{ message }}</p>
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
+                <div id="settings_image_messages">
+                    <!-- Error or success messages will be displayed here -->
+                </div>
             </div>
             <div class="login-box">
-                <div style="display: flex;justify-content: center; flex-direction: column; align-items: center;">
-                    <h2>Two-factor Authentication</h2>
-                    <div style="height: 100%;">
-                        <form method="post" id="2faForm" action="{% url 'setting_change_2fa' %}">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <label class="switch">
-                                    <input type="checkbox" id="enable_2fa" name="enable_2fa" {% if request.user.twofactor_enabled %}checked{% endif %}>
-                                    <span class="slider"></span>
-                                    <span class="toggle-text left-text">ON</span>
-                                    <span class="toggle-text right-text">OFF</span>
-                                </label>
-                            </div>
-                        </form>
+                <h2>Two-factor Authentication</h2>
+                <form method="post" id="2faForm" action="{% url 'setting_change_2fa' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="switch">
+                            <input type="checkbox" id="enable_2fa" name="enable_2fa" {% if request.user.twofactor_enabled %}checked{% endif %}>
+                            <span class="slider"></span>
+                            <span class="toggle-text left-text">ON</span>
+                            <span class="toggle-text right-text">OFF</span>
+                        </label>
                     </div>
+                </form>
+                <div id="settings_twofactor_messages">
+                    <!-- Error or success messages will be displayed here -->
                 </div>
-                {% if messages %}
-                    {% for message in messages %}
-                        {% if message.tags == 'change_2fa_tag error' %}
-                            <p style="color: red;">ERROR: {{ message }}</p>
-                        {% endif %}
-                        {% if message.tags == 'change_2fa_tag success' %}
-                            <p style="color: green;">SUCCESS: {{ message }}</p>
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
             </div>
         </div>
     </div>

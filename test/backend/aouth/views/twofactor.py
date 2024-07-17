@@ -58,7 +58,9 @@ def twofactor_oauth_send(request):
     else:
         return redirect('twofactor')
 
+
 def twofactor_oauth(request):
+    errors = []
     if request.method == 'POST':
         form = TwoFactorForm(request.POST)
         if form.is_valid():
@@ -67,7 +69,7 @@ def twofactor_oauth(request):
             if user:
                 hashed_validation_code_entered = hashlib.sha256(validation_code.encode()).hexdigest()
                 if user.validation_code == hashed_validation_code_entered:
-                    user.backend = f'{ModelBackend.__module__}.{ModelBackend.__qualname__}'     
+                    user.backend = f'{ModelBackend.__module__}.{ModelBackend.__qualname__}'
                     login(request, user)
                     user_update_validation(request, user, None, None, True)
                     user_update_status(request, user, 'online')
@@ -79,7 +81,6 @@ def twofactor_oauth(request):
                         'refresh_token': request.session.get('refresh_token'),
                         'csrf_token': request.META.get('CSRF_COOKIE'),
                     }
-
                     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                         return JsonResponse(response_data)
                     else:
@@ -88,28 +89,23 @@ def twofactor_oauth(request):
                         response.set_cookie('refresh_token', request.session.get('refresh_token'))
                         response.set_cookie('csrf_token', request.META.get('CSRF_COOKIE'))
                         return response
-                    # if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                    #     return JsonResponse({
-                    #         'status': 'success',
-                    #         'message': 'Login Sucess, welcome',
-                    #         'redirectUrl': 'home',
-                    #     })
-                    # else:
-                    #     return redirect('home')
-            
                 else:
-                    user_update_status(user, 'offline')
-                    messages.error(request, "Invalid validation code", extra_tags='twofactor_oauth_tag')
+                    user_update_status(request, user, 'offline')
+                    errors.append("Invalid validation code")
+            else:
+                errors.append("User not found")
         else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"{field}: {error}", extra_tags='twofactor_oauth_tag')
+            for field, field_errors in form.errors.items():
+                for error in field_errors:
+                    errors.append(f"{error}")
     else:
-        messages.error(request, "Invalid request method", extra_tags='twofactor_oauth_tag')
+        errors.append("Invalid request method")
+
+    error_messages = ', '.join(errors)
     return JsonResponse({
         'status': 'error',
-        'message': 'error',
-        'redirectUrl': 'register',
+        'message': error_messages,
+        'redirectUrl': 'twofactor',
     })
 
 # Middleware

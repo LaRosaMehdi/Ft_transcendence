@@ -2,16 +2,9 @@
 <div class="container1">
     <div class="create-join">
         <h1 style="color: white;">Join tournament</h1>
-        {% if messages %}
-            {% for message in messages %}
-                {% if message.tags == 'tournament_join error' %}
-                    <p style="color: red;">ERROR: {{ message }}</p>
-                {% endif %}
-                {% if message.tags == 'tournament_join success' %}
-                    <p style="color: green;">SUCCESS: {{ message }}</p>
-                {% endif %}
-            {% endfor %}
-        {% endif %}
+        <div id="join_tournament_messages">
+            <!-- error message here -->
+        </div>
         <form id="connectTournament" action="{% url 'connectTournament' %}" method="post">
             {% csrf_token %}
             <div class="user-box">

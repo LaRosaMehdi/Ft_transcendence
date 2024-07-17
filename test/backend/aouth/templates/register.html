@@ -37,13 +37,9 @@
                 Already Registered ? Login</button>
             <div class="login-box">
                 <h2>Register</h2>      
-                {% if messages %}
-                    {% for message in messages %}
-                    {% if message.tags == 'aouth_register_tag error' %}
-                            <p style="color: red;">ERROR: {{ message }}</p>
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
+                <div id="aouth_register_messages">
+                    <!-- error message here -->
+                </div>
                 <form id="registerForm" action="{% url 'aouth_register_form' %}" method="post">
                     {% csrf_token %}
                     <div class="user-box">

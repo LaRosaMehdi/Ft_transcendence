@@ -34,22 +34,11 @@
                 <span></span>
                 <span></span>
                 Not Yet Registered ? Register</button>
-            {% if messages %}
-                {% for message in messages %}
-                    {% if message.tags == 'aouth_required_middleware_tag warning' %}
-                        <p style="color: orange;">WARNING: {{ message }}</p>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
             <div class="login-box">
                 <h2>Login</h2>      
-                {% if messages %}
-                    {% for message in messages %}
-                        {% if message.tags == 'aouth_login_tag error' %}
-                            <p style="color: red;">ERROR: {{ message }}</p>
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
+                <div id="aouth_login_messages">
+                    <!-- error message here -->
+                </div>
                 <form id="loginForm" action="{% url 'aouth_login_form' %}" method="post">
                     {% csrf_token %}
                     <div class="user-box">

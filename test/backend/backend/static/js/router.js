@@ -54,6 +54,19 @@ function loadPageTournament(pagePath, tournamentName = '', pushState = true) {
         }
     });
 }
+// Pour Print les erreurs
+function displayMessage(element, message, color) {
+    const messageElement = $('<p style="color: ' + color + ';">' + message + '</p>');
+    element.append(messageElement);
+    
+    // Fade out the message after a delay
+    setTimeout(function() {
+        messageElement.fadeOut(1000, function() {
+            // Remove the message from the DOM after fading out
+            messageElement.remove();
+        });
+    }, 15000); // Time in milliseconds before starting to fade out
+}
 
 //SPA Request GET, load play tournament `/${response.tournament_name}/play/${response.game_id}/`
 function loadPagePlayTournament(tournament_name, game_id, pushState = true) {
@@ -245,24 +258,26 @@ function bindFormEvent() {
     $('#registerForm').off('submit').on('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(this);
-
+    
         $.ajax({
             type: 'POST',
-            url: this.action,
+            url: $(this).attr('action'),
             data: formData,
             processData: false,
             contentType: false,
             success: function(response) {
+                const messageElement = $('#aouth_register_messages');
+                messageElement.empty(); // Clear any existing messages
+    
                 if (response.status === 'success') {
                     loadPageAouth(response.redirectUrl.replace(/^\//, ''), true);
                 } else {
                     console.log('Success with unexpected status:', response.message);
-                    loadPageAouth(response.redirectUrl.replace(/^\//, ''), true);
+                    displayMessage(messageElement, 'ERROR: ' + response.message, 'red');
                 }
             },
             error: function(xhr, status, error) {
-                console.error("Error submitting form:", error);
-                
+                displayMessage($('#aouth_register_messages'), 'ERROR: There was an issue with your submission.', 'red');
             }
         });
     });
@@ -270,29 +285,32 @@ function bindFormEvent() {
     $('#twoFactorAouth').off('submit').on('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(this);
-        
+    
         $.ajax({
             type: 'POST',
-            url: this.action,
+            url: $(this).attr('action'),
             data: formData,
             processData: false,
             contentType: false,
             success: function(response) {
+                const messageElement = $('#twofactor-message');
+                messageElement.empty(); // Clear any existing messages
+    
                 if (response.status === 'success') {
                     localStorage.setItem('access_token', response.access_token);
                     localStorage.setItem('refresh_token', response.refresh_token);
                     localStorage.setItem('csrf_token', response.csrf_token);
                     loadPageUsers(response.redirectUrl.replace(/^\//, ''), true);
                 } else {
-                    console.log('Success with unexpected status:', response.message);
-                    loadPageAouth(response.redirectUrl.replace(/^\//, ''), true);
+                    displayMessage(messageElement, 'ERROR: ' + response.message, 'red');
                 }
             },
             error: function(xhr, status, error) {
-                console.error("Error submitting form:", error);
+                displayMessage($('#twofactor-message'), 'ERROR: There was an issue with your submission.', 'red');
             }
         });
     });
+    
     //connectTournament
     $('#connectTournament').off('submit').on('submit', function(e) {
         e.preventDefault();
@@ -305,15 +323,22 @@ function bindFormEvent() {
             processData: false,
             contentType: false,
             success: function(response) {
+                const messageElement = $('#join_tournament_messages');
+                messageElement.empty(); // Clear any existing messages
+                console.log(response.message);
                 if (response.status === 'success')
                     loadPageTournament(response.redirectUrl.replace(/^\//, ''), true);
+                else if (response.status === 'error') {
+                    displayMessage(messageElement, 'ERROR: ' + response.message, 'red');
+                }
             },
             error: function(xhr, status, error) {
-                console.error("Error submitting form:", error);
+                $('#join_tournament_messages').empty();
+                displayMessage($('#join_tournament_messages'), 'ERROR: There was an issue with your submission.', 'red');
             }
         });
     });
-    //generateTournament
+
     $('#generateTournament').off('submit').on('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(this);
@@ -325,18 +350,67 @@ function bindFormEvent() {
             processData: false,
             contentType: false,
             success: function(response) {
+                const messageElement = $('#generate_tournament_messages');
+                messageElement.empty(); // Clear any existing messages
+
                 if (response.status === 'success')
                     loadPageTournament(response.redirectUrl.replace(/^\//, ''), true);
+                else if (response.status === 'error') {
+                    displayMessage(messageElement, 'ERROR: ' + response.message, 'red');
+                }
             },
             error: function(xhr, status, error) {
-                console.error("Error submitting form:", error);
+                $('#generate_tournament_messages').empty();
+                displayMessage($('#generate_tournament_messages'), 'ERROR: There was an issue with your submission.', 'red');
             }
         });
     });
+
+    
+    $('#Set_username').off('submit').on('submit', function(e) {
+        e.preventDefault();
+        form = $(this);
+        const formData = new FormData(this);
+    
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                const messageElement = $('#settings_username_messages');
+                messageElement.empty(); // Clear any existing messages
+                form[0].reset();
+    
+                if (response.status === 'success') {
+                    displayMessage(messageElement, 'SUCCESS: ' + response.message, 'green');
+    
+                    if (response.warning) {
+                        displayMessage(messageElement, 'WARNING: ' + response.warning, 'orange');
+                    }
+    
+                } else if (response.status === 'error') {
+                    if (Array.isArray(response.errors)) {
+                        response.errors.forEach(error => {
+                            displayMessage(messageElement, 'ERROR: ' + error, 'red');
+                        });
+                    } else {
+                        displayMessage(messageElement, 'ERROR: ' + response.errors, 'red');
+                    }
+                }
+            },
+            error: function(xhr, status, error) {
+                displayMessage($('#settings_username_messages'), 'ERROR: There was an issue with your submission.', 'red');
+            }
+        });
+    });
+    
     $('#Set_image').off('submit').on('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(this);
-
+        form = $(this);
+    
         $.ajax({
             type: 'POST',
             url: this.action,
@@ -344,39 +418,35 @@ function bindFormEvent() {
             processData: false,
             contentType: false,
             success: function(response) {
-                console.log("Success image changed");
-               
+                const messageElement = $('#settings_image_messages');
+                messageElement.empty();
+                form[0].reset();
+    
+                if (response.status === 'success') {
+                    displayMessage(messageElement, 'SUCCESS: ' + response.message, 'green');
+                    $('#image').attr('src', response.image);
+                } else if (response.status === 'error') {
+                    if (Array.isArray(response.errors)) {
+                        response.errors.forEach(error => {
+                            displayMessage(messageElement, 'ERROR: ' + error, 'red');
+                        });
+                    } else {
+                        displayMessage(messageElement, 'ERROR: ' + response.errors, 'red');
+                    }
+                }
             },
             error: function(xhr, status, error) {
-                console.error("Error submitting form:", error);
+                displayMessage($('#settings_image_messages'), 'ERROR: There was an issue with your submission.', 'red');
             }
         });
     });
-
-    $('#Set_username').off('submit').on('submit', function(e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-
-        $.ajax({
-            type: 'POST',
-            url: this.action,
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                console.log("Success username changed");
-               
-            },
-            error: function(xhr, status, error) {
-                console.error("Error submitting form:", error);
-            }
-        });
-    });
+    
     // Setting change the Password
     $('#Set_password').off('submit').on('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(this);
-
+        form = $(this);
+    
         $.ajax({
             type: 'POST',
             url: this.action,
@@ -384,19 +454,33 @@ function bindFormEvent() {
             processData: false,
             contentType: false,
             success: function(response) {
-                console.log("Success password changed");
-               
+                const messageElement = $('#settings_password_messages');
+                messageElement.empty();
+                form[0].reset();
+    
+                if (response.status === 'success') {
+                    displayMessage(messageElement, 'SUCCESS: ' + response.message, 'green');
+                } else if (response.status === 'error') {
+                    if (Array.isArray(response.errors)) {
+                        response.errors.forEach(error => {
+                            displayMessage(messageElement, 'ERROR: ' + error, 'red');
+                        });
+                    } else {
+                        displayMessage(messageElement, 'ERROR: ' + response.errors, 'red');
+                    }
+                }
             },
             error: function(xhr, status, error) {
-                console.error("Error submitting form:", error);
+                displayMessage($('#settings_password_messages'), 'ERROR: There was an issue with your submission.', 'red');
             }
         });
     });
+    
     // Setting change the 2factor
     $('#2faForm').off('submit').on('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(this);
-
+    
         $.ajax({
             type: 'POST',
             url: this.action,
@@ -404,13 +488,27 @@ function bindFormEvent() {
             processData: false,
             contentType: false,
             success: function(response) {
-                console.log("Success 2faForm");
+                const messageElement = $('#settings_twofactor_messages');
+                messageElement.empty();
+    
+                if (response.status === 'success') {
+                    displayMessage(messageElement, 'SUCCESS: ' + response.message, 'green');
+                } else if (response.status === 'error') {
+                    if (Array.isArray(response.errors)) {
+                        response.errors.forEach(error => {
+                            displayMessage(messageElement, 'ERROR: ' + error, 'red');
+                        });
+                    } else {
+                        displayMessage(messageElement, 'ERROR: ' + response.errors, 'red');
+                    }
+                }
             },
             error: function(xhr, status, error) {
-                console.error("Error submitting form:", error);
+                displayMessage($('#settings_twofactor_messages'), 'ERROR: There was an issue with your submission.', 'red');
             }
         });
     });
+    
 
     $('#enable_2fa').off('change').on('change', function(e) {
         e.preventDefault();
@@ -418,34 +516,35 @@ function bindFormEvent() {
         $('#2faForm').submit();
         
     });
+    
     //Auth login 
     $('#loginForm').off('submit').on('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(this);
-
+    
         $.ajax({
             type: 'POST',
-            url: this.action,
+            url: $(this).attr('action'),
             data: formData,
             processData: false,
             contentType: false,
             success: function(response) {
-                console.log("Response received:", response);
-                if (response.redirectUrl == 'home') {
+                const messageElement = $('#aouth_login_messages');
+                messageElement.empty(); // Clear any existing messages
+    
+                if (response.redirectUrl === 'home') {
                     localStorage.setItem('access_token', response.access_token);
                     localStorage.setItem('refresh_token', response.refresh_token);
                     localStorage.setItem('csrf_token', response.csrf_token);
                     loadPageUsers(response.redirectUrl.replace(/^\//, ''), true);
-                }
-                else if (response.status === 'success') {
+                } else if (response.status === 'success') {
                     loadPageAouth(response.redirectUrl.replace(/^\//, ''), true);
                 } else {
-                    console.log('Success with unexpected status:', response.message);
-                    loadPageAouth(response.redirectUrl.replace(/^\//, ''), true);
+                    displayMessage(messageElement, 'ERROR: ' + response.message, 'red');
                 }
             },
             error: function(xhr, status, error) {
-                console.error("Error submitting form:", error);
+                displayMessage($('#aouth_login_messages'), 'ERROR: There was an issue with your submission.', 'red');
             }
         });
     });

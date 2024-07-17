@@ -41,6 +41,7 @@ class AouthUser(ModelBackend):
 # -----
 
 def aouth_login_form(request):
+    errors = []
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -52,18 +53,20 @@ def aouth_login_form(request):
                 user = authenticate(request, username=user_id, password=password)
             if user is not None:
                 jwt_create(request, user)
-                if user.twofactor_enabled is True:
+                if user.twofactor_enabled:
                     return twofactor_oauth_send(request)
                 return aouth_login(request, user)
             else:
-                messages.error(request, "Invalid username or password", extra_tags='aouth_login_tag')
+                errors.append("Invalid username or password")
         else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"{field}: {error}", extra_tags='aouth_login_tag')
+            for field, field_errors in form.errors.items():
+                for error in field_errors:
+                    errors.append(f"{field}: {error}")
+
+    error_messages = ', '.join(errors)
     return JsonResponse({
         'status': 'error',
-        'message': 'error.',
+        'message': error_messages,
         'redirectUrl': 'login',
     })
 
@@ -71,7 +74,9 @@ def aouth_login_form(request):
 # REGISTRATION
 # ------------
 
+
 def aouth_register_form(request):
+    errors = []
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         
@@ -85,21 +90,23 @@ def aouth_register_form(request):
                     jwt_create(request, user)
                     return twofactor_oauth_send(request)
                 else:
-                    messages.error(request, "Failed to authenticate user after registration", extra_tags='aouth_register_tag')
+                    errors.append("Failed to authenticate user after registration")
             
             except IntegrityError as e:
-                if 'username' in e.args[0]:  # Check if the error is related to the username field
-                    messages.error(request, "Username already exists", extra_tags='aouth_register_tag')
-                if 'email' in e.args[0]:  # Check if the error is related to the email field
-                    messages.error(request, "Email already exists", extra_tags='aouth_register_tag')
+                if 'username' in e.args[0]:
+                    errors.append("Username already exists")
+                if 'email' in e.args[0]:
+                    errors.append("Email already exists")
 
         else:
             for field, field_errors in form.errors.items():
                 for error in field_errors:
-                    messages.error(request, f"{field}: {error}", extra_tags='aouth_register_tag')
+                    errors.append(f"{field}: {error}")
+
+    error_messages = ', '.join(errors)
     return JsonResponse({
         'status': 'error',
-        'message': 'error.',
+        'message': error_messages,
         'redirectUrl': 'register',
     })
 

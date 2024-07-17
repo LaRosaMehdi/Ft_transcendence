@@ -19,12 +19,72 @@ from games.views.games import game_tournament_init
 logger = logging.getLogger(__name__)
 
 
+# @jwt_login_required
+# def redirect_spa(request, path):
+#     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+#         return JsonResponse({
+#             'status': 'success',
+#             'message': 'success',
+#             'redirectUrl': path,
+#         })
+#     else:
+#         return redirect(path)
+
+# def redirect_spa_tournament_dashboard(request, tournament_name):
+#     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+#         return JsonResponse({
+#             'status': 'success',
+#             'message': 'Tournament created successfully',
+#             'redirectUrl': tournament_name
+#         })
+#     else:
+#         return redirect('dashboardTournament', tournament_name=tournament_name)
+
+# # Create
+# @jwt_login_required
+# def tournament_generate_game(request, tournament):
+#     tournament.games.add(game_tournament_init(request, tournament, tournament.level, request.user, None))
+#     tournament.games.add(game_tournament_init(request, tournament, tournament.level, None, None))
+#     if tournament.nb_players == 8:
+#         tournament.games.add(game_tournament_init(request, tournament, tournament.level, None, None))
+#         tournament.games.add(game_tournament_init(request, tournament, tournament.level, None, None))
+#     tournament.save()
+
+
+# @jwt_login_required
+# def tournament_generate(request):
+#     if request.method == 'POST':
+#         form = generateTournamentForm(request.POST)
+#         if form.is_valid():
+#             tournament_name = form.cleaned_data['name']
+#             nb_players = form.cleaned_data['nb_players']
+#             user_alias = form.cleaned_data['user_alias']
+#             try:
+#                 if Tournament.objects.filter(name=tournament_name).exists():
+#                     messages.error(request, 'A tournament with this name already exists.', extra_tags='tournament_generate')
+#                     form.add_error('name', 'A tournament with this name already exists.')
+#                     return(redirect_spa(request, "create"))
+#                 tournament = tournament_init(request, tournament_name, nb_players)
+#                 tournament_generate_game(request, tournament)
+#                 user_update_alias(request, request.user, user_alias)
+#                 logger.info(f"Public tournament {tournament_name} created successfully!")
+#                 return redirect_spa_tournament_dashboard(request, tournament_name)
+#             except IntegrityError:
+#                 messages.error(request, 'A tournament with this name already exists.', extra_tags='tournament_generate')
+#                 form.add_error('name', 'A tournament with this name already exists.')
+#                 return(redirect_spa(request, "create"))
+#         else:
+#             messages.error(request, 'Form is not valid', extra_tags='tournament_generate')
+#             logger.error("Form is not valid")
+#         return(redirect_spa(request, "create"))
+#     return(redirect_spa(request, "create"))
+
 @jwt_login_required
-def redirect_spa(request, path):
+def redirect_spa(request, path, message="success"):
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         return JsonResponse({
-            'status': 'success',
-            'message': 'success',
+            'status': 'success' if message == 'success' else 'error',
+            'message': message,
             'redirectUrl': path,
         })
     else:
@@ -53,6 +113,7 @@ def tournament_generate_game(request, tournament):
 
 @jwt_login_required
 def tournament_generate(request):
+    errors = []
     if request.method == 'POST':
         form = generateTournamentForm(request.POST)
         if form.is_valid():
@@ -61,23 +122,23 @@ def tournament_generate(request):
             user_alias = form.cleaned_data['user_alias']
             try:
                 if Tournament.objects.filter(name=tournament_name).exists():
-                    messages.error(request, 'A tournament with this name already exists.', extra_tags='tournament_generate')
+                    # messages.error(request, 'A tournament with this name already exists.', extra_tags='tournament_generate')
                     form.add_error('name', 'A tournament with this name already exists.')
-                    return(redirect_spa(request, "create"))
+                    return(redirect_spa(request, "create", 'A tournament with this name already exists.'))
                 tournament = tournament_init(request, tournament_name, nb_players)
                 tournament_generate_game(request, tournament)
                 user_update_alias(request, request.user, user_alias)
                 logger.info(f"Public tournament {tournament_name} created successfully!")
                 return redirect_spa_tournament_dashboard(request, tournament_name)
             except IntegrityError:
-                messages.error(request, 'A tournament with this name already exists.', extra_tags='tournament_generate')
+                # messages.error(request, 'A tournament with this name already exists.', extra_tags='tournament_generate')
                 form.add_error('name', 'A tournament with this name already exists.')
-                return(redirect_spa(request, "create"))
+                return(redirect_spa(request, "create", 'A tournament with this name already exists.'))
         else:
-            messages.error(request, 'Form is not valid', extra_tags='tournament_generate')
+            # messages.error(request, 'Form is not valid', extra_tags='tournament_generate')
             logger.error("Form is not valid")
-        return(redirect_spa(request, "create"))
-    return(redirect_spa(request, "create"))
+        return(redirect_spa(request, "create", 'Form is not valid'))
+    return(redirect_spa(request, "create", 'Form is not valid'))
 
 # Join
 
@@ -106,28 +167,27 @@ def tournament_join(request):
                 tournament = Tournament.objects.get(name=tournament_name)
                 if tournament.players.filter(username=request.user.username).exists():
                     user_update_alias(request, request.user, user_alias)
-                    return redirect_spa_tournament_dashboard(request, tournament_name)
+                    return redirect_spa_tournament_dashboard(request, tournament.name)
                 if tournament.nb_players == tournament.players.count():
-                    messages.error(request, 'Tournament is full.', extra_tags='tournament_join')
+                    # messages.error(request, 'Tournament is full.', extra_tags='tournament_join')
                     logger.error(f"Tournament {tournament_name} is full.")
-                    return redirect_spa(request, 'joinTournament')
+                    return redirect_spa(request, 'joinTournament', 'Tournament is full.')
                 if User.objects.filter(alias=user_alias).exists():
-                    messages.error(request, 'This nickname is already taken.', extra_tags='tournament_join')
+                    # messages.error(request, 'This nickname is already taken.', extra_tags='tournament_join')
                     logger.error(f"Alias {user_alias} is already taken.")
-                    return redirect_spa(request, 'joinTournament')
+                    return redirect_spa(request, 'joinTournament', 'Alias is already taken.')
                 tournament.players.add(request.user)
                 tournament.save()
                 tournament_join_games(request, tournament)
                 user_update_alias(request, request.user, user_alias)
-                messages.success(request, 'You have joined the tournament!', extra_tags='tournament_join')
-                logger.info(f"User {request.user} joined tournament {tournament_name}.")
-                return redirect_spa_tournament_dashboard(request, tournament_name)
-
-            except ObjectDoesNotExist:
-                messages.error(request, 'Tournament does not exist.', extra_tags='tournament_join')
+                # messages.success(request, 'You have joined the tournament!', extra_tags='tournament_join')
+                logger.info(f"User {request.user} joined tournament {tournament.name}.")
+                return redirect_spa_tournament_dashboard(request, tournament.name)
+            except Tournament.DoesNotExist:
+                # messages.error(request, 'Tournament does not exist.', extra_tags='tournament_join')
                 logger.error(f"Tournament {tournament_name} does not exist.")
-                return redirect_spa(request, 'joinTournament')
-    return redirect_spa(request, 'joinTournament')
+                return redirect_spa(request, 'joinTournament', 'Tournament does not exist.')
+    return redirect_spa(request, 'joinTournament', 'Invalid request method or form submission.')
 
 
 

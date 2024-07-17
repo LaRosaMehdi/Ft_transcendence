@@ -66,13 +66,9 @@
                 {{ form.as_p }}
                 <button type="submit">Submit</button>
             </form>
-            {% if messages %}
-                {% for message in messages %}
-                    {% if message.tags == 'twofactor_oauth_tag error' %}
-                        <p style="color: red;">ERROR: {{ message }}</p>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
+            <div id="twofactor-message">
+                <!-- error message here -->
+            </div>
         </div>
         <p style="color: white;">If you haven't received the code, check the email you specified during registration</p>
         </div>
