@@ -1,4 +1,4 @@
-import logging
+import logging, json
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.http import JsonResponse
@@ -59,11 +59,31 @@ def game_update(request, game, player1_score, player2_score):
         return None
 
 @jwt_login_required
-def check_status_user(request, status = ""):
-    logger.info(f"request: {request.user.status}")
+def check_status_user(request):
+    username = request.GET.get('username', None)
     context = request.user.status
+    if username:
+        user = User.objects.get(username=username)
+        context = user.status
+
     return JsonResponse({'context': context})
 
+@jwt_login_required
+def check_status_users(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        usernames = data.get('usernames', [])
+        statuses = []
+
+        for username in usernames:
+            try:
+                user = User.objects.get(username=username)
+                statuses.append({'username': username, 'status': user.status})
+            except User.DoesNotExist:
+                statuses.append({'username': username, 'status': 'offline'})
+
+        return JsonResponse(statuses, safe=False)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
 
 # Tournament games
 # ----------------

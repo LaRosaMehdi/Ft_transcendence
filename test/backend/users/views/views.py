@@ -97,28 +97,13 @@ def view_profile_friend(request, friend_user):
 @jwt_login_required
 def redirect_user(request):
     current_game = request.user.current_game
-    logger.info("##############################################")
-    logger.info(request.user.status)
     if request.user.status == 'ingame':
         score1 = current_game.player1_score
         score2 = current_game.player2_score
-        # logger.info(current_game.tournament)
-        # logger.info(current_game.current_game)
-        # if current_game.tournament != 0:
-        #     logger.info("tournament in progress")
-        #     #user have to lose 
-        
         logger.info("match in progress")
         if current_game.player1 == request.user:
             score1 = -1
         else:
             score2 = -1
         game_update(request, current_game, score1, score2)
-        
-        #user have to lose
-        # default_queue = MatchmakingQueue.objects.get(name="remote queue")
-        # for i in default_queue.players:
-            # if i == request.user:
-                # queue_remote_remove(request, request.user)
-
     return JsonResponse({'redirect': 'home', 'message': 'success'})

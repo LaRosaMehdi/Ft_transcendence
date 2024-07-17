@@ -17,7 +17,7 @@
         fetch('/users/get_current_game/')
         .then(response => response.json())
         .then(data => {
-            console.log(data.context);
+            //(data.context);
             if (data.current_game !== null && data.context === 1) {
                 stopMatchmaking();
                 loadPageGames('play');

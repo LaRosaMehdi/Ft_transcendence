@@ -29,13 +29,33 @@ def friend_list(request):
     if search_query:
         users = User.objects.filter(username__icontains=search_query).exclude(id__in=friends).exclude(id=request.user.id)
 
+    friends_list = [
+        {
+            'id': friend.id,
+            'username': friend.username,
+            'status': friend.status,
+            'image_url': friend.image.url if friend.image else ''
+        }
+        for friend in friends
+    ]
+    
+    users_list = [
+        {
+            'id': user.id,
+            'username': user.username,
+            'status': user.status,
+            'image_url': user.image.url if user.image else ''
+        }
+        for user in users
+    ] if users else []
+
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-       html = render_to_string('spa_friend_list.html', {'friends': friends, 'users': users, 'search_query': search_query, 'current_user': request.user, 'context': 'ajax'}, request=request)
-       return JsonResponse({'html': html})
+        html = render_to_string('spa_friend_list.html', {'friends': friends_list, 'users': users_list, 'search_query': search_query, 'current_user': request.user, 'context': 'ajax'}, request=request)
+        return JsonResponse({'html': html})
     else:
         return render(request, 'friend_list.html', {
-            'friends': friends,
-            'users': users,
+            'friends': friends_list,
+            'users': users_list,
             'search_query': search_query
         })
 

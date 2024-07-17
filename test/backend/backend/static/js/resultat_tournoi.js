@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
         event.preventDefault();
         tableBody.innerHTML = ''; // Effacer le contenu précédent
         var numPlayers = parseInt(document.getElementById('num-players').value, 10);
-        console.log("Nombre de joueurs à générer :", numPlayers);
+        // console.log("Nombre de joueurs à générer :", numPlayers);
 
         // Générer les lignes du tableau pour chaque joueur
         for (var i = 0; i < numPlayers; i++) {
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 draws: Math.floor(Math.random() * 5),
                 losses: Math.floor(Math.random() * 5)
             };
-            console.log("Joueur à ajouter :", player);
+            // console.log("Joueur à ajouter :", player);
             var row = document.createElement('tr');
             row.innerHTML = `
                 <td>${player.position}</td>
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${player.losses}</td>
             `;
             
-            console.log("Ligne du tableau :", row.innerHTML);
+            // console.log("Ligne du tableau :", row.innerHTML);
             tableBody.appendChild(row);
         }
     });

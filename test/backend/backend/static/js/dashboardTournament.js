@@ -10,25 +10,25 @@ function loopDashboard(){
         .then(data => {
             if (data.current_game !== null && data.context === 1 && data.message === 'play_tournament') {
                 stopLoop();
-                console.log("play");
+                // console.log("play");
                 localStorage.setItem('tournament_username', data.player1);
                 localStorage.setItem('tournament_opponentname', data.player2);
                 loadPagePlayTournament(data.redirectUrl, data.game_id);
             }
             else if(data.current_game !== null && data.message === 'tournament_in_progress' ) {
                 stopLoop();
-                console.log("progress");
+                // console.log("progress");
                 loadPageTournament('tournament_in_progress', tournamentName);
             }
             else if (data.redirected) { // This else if might not be necessary if data.redirected is not being set
-                console.log("elseif: ", data.redirected);
+                // console.log("elseif: ", data.redirected);
                 const path = new URL(data.url).pathname.replace('/tournaments/', '');
                 stopLoop();
                 loadPageTournament(path);
             }
             else if(data.message === 'forced-finish'){
                 stopLoop();
-                console.log("DEBUG FORCE FINISHED********")
+                // console.log("DEBUG FORCE FINISHED********")
                 loadPageUsers('home');
             }
             else if(data.message === 'finished'){
@@ -43,7 +43,7 @@ function loopDashboard(){
     function fetchTournamentDetails() {
         const tournamentName = window.tournamentName;
         if (!tournamentName) {
-            console.log("Tournament name is not set");
+            // console.log("Tournament name is not set");
             return;
         }
         fetch(`/tournaments/${tournamentName}/get/`)
@@ -60,7 +60,7 @@ function loopDashboard(){
     get_interval = setInterval(tournamentLaunchGame, 3000);
 
     function stopLoop() {
-        console.log("out");
+        // console.log("out");
         if (get_interval && launch_interval) {
             clearInterval(get_interval);
             clearInterval(launch_interval);
@@ -157,13 +157,13 @@ function renderGames(games) {
 function initTournamentPage() {
     const tournamentElement = document.getElementById('tournament-name');
     if (!tournamentElement) {
-        console.log('Tournament name element not found');
+        // console.log('Tournament name element not found');
         return;
     }
 
     window.tournamentName = tournamentElement.dataset.tournamentName;
     if (!window.tournamentName) {
-        console.log("Tournament name is not set in the dataset");
+        // console.log("Tournament name is not set in the dataset");
         return;
     }
 

@@ -17,7 +17,7 @@
     
     function stopMatchmaking_2() {
         if (matchmakingInterval) {
-            console.log("hello")
+            //console.log("hello")
             clearInterval(matchmakingInterval);
             matchmakingInterval = null;
         }
@@ -26,7 +26,7 @@
     window.addEventListener('popstate', function(event) {
         if (previousUrl2 === true && window.location.pathname === "/matchmaking/matchmaking_remote"){
             
-            console.log("check");
+            //console.log("check");
             stopMatchmaking_2();
             previousUrl2 = false;
             loadPageUsers('home');

@@ -34,10 +34,10 @@
                     {% for friend in friends %}
                     <tr>
                         <td><a href="javascript:void(0);" data-username="{{ friend.username }}" aria-label="View profile of {{ friend.username }}" onclick="loadPageFriendProfile('{{ friend.username }}')">
-                            <img src="{{ friend.image.url }}" alt="Profile picture" style="width:50px;height:50px;border-radius:50%; object-fit: cover;">
+                            <img src="{{ friend.image_url }}" alt="Profile picture" style="width:50px;height:50px;border-radius:50%; object-fit: cover;">
                         </a></td>
                         <td>{{ friend.username }}</td>
-                        <td><div class="circle_status {{ friend.get_status_display|lower }}"></div></td>
+                        <td><div class="circle_status" id="status_friend_{{ friend.username }}"></div></td>
                     </tr>
                     {% empty %}
                     <tr>
@@ -61,9 +61,9 @@
                 <tbody>
                     {% for user in users %}
                     <tr>
-                        <td><img src="{{ user.image.url }}" alt="Profile picture" style="width:50px;height:50px;border-radius:50%; object-fit: cover;"></td>
+                        <td><img src="{{ user.image_url }}" alt="Profile picture" style="width:50px;height:50px;border-radius:50%; object-fit: cover;"></td>
                         <td>{{ user.username }}</td>
-                        <td><div class="circle_status {{ user.get_status_display|lower }}"></div></td>
+                        <td><div class="circle_status" id="status_user_{{ user.username }}"></div></td>
                         <td>
                             <form id="AddFriends" action="{% url 'add_friend' user.id %}" method="post">
                                 {% csrf_token %}
@@ -82,8 +82,14 @@
         </div>
     </div>
     <script src="{% static 'js/localgame.js' %}" data-arg1="{% csrf_token %}"></script>
-    <script src="{% static 'js/router.js' %}"></script>
-    <script src="{% static 'js/dashboardTournament.js' %}"></script>
-    <script src="{% static 'js/localtournament.js' %}"></script>
+    <script src="{% static 'js/router.js' %}" data-arg1="{{ csrf_token }}"></script>
+    <script src="{% static 'js/dashboardTournament.js' %}" data-arg1="{{ csrf_token }}"></script>
+    <script src="{% static 'js/localtournament.js' %}" data-arg1="{{ csrf_token }}"></script>
+    <script>
+        friends = {{ friends|safe }};
+        users = {{ users|safe }};
+        usernames = [...friends.map(friend => friend.username), ...users.map(user => user.username)];
+        check_status_friend_list(usernames);
+    </script>
 </body>
 </html>

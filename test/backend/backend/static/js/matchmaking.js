@@ -3,7 +3,7 @@ const socket = new WebSocket('ws://adresse_du_serveur:port');
 
 // Lorsque la connexion WebSocket est ouverte
 socket.onopen = function() {
-    console.log('Connexion WebSocket établie avec le serveur.');
+    // console.log('Connexion WebSocket établie avec le serveur.');
 };
 
 // Lorsque le joueur clique sur le bouton "Play"

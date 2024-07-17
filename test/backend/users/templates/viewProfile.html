@@ -40,8 +40,8 @@
                             <span>Losses: {{ current_user.losses }}</span>
                         </div>
                         <div class="status-container">
-                            Status: 
-                            <i class="circle_status {{ current_user.get_status_display|lower }}"></i>
+                            Status:
+                            <i class="circle_status {{ current_user.get_status_display|lower }}" id="update_status"></i>
                         </div>
                     </div>
                 </div>
@@ -87,5 +87,9 @@
     <script src="{% static 'js/router.js' %}"></script>
     <script src="{% static 'js/dashboardTournament.js' %}"></script>
     <script src="{% static 'js/localtournament.js' %}"></script>
+    <script>
+        username = '{{ current_user.username }}';
+        check_status(username);
+    </script>
 </body>
 </html>

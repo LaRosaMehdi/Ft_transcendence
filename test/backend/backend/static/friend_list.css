@@ -75,7 +75,7 @@
     height: 10px;
     border-radius: 50%;
     margin-left: 5px;
-    background-color: #03e9f4;  /* Default status color */
+    background-color: green;  /* Default status color */
 }
 
 .friends-list-page .circle_status.online {
@@ -83,7 +83,7 @@
 }
 
 .friends-list-page .circle_status.ingame {
-    background-color: yellow;
+    background-color: #03e9f4;
 }
 
 .friends-list-page .circle_status.offline {

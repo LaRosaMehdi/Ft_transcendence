@@ -113,15 +113,13 @@ function loadPageMatchmaking(pagePath, pushState = true) {
                         localStorage.setItem('username', response.username);
                         const player1Name = localStorage.getItem('username');
                         const player2Name = localStorage.getItem('opponent_name');
-                        console.log('Player 1 Name:', player1Name);
-                        console.log('Player 2 Name:', player2Name);
+                        //console.log('Player 1 Name:', player1Name);
+                        //console.log('Player 2 Name:', player2Name);
 
                         // Initialiser le jeu après avoir récupéré le nom de l'adversaire
                         if (typeof initializeGame === 'function') {
                             initializeGame();
                         }
-                    } else {
-                        console.error('Error fetching opponent name:', response.message);
                     }
                 },
             }); 
@@ -138,7 +136,7 @@ function loadPageGames(pagePath, pushState = true) {
         url: `/games/${pagePath}/`,
         success: function(response) {
             $('#app-content').html(response.html);
-            console.log("pagePath: ", pagePath);
+            // console.log("pagePath: ", pagePath);
             if (pushState) {
                 history.pushState({ path: pagePath, content: response.html }, '', `/games/${pagePath}`);
             }
@@ -239,7 +237,6 @@ function setLocalStorageAndLoadPage() {
     const redirectUrl = document.getElementById('redirect_url').value;
 
     if (accessToken && refreshToken && csrfToken) {
-        localStorage.setItem('username', response.username);
         localStorage.setItem('access_token', accessToken);
         localStorage.setItem('refresh_token', refreshToken);
         localStorage.setItem('csrf_token', csrfToken);
@@ -272,7 +269,7 @@ function bindFormEvent() {
                 if (response.status === 'success') {
                     loadPageAouth(response.redirectUrl.replace(/^\//, ''), true);
                 } else {
-                    console.log('Success with unexpected status:', response.message);
+                    // console.log('Success with unexpected status:', response.message);
                     displayMessage(messageElement, 'ERROR: ' + response.message, 'red');
                 }
             },
@@ -325,7 +322,7 @@ function bindFormEvent() {
             success: function(response) {
                 const messageElement = $('#join_tournament_messages');
                 messageElement.empty(); // Clear any existing messages
-                console.log(response.message);
+                // console.log(response.message);
                 if (response.status === 'success')
                     loadPageTournament(response.redirectUrl.replace(/^\//, ''), true);
                 else if (response.status === 'error') {
@@ -627,7 +624,7 @@ function setupGoBackButton() {
 }
 
 function clean_matchmaking(){
-    console.log("clean_match call");
+    // console.log("clean_match call");
     const data = new FormData();
 
     const csrfToken = localStorage.getItem('csrf_token');
@@ -639,7 +636,7 @@ function clean_matchmaking(){
 }
 
 function leaveMatchmakingQueue() {
-    console.log("leaveMatchmaking call");
+    // console.log("leaveMatchmaking call");
     const data = new FormData();
     const csrfToken = localStorage.getItem('csrf_token');
     data.append('csrfmiddlewaretoken', csrfToken);
@@ -664,9 +661,87 @@ function remove_from_waiting_queue_tournament(tournament_n){
         console.log('Error sending remove from tournament queue request');
     }
     
-    console.log("remove from tournament have been call");
+    // console.log("remove from tournament have been call");
 }
 
+function check_status(username){
+    function statusLoop(username) {
+        fetch(`/games/check_status_user/?username=${username}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log("status", data.context);
+            if (current_url.endsWith(`/users/friend-profile/${username}/`))
+            {
+                if (data.context)
+                    updateStatus(data.context);
+            }
+            else
+                stopStatusLoop();
+        })
+        .catch(error => console.error('Error fetching game progress:', error));
+    }
+
+    function updateStatus(status) {
+        const statusElement = document.getElementById('update_status');
+        if (statusElement) {
+            statusElement.className = `circle_status ${status.toLowerCase()}`;
+        }
+    }
+
+    function stopStatusLoop() {
+        if (loopElement) {
+            clearInterval(loopElement);
+            loopElement = null;
+        }
+    }
+
+let loopElement = setInterval(() => statusLoop(username), 500);
+}
+
+function check_status_friend_list(usernames)
+{
+    function updateStatuses(usernames)
+    {
+        fetch(`/games/check_status_users/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': localStorage.getItem('csrf_token'),
+                'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+            },
+            body: JSON.stringify({usernames: usernames})
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (current_url.endsWith("users/friend/"))
+            {
+                data.forEach(user => {
+                const statusElementFriend = document.getElementById(`status_friend_${user.username}`);
+                const statusElementUser = document.getElementById(`status_user_${user.username}`);
+                if (statusElementFriend) {
+                    statusElementFriend.className = `circle_status ${user.status.toLowerCase()}`;
+                }
+                if (statusElementUser) {
+                    statusElementUser.className = `circle_status ${user.status.toLowerCase()}`;
+                }
+                });
+            }
+            else
+                stopStatusesLoop();
+            
+        })
+        .catch(error => console.error('Error fetching statuses:', error));
+    }
+
+    function stopStatusesLoop() {
+        if (loopElements) {
+            clearInterval(loopElements);
+            loopElements = null;
+        }
+    }
+
+    let loopElements = setInterval(() => updateStatuses(usernames), 500);
+}
 
 window.addEventListener('popstate', async function(event)
 {
@@ -677,7 +752,7 @@ window.addEventListener('popstate', async function(event)
     }
     else if ((current_url === "/matchmaking/matchmaking_remote" || current_url === "/matchmaking/matchmaking_remote/")
         && (window.location.pathname === "/users/home" || window.location.pathname === "/users/home/")){
-        console.log("check1");
+        // console.log("check1");
         window.history.pushState(null, null, window.location.href);
         if (typeof handleLeaveMatchmaking === 'function') {
             clean_matchmaking();
@@ -690,7 +765,7 @@ window.addEventListener('popstate', async function(event)
     }
     else if ((current_url === "/matchmaking/matchmaking_remote" || current_url === "/matchmaking/matchmaking_remote/")
         && (window.location.pathname === "/matchmaking/matchmaking_remote" || window.location.pathname === "/matchmaking/matchmaking_remote/")){
-        console.log("check2");
+        // console.log("check2");
         clean_matchmaking();
         window.history.pushState(null, null, window.location.href);
         loadPageUsers('home');
@@ -714,7 +789,7 @@ window.addEventListener('popstate', async function(event)
         loadPageUsers('home');
     }
     else if (event.state) {
-        console.log("WTF");
+        // console.log("WTF");
         $('#app-content').html(event.state.content);
         bindFormEvent();
     }
@@ -723,31 +798,21 @@ window.addEventListener('popstate', async function(event)
 
 window.onbeforeunload = function() {
     const tournament_name_refresh = localStorage.getItem('tournament_name_refresh');
-    console.log(tournament_name_refresh);
+    // console.log(tournament_name_refresh);
     if (current_url === "/matchmaking/matchmaking_remote" || current_url === "/matchmaking/matchmaking_remote/") {
-        console.log("You left the matchmaking Queue <<");
+        // console.log("You left the matchmaking Queue <<");
         clean_matchmaking();
         leaveMatchmakingQueue();
     }
     else if(window.location.pathname === "/matchmaking/matchmaking_remote" || window.location.pathname === "/matchmaking/matchmaking_remote/")
     {
-        console.log("You left the matchmaking Queue <<");
+        // console.log("You left the matchmaking Queue <<");
         clean_matchmaking();
         leaveMatchmakingQueue();
     }
     else if (window.location.pathname.startsWith(`/tournaments`) || window.location.pathname.startsWith("/tournaments/tournament_in_progress") ){
-        console.log("debug");
+        // console.log("debug");
         remove_from_waiting_queue_tournament(tournament_name_refresh);
     
     }
 }
-
-window.addEventListener('unload', async function(event){
- // console.log("Unload event call: ",current_url);
-
- // if (current_url === "/matchmaking/matchmaking_remote" || current_url === "/matchmaking/matchmaking_remote/") {
-     // await clean_matchmaking();
-     // leaveMatchmakingQueu();
-     // console.log("You left the matchmaking Queue <<");
- // }
-});

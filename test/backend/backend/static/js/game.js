@@ -35,7 +35,7 @@ let currentPlayer = null; // Le joueur actuellement sélectionné
 // Fonction pour choisir le joueur
 function choosePlayer(player) {
     currentPlayer = player;
-    console.log('Player selected:', currentPlayer);
+    // console.log('Player selected:', currentPlayer);
     startGame();
     canvas.style.visibility = 'visible';
     sendPlayerChoice(player);
@@ -45,7 +45,7 @@ function choosePlayer(player) {
 // Gérer le mouvement des plateformes des joueurs
 
 function handleKeyEvents(event) {
-    console.log('Touche pressée : ', event.key);
+    // console.log('Touche pressée : ', event.key);
     // Si la touche '1' est pressée, choisir le joueur 1
     if (event.key === '1') {
         choosePlayer(player1);
@@ -245,10 +245,10 @@ function update() {
     // Vous pouvez également mettre d'autres logiques de mise à jour ici
 }
 
-console.log(canvas);
-console.log(ctx);
-console.log(player1);
-console.log(player2);
+// console.log(canvas);
+// console.log(ctx);
+// console.log(player1);
+// console.log(player2);
 
 
 

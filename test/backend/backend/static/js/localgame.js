@@ -577,8 +577,10 @@ function initializeGame() {
     function drawScoresLocal() {
         ctx.font = '24px Arial';
         ctx.fillStyle = 'white';
-        ctx.fillText(player1Name + ': ' + scorePlayer1, 20, 30);
-        ctx.fillText(player2Name + ': ' + scorePlayer2, canvas.width - 150, 30);
+        ctx.fillText(player1Name, 20, 30);
+        ctx.fillText(player2Name, canvas.width -player2Name.length * 14, 30);
+        ctx.fillText(scorePlayer1, canvas.width /2 -50, 30);
+        ctx.fillText(scorePlayer2, canvas.width /2 +50, 30);
     }
 
     function drawLocal() {
@@ -635,8 +637,8 @@ function initializeGame() {
                 return response.json();
             })
             .then(data => {
-                console.log('Game finished successfully:', data);
-                window.location.href = '/games/results/';
+                // console.log('Game finished successfully:', data);
+                loadPageGames('results');
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -651,5 +653,5 @@ function initializeGame() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', initializeGame);
+// document.addEventListener('DOMContentLoaded', initializeGame);
 

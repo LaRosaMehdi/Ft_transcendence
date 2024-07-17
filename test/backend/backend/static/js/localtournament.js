@@ -117,7 +117,7 @@ function initializeGameTournament() {
 
     document.getElementById('play-btn').addEventListener('click', function() {
         canvas.style.visibility = 'visible';
-        console.log("play btn call");
+        // console.log("play btn call");
         startGame();
     });
 
@@ -313,7 +313,7 @@ function initializeGameTournament() {
         const player2Score = scorePlayer2;
         const tournament_name = getTournamentNameFromUrl();
 
-        console.log(scorePlayer1, scorePlayer2);
+        // console.log(scorePlayer1, scorePlayer2);
         const obj = {
             method: 'POST',
             headers: {
@@ -336,7 +336,7 @@ function initializeGameTournament() {
             return response.json();
         })
         .then(data => {
-            console.log('Game finished successfully:', data);
+            // console.log('Game finished successfully:', data);
             if (data.status === 'success') {
                 loadPageTournament(tournament_name);
                 // window.location.href = '/tournaments/' + tournament_name + '/';
