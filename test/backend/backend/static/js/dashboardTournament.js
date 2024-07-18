@@ -40,7 +40,7 @@ function loopDashboard(){
     }
     launch_interval = setInterval(fetchTournamentDetails, 3000);
 
-    function fetchTournamentDetails() {
+    async function fetchTournamentDetails() {
         const tournamentName = window.tournamentName;
         if (!tournamentName) {
             // console.log("Tournament name is not set");
@@ -162,17 +162,20 @@ function renderGames(games) {
 function initTournamentPage() {
     const tournamentElement = document.getElementById('tournament-name');
     if (!tournamentElement) {
-        // console.log('Tournament name element not found');
         return;
     }
 
     window.tournamentName = tournamentElement.dataset.tournamentName;
     if (!window.tournamentName) {
-        // console.log("Tournament name is not set in the dataset");
-        return;
+        if (localStorage.getItem('tournament_name_refresh')){
+            window.tournamentName = localStorage.getItem('tournament_name_refresh');
+            loopDashboard();
+            }
+        else 
+            return;
     }
-
-    loopDashboard();
+    else
+        loopDashboard();
     
 }
 

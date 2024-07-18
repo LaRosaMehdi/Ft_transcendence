@@ -752,20 +752,20 @@ window.addEventListener('popstate', async function(event)
     }
     else if ((current_url === "/matchmaking/matchmaking_remote" || current_url === "/matchmaking/matchmaking_remote/")
         && (window.location.pathname === "/users/home" || window.location.pathname === "/users/home/")){
-        // console.log("check1");
-        window.history.pushState(null, null, window.location.href);
+    window.history.pushState(null, null, window.location.href);
         if (typeof handleLeaveMatchmaking === 'function') {
             clean_matchmaking();
             handleLeaveMatchmaking();
         }
         else {
+            //end_game = true;
             clean_matchmaking();
             loadPageUsers('home');
         }
     }
     else if ((current_url === "/matchmaking/matchmaking_remote" || current_url === "/matchmaking/matchmaking_remote/")
         && (window.location.pathname === "/matchmaking/matchmaking_remote" || window.location.pathname === "/matchmaking/matchmaking_remote/")){
-        // console.log("check2");
+        console.log("check2");
         clean_matchmaking();
         window.history.pushState(null, null, window.location.href);
         loadPageUsers('home');
