@@ -6,7 +6,6 @@ from users.models import User
 class Tournament(models.Model):
     LEVEL_CHOICES = [
         ('pool', 'Pool'),
-        ('quarter_final', 'Quarter Final'),
         ('semi_final', 'Semi Final'),
         ('final', 'Final'),
         ('finished', 'Finished'),

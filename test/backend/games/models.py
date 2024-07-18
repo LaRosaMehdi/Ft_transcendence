@@ -4,9 +4,7 @@ from users.models import User
 class Game(models.Model):
     LEVEL_CHOICES = [
         ('pool', 'Pool'),
-        ('quarter_final', 'Quarter Final'),
         ('semi_final', 'Semi Final'),
-        ('final', 'Final'),
         ('final', 'Final'),
         ('none', 'None')
     ]
