@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="{% static 'chats.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://kit.fontawesome.com/9cc35e0564.js" crossorigin="anonymous"></script>
     <title>Tournament Dashboard</title>
 </head>
 <body>
@@ -43,7 +44,9 @@
                     <div id="tournament-ranking"></div>
                     <div class="dashboard-game" id="tournament-games"></div> 
                 </div>
-            </div>          
+            </div>
+            
+            
             <button type="submit" onclick="remove_from_waiting_queue_tournament('{{ tournament_name }}')" class="button back-button"><span></span>
                 <span></span>
                 <span></span>

@@ -172,7 +172,7 @@ def tournament_join(request):
                     # messages.error(request, 'Tournament is full.', extra_tags='tournament_join')
                     logger.error(f"Tournament {tournament_name} is full.")
                     return redirect_spa(request, 'joinTournament', 'Tournament is full.')
-                if User.objects.filter(alias=user_alias).exists():
+                if tournament.players.filter(alias=user_alias).exists():
                     # messages.error(request, 'This nickname is already taken.', extra_tags='tournament_join')
                     logger.error(f"Alias {user_alias} is already taken.")
                     return redirect_spa(request, 'joinTournament', 'Alias is already taken.')
@@ -220,24 +220,75 @@ def remove_player_from_tournament(request):
     return JsonResponse({'redirect': 'home', 'message': 'success'})
 
 
+from django.db import transaction
+from django.db.models import F
 
-# Launch
+@jwt_login_required
+def tournament_level_up(request, tournament):
+    with transaction.atomic():
+        # Check if level up is already in progress
+        tournament = Tournament.objects.select_for_update().get(id=tournament.id)
+        if tournament.level_up_in_progress:
+            return JsonResponse({'status': 'error', 'message': 'Level up already in progress.'})
+
+        # Mark the tournament as in progress
+        tournament.level_up_in_progress = True
+        tournament.save()
+
+    try:
+        logger.debug("TOURNAMENT LEVEL UP")
+        games = tournament.games.filter(level=tournament.level)
+        winners = [game.winner for game in games]
+
+        # Update tournament level
+        if tournament.level == 'pool':
+            tournament.level = 'semi_final'
+        elif tournament.level == 'semi_final':
+            tournament.level = 'final'
+        elif tournament.level == 'final':
+            tournament.level = 'finished'
+        tournament.save()
+
+        logger.debug(f"tournament level: {tournament.level}")
+        nb_games: int = 0
+        if tournament.level != 'finished':
+            if tournament.level == 'semi_final':
+                nb_games = 2
+            elif tournament.level == 'final':
+                nb_games = 1
+            
+            logger.debug(f"nb_games: {nb_games}")
+            for i in range(nb_games):
+                logger.debug(f"Creating game {i} for tournament {tournament.name}")
+                player1 = winners[i * 2]
+                player2 = winners[i * 2 + 1]
+                tournament.games.add(game_tournament_init(request, tournament, tournament.level, player1, player2))
+                logger.debug(f"Game {i} created for tournament {tournament.name}")
+
+        return JsonResponse({'status': 'success', 'message': 'Tournament level has reached the end.'})
+    finally:
+        # Reset the level up in progress flag
+        tournament.level_up_in_progress = False
+        tournament.save()
+
+    return JsonResponse({'status': 'success', 'message': 'Tournament level has reached the end.'})
 
 @jwt_login_required
 def tournament_launch(request, tournament_name):
     tournament = get_object_or_404(Tournament, name=tournament_name)
     if tournament.level == "finished" and tournament.force_end_tournament == 1:
         logger.info(f"User: {request.user.username} DEBUG TOURNAMENT LEAVE FORCEFINISH")
+        return JsonResponse({'status': 'success', 'message': 'forced-finish'})
 
-        return JsonResponse({'status': 'success','message': 'forced-finish'})
     if tournament.players.all().count() != tournament.nb_players:
-        return JsonResponse({'status': 'success','message': 'success'})
+        return JsonResponse({'status': 'success', 'message': 'success'})
+    
     logger.info(f"Tournament full, ready for games!")
     games = tournament.games.filter(level=tournament.level)
     for game in games:
         if game.winner is None:
             tournament.current_game = game
-            if tournament_user_is_current_game(request, tournament) is True:
+            if tournament_user_is_current_game(request, tournament):
                 game_tournament_start(request, game)
                 if game.player1 == request.user:
                     return JsonResponse({
@@ -257,14 +308,17 @@ def tournament_launch(request, tournament_name):
                         'current_game': game.id,
                         'context': 0
                     })
-            return JsonResponse({'status': 'success','message': 'success'})
+            return JsonResponse({'status': 'success', 'message': 'success'})
+
+    # Ensure level-up happens only once
     tournament_level_up(request, tournament)
-    if  tournament.level == 'finished':
+    if tournament.level == 'finished':
         tournament.is_finished = True
         tournament.save()
-        return JsonResponse({'status': 'success','message': 'finished'})
-    return JsonResponse({'status': 'success','message': 'success'})
-    
+        return JsonResponse({'status': 'success', 'message': 'Tournament has finished.'})
+
+    return JsonResponse({'status': 'success', 'message': 'success'})
+
 # Play
 
 @jwt_login_required
@@ -331,8 +385,6 @@ def tournament_get(request, tournament_name):
         classement.append(tournament.fourth_place)
     if tournament.fifth_place is not None:
         classement.append(tournament.fifth_place)
-    if tournament.fifth_place is not None:
-        classement.append(tournament.fifth_place)
     if tournament.sixth_place is not None:
         classement.append(tournament.sixth_place)
     if tournament.seventh_place is not None:
@@ -365,42 +417,6 @@ def tournament_get(request, tournament_name):
     }
     
     return JsonResponse(response_data)
-
-
-@jwt_login_required
-def tournament_level_up(request, tournament):
-    logger.debug("tournament_level_up")
-    games = tournament.games.filter(level=tournament.level)
-    winners = [game.winner for game in games]
-
-    # Update tournament level
-    if tournament.level == 'pool':
-        tournament.level = 'quarter_final'
-    elif tournament.level == 'quarter_final':
-        tournament.level = 'semi_final'
-    elif tournament.level == 'semi_final':
-        tournament.level = 'final'
-    elif tournament.level == 'final':
-        tournament.level = 'finished'
-    tournament.save()
-
-    nb_games: int = 0
-    if tournament.level != 'finished':
-        if tournament.level == 'quarter_final':
-            nb_games = 4
-        elif tournament.level == 'semi_final':
-            nb_games = 2
-        elif tournament.level == 'final':
-            nb_games = 1
-
-        for i in range(nb_games):
-            logger.debug(f"Creating game {i} for tournament {tournament.name}")
-            player1 = winners[i * 2]
-            player2 = winners[i * 2 + 1]
-            tournament.games.add(game_tournament_init(request, tournament, tournament.level, player1, player2))
-        return JsonResponse({'status': 'success', 'message': 'Tournament level has reached the end.'})
-    else:
-        return JsonResponse({'status': 'success', 'message': 'Tournament level has reached the end.'})
 
 
 @jwt_login_required

@@ -67,90 +67,95 @@ function loopDashboard(){
         }
     }
 }
-
 function renderName(name) {
-    const nameContainer = document.getElementById('tournament-name');
-    if (nameContainer) {
-        nameContainer.innerHTML = `<h1>Tournament ${name}</h1>`;
-    }
+    const nameContainer = document.getElementById('tournament-name')
+    nameContainer.innerHTML = `
+        <h1>Tournament: ${name}</h1>
+    `;
 }
 
 function renderLevel(level) {
     const levelContainer = document.getElementById('tournament-level');
-    if (levelContainer) {
-        levelContainer.innerHTML = `<h4>Currently playing for the ${level}</h4>`;
-    }
+    levelContainer.innerHTML = `  
+        <div class="dashboard-data-level">
+            <i class="fas fa-ranking-star"></i>
+            <h4>Level: ${level}</h4>
+        </div>
+    `;
 }
 
 function renderNbPlayers(nbPlayers) {
     const nbPlayersContainer = document.getElementById('tournament-nb-players');
-    if (nbPlayersContainer) {
-        nbPlayersContainer.innerHTML = `<h4>${nbPlayers} player tournament</h4>`;
-    }
+    nbPlayersContainer.innerHTML = `
+        <div class="dashboard-data-players">
+            <i class="fas fa-user-friends"></i>
+            <h4>Number of players: ${nbPlayers}</h4>
+        </div>
+    `;
 }
+
 
 function renderPlayersRanking(players) {
     const playersListContainer = document.getElementById('tournament-ranking');
-    if (playersListContainer) {
-        let playersListHTML = '<div class="dashboard-ranking"><h2>Players Ranking</h2><div class="players-container">';
+    let playersListHTML = '<div class="dashboard-ranking"><h2>Players Ranking</h2><div class="players-container">';
 
-        players.forEach((player, index) => {
-            playersListHTML += `
-                <div class="player-item">
-                    <h6 class="rank">${player.rank}</h6>
-                    <img src="${player.image}" alt="${player.username}">
-                    <p>${player.username} aka ${player.alias}</p>
-                </div>
-            `;
-            if (index === players.length - 1 && players.length % 2 !== 0) {
-                playersListHTML += '<div class="player-item"></div>'; // Add an empty item to force the last player into a single column
-            }
-        });
+    players.forEach((player, index) => {
+        playersListHTML += `
+            <div class="player-item">
+                <h6 class="rank">${player.rank}</h6>
+                <img src="${player.image}" alt="${player.username}">
+                <p>${player.username} aka ${player.alias}</p>
+            </div>
+        `;
+        if (index === players.length - 1 && players.length % 2 !== 0) {
+            playersListHTML += '<div class="player-item"></div>'; // Add an empty item to force the last player into a single column
+        }
+    });
 
-        playersListHTML += '</div></div>';
-        playersListContainer.innerHTML = playersListHTML;
-    }
+    playersListHTML += '</div></div>';
+    playersListContainer.innerHTML = playersListHTML;
 }
+
+
 
 function renderGames(games) {
     const gamesListContainer = document.getElementById('tournament-games');
-    if (gamesListContainer) {
-        if (games.length == 0) {
-            gamesListContainer.innerHTML = `
-                <div>
-                    <h2>Upcoming Games</h2>
-                    <p>Tournament finished, no more games to play!</p>
-                </div>
-            `;
-        } else {
-            gamesListContainer.innerHTML = `
-                <div>
-                    <h2>Upcoming Games</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Level</th>
-                                <th>Player 1</th>
-                                <th>Player 2</th>
-                                <th>State</th>
-                                <th>Score</th>
+    if (games.length == 0) {
+        gamesListContainer.innerHTML = `
+            <div>
+                <h2>Upcoming Games</h2>
+                <p>Tournament finished, no more games to play !</p>
+            </div>
+        `;
+        return;
+    } else {
+        gamesListContainer.innerHTML = `
+            <div>
+                <h2>Upcoming Games</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Level</th>
+                            <th>Player 1</th>
+                            <th>Player 2</th>
+                            <th>State</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${games.map(game => `
+                            <tr>a
+                                <td>${game.level}</td>
+                                <td>${game.player1}</td>
+                                <td>${game.player2}</td>
+                                <td>${game.state}</td>
+                                <td>${game.score}</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            ${games.map(game => `
-                                <tr>
-                                    <td>${game.level}</td>
-                                    <td>${game.player1}</td>
-                                    <td>${game.player2}</td>
-                                    <td>${game.state}</td>
-                                    <td>${game.score}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            `;
-        }
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
     }
 }
  

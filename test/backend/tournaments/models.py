@@ -32,6 +32,8 @@ class Tournament(models.Model):
     blockchain_stored = models.BooleanField(default=False)
     transaction_hashes = models.JSONField(default=list)
 
+    level_up_in_progress = models.BooleanField(default=False)
+
 
     force_end_tournament = models.IntegerField(default=0)
 

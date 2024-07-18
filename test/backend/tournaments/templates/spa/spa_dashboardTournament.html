@@ -1,5 +1,6 @@
 {% load static %}
 {% csrf_token %}
+<script src="https://kit.fontawesome.com/9cc35e0564.js" crossorigin="anonymous"></script>
 <div class="container1">
     <div class="dashboard">
         <div class="dashboard-data">
@@ -13,7 +14,8 @@
             <div id="tournament-ranking"></div>
             <div class="dashboard-game" id="tournament-games"></div> 
         </div>
-    </div>
+    </div>    
+    
     <button type="submit" onclick="remove_from_waiting_queue_tournament('{{ tournament_name }}')" class="button back-button"><span></span>
         <span></span>
         <span></span>
