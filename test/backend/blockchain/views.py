@@ -36,7 +36,7 @@ def blockchain_tournament_list_view(request):
             rankings = []
 
             # Collecting player names based on their positions
-            positions = [t.first_place, t.second_place, t.third_place, t.fourth_place]
+            positions = [t.first_place, t.second_place, t.third_place, t.fourth_place, t.fifth_place, t.sixth_place, t.seventh_place, t.eighth_place]
             
             for player in positions:
                 if player:

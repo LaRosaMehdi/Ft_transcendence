@@ -1,3 +1,4 @@
+var end_game_t = false;
 function showConfirmation() {
     document.getElementById('confirmationModal').style.display = 'block';
 }
@@ -117,7 +118,6 @@ function initializeGameTournament() {
 
     document.getElementById('play-btn').addEventListener('click', function() {
         canvas.style.visibility = 'visible';
-        // console.log("play btn call");
         startGame();
     });
 
@@ -126,6 +126,7 @@ function initializeGameTournament() {
     document.getElementById('quit_game').addEventListener('click', function() {
         canvas.style.visibility = 'visible';
         scorePlayer1 = -1;
+        end_game_t = true;
         endGame(getGameIdFromUrl());
     });
 
@@ -271,8 +272,18 @@ function initializeGameTournament() {
     function drawScores() {
         ctx.font = '24px Arial';
         ctx.fillStyle = 'white';
-        ctx.fillText(player1NameT + ': ' + scorePlayer1, 20, 30);
-        ctx.fillText(player2NameT + ': '  + scorePlayer2, canvas.width - 150, 30);
+        ctx.fillText(player1NameT, 20, 30);
+        if (player2NameT) {
+            if (player2NameT.length < 6)
+                len = 50;
+            else
+                len = player2NameT.length * 14;
+            ctx.fillText(player2NameT, canvas.width -len, 30);
+        } else {
+            ctx.fillText(player2NameT, canvas.width -7 * 14, 30);
+        }
+        ctx.fillText(scorePlayer1, canvas.width /2 -50, 30);
+        ctx.fillText(scorePlayer2, canvas.width /2 +50, 30);
 
     }
 
@@ -292,9 +303,9 @@ function initializeGameTournament() {
             drawScores();
             movePlayers();
             handleCollision();
-            if (scorePlayer1 >= 2 || scorePlayer2 >= 2) {
-                
+            if (scorePlayer1 >= 2 || scorePlayer2 >= 2 || end_game_t === true) {
                 endGame(getGameIdFromUrl());
+                end_game_t = false;
                 return;
             }
 
@@ -361,40 +372,17 @@ function initializeGameTournament() {
         }
         resetBall();
         stopBall();
+        removeEventListeners();
     }
-    
 
-    
-
-    // function startTimer(durationInSeconds) {
-    //     let timer = durationInSeconds;
-
-    //     function updateTimer() {
-    //         const minutes = Math.floor(timer / 60);
-    //         let seconds = timer % 60;
-
-    //         seconds = seconds < 10 ? '0' + seconds : seconds;
-
-    //         document.getElementById('chrono-button').textContent = minutes + ':' + seconds;
-
-    //         if (timer-- <= 0) {
-    //             clearInterval(countdownInterval);
-    //             endGame();
-    //         }
-    //     }
-
-    //     updateTimer();
-    //     countdownInterval = setInterval(updateTimer, 1000);
-    // }
-
+    function removeEventListeners() {
+        document.removeEventListener('keydown', handleKeyEvents);
+        document.removeEventListener('keydown', handleKeyDown);
+        document.removeEventListener('keyup', handleKeyUp);
+    }
 
     function startGame() {
         draw();
     }
 
-    // if (document.body.classList.contains('pong-game-page')) {
-    //     setInterval(enfOfGameLoop, 1000);
-    // }
 }
-
-// document.addEventListener('DOMContentLoaded', initializeGame);

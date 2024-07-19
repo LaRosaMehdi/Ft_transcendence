@@ -144,7 +144,7 @@ function renderGames(games) {
                     </thead>
                     <tbody>
                         ${games.map(game => `
-                            <tr>a
+                            <tr>
                                 <td>${game.level}</td>
                                 <td>${game.player1}</td>
                                 <td>${game.player2}</td>

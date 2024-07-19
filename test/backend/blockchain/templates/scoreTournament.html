@@ -41,6 +41,18 @@
                                     {% if tournament.fourth_place %}
                                         <li>{{ tournament.fourth_place.username }}</li>
                                     {% endif %}
+                                    {% if tournament.fifth_place %}
+                                        <li>{{ tournament.fifth_place.username }}</li>
+                                    {% endif %}
+                                    {% if tournament.sixth_place %}
+                                        <li>{{ tournament.sixth_place.username }}</li>
+                                    {% endif %}
+                                    {% if tournament.seventh_place %}
+                                        <li>{{ tournament.seventh_place.username }}</li>
+                                    {% endif %}
+                                    {% if tournament.eighth_place %}
+                                        <li>{{ tournament.eighth_place.username }}</li>
+                                    {% endif %}
                                 </ol>
                             </td>
                             <td>
@@ -58,7 +70,9 @@
             </table>
         </div>
     </div>
-    <script src="{% static 'js/router.js' %}"></script>
     <script src="{% static 'js/localgame.js' %}" data-arg1="{% csrf_token %}"></script>
+    <script src="{% static 'js/router.js' %}"></script>
+    <script src="{% static 'js/dashboardTournament.js' %}"></script>
+    <script src="{% static 'js/localtournament.js' %}"></script>
 </body>
 </html>

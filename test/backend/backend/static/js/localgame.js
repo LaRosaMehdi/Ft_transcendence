@@ -1,4 +1,4 @@
-// let end_game = false;
+var end_game = false;
 function showConfirmation() {
     document.getElementById('confirmationModal').style.display = 'block';
 }
@@ -73,8 +73,7 @@ function initializeGame() {
     });
 
     document.getElementById('quit_game_local').addEventListener('click', function() {
-        // console.log("quit_game");
-        // end_game = true;
+        end_game = true;
         endGameLocal();
     });
 
@@ -214,10 +213,9 @@ function initializeGame() {
         ctx.font = '24px Arial';
         ctx.fillStyle = 'white';
         ctx.fillText(player1Name, 20, 30);
-        console.log("debugscore");
         if (player2Name) {
             if (player2Name.length < 6)
-                len = 40;
+                len = 50;
             else
                 len = player2Name.length * 14;
             ctx.fillText(player2Name, canvas.width -len, 30);
@@ -244,9 +242,9 @@ function initializeGame() {
             drawScoresLocal();
             movePlayersLocal();
             handleCollisionLocal();
-            if (scorePlayer1 >= 2 || scorePlayer2 >= 2) {//|| end_game === true) {
+            if (scorePlayer1 >= 2 || scorePlayer2 >= 2 || end_game === true) {
                 endGameLocal();
-                // end_game = false;
+                end_game = false;
                 return;
             }
                        
@@ -283,7 +281,6 @@ function initializeGame() {
                 return response.json();
             })
             .then(data => {
-                // console.log('Game finished successfully:', data);
                 loadPageGames('results');
             })
             .catch(error => {
@@ -292,12 +289,16 @@ function initializeGame() {
 
         resetBallLocal();
         stopBallLocal();
+        removeEventListenersLocal();
+    }
+
+    function removeEventListenersLocal() {
+        document.removeEventListener('keydown', handleKeyEventsLocal);
+        document.removeEventListener('keydown', handleKeyDownLocal);
+        document.removeEventListener('keyup', handleKeyUpLocal);
     }
 
     function startGameLocal() {
         drawLocal();
     }
 }
-
-// document.addEventListener('DOMContentLoaded', initializeGame);
-

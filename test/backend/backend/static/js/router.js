@@ -101,9 +101,6 @@ function loadPageMatchmaking(pagePath, pushState = true) {
             }
             current_url = `/matchmaking/${pagePath}/`;
             bindFormEvent();
-            if (typeof initializeGame === 'function') {
-                initializeGame();
-            }
              $.ajax({
                 type: 'GET',
                 url: '/games/get_opponent_name/',  // L'URL de la vue créée pour obtenir le nom de l'adversaire
@@ -749,6 +746,8 @@ window.addEventListener('popstate', async function(event)
  
     if (current_url.startsWith(`/tournaments/${tournament_name_bis}`) || current_url.startsWith("/tournaments/tournament_in_progress") ){
         remove_from_waiting_queue_tournament(tournament_name_bis);
+        console.log("check2");
+        end_game_t = true;
     }
     else if ((current_url === "/matchmaking/matchmaking_remote" || current_url === "/matchmaking/matchmaking_remote/")
         && (window.location.pathname === "/users/home" || window.location.pathname === "/users/home/")){
@@ -758,14 +757,13 @@ window.addEventListener('popstate', async function(event)
             handleLeaveMatchmaking();
         }
         else {
-            //end_game = true;
+            end_game = true;
             clean_matchmaking();
             loadPageUsers('home');
         }
     }
     else if ((current_url === "/matchmaking/matchmaking_remote" || current_url === "/matchmaking/matchmaking_remote/")
         && (window.location.pathname === "/matchmaking/matchmaking_remote" || window.location.pathname === "/matchmaking/matchmaking_remote/")){
-        console.log("check2");
         clean_matchmaking();
         window.history.pushState(null, null, window.location.href);
         loadPageUsers('home');
