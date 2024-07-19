@@ -1,4 +1,5 @@
 {% load static %}
+<title>Create Tournament</title>
 <div class="container1">
     <div class="create-join">
         <h1>Create tournament</h1>
@@ -15,7 +16,7 @@
             </div>
             <div class="user-box">
                 <p>Select numbers of players</p>
-                <select id="{{ form.nb_players.id_for_label }}" name="{{ form.nb_players.html_name }}">
+                <select id="{{ form.nb_players.id_for_label }}" name="{{ form.nb_players.html_name }}" style="background-color: #03e9f4; border-radius: 5px">
                     <option value="4">4 players</option>
                     <option value="8">8 players</option>
                 </select>

@@ -35,7 +35,7 @@ def view_tournament_generate(request):
 @jwt_login_required
 def view_tournament_join(request):
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        html = render_to_string('joinTournament.html', {'current_user': request.user, 'form': ConnectTournamentForm()}, request=request)
+        html = render_to_string('spa_joinTournament.html', {'current_user': request.user, 'form': ConnectTournamentForm()}, request=request)
         return JsonResponse({'html': html})
     else:
         return render(request, 'joinTournament.html', {'current_user': request.user, 'form': ConnectTournamentForm()})
@@ -77,7 +77,7 @@ def view_tournament_in_progress(request):
     context = {'tournament_name': tournament_name}
 
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        html = render_to_string('tournament_in_progress.html', context=context, request=request)
+        html = render_to_string('spa_tournament_in_progress.html', context=context, request=request)
         return JsonResponse({'html': html})
     else:
         logger.info("View tournament progress call")

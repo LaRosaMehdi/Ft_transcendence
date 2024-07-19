@@ -24,16 +24,6 @@
         }
     }
 
-    window.addEventListener('popstate', function(event) {
-        if (previousUrl2 === true && window.location.pathname === "/matchmaking/matchmaking_remote"){
-            
-            //console.log("check");
-            stopMatchmaking_2();
-            previousUrl2 = false;
-            loadPageUsers('home');
-        }
-    });
-
     matchmakingInterval = setInterval(matchmakingLoop, 1000);
 </script>
 <div class="container1">

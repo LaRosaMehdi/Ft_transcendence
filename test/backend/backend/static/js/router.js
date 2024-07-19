@@ -795,6 +795,7 @@ window.addEventListener('popstate', async function(event)
 
 
 window.onbeforeunload = function() {
+    
     const tournament_name_refresh = localStorage.getItem('tournament_name_refresh');
     // console.log(tournament_name_refresh);
     if (current_url === "/matchmaking/matchmaking_remote" || current_url === "/matchmaking/matchmaking_remote/") {

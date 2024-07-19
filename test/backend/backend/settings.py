@@ -92,6 +92,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'aouth.views.aouth.AouthLogoutAutoMiddleware',
+	# 'aouth.views.aouth.AouthTimeoutLogoutAutoMiddleware',
     # 'aouth.views.twofactor.TwoFactorUnverifiedUsersAutoDeleteMiddleware',
 ]
 

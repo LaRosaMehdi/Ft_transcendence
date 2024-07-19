@@ -101,9 +101,8 @@ def redirect_user(request):
         score1 = current_game.player1_score
         score2 = current_game.player2_score
         logger.info("match in progress")
-        if current_game.player1 == request.user:
-            score1 = -1
-        else:
-            score2 = -1
+        # if current_game.player1 == request.user:
+        score1 = 0
+        score2 = 0
         game_update(request, current_game, score1, score2)
     return JsonResponse({'redirect': 'home', 'message': 'success'})

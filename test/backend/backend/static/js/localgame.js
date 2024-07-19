@@ -214,8 +214,10 @@ function initializeGame() {
         ctx.fillStyle = 'white';
         ctx.fillText(player1Name, 20, 30);
         if (player2Name) {
-            if (player2Name.length < 6)
+            if (player2Name.length < 3)
                 len = 50;
+            else if (player2Name.length < 6)
+                len = 80;
             else
                 len = player2Name.length * 14;
             ctx.fillText(player2Name, canvas.width -len, 30);

@@ -1,17 +1,16 @@
 import requests, re, logging
+from datetime import datetime, timedelta
+from django.utils.timezone import now
 from requests import get
 from django.urls import reverse
 from django.conf import settings
 from django.db import IntegrityError
 from django.http import JsonResponse
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.contrib import messages
-from django.contrib.auth import get_user_model
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.hashers import make_password
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth import authenticate, login, logout, get_user_model
+from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.backends import ModelBackend
 from django.template.loader import render_to_string
@@ -246,6 +245,29 @@ def aouth_login(request, user):
 
 # LOUGOUT
 # -------
+
+# class AouthTimeoutLogoutAutoMiddleware:
+#     def __init__(self, get_response):
+#         self.get_response = get_response
+
+#     def __call__(self, request):
+#         if request.user.is_authenticated:
+#             current_time = now()
+#             last_activity = request.session.get('last_activity')
+
+#             if last_activity:
+#                 last_activity_time = datetime.strptime(last_activity, '%Y-%m-%d %H:%M:%S.%f')
+#                 if current_time - last_activity_time > timedelta(seconds=30):
+#                     aouth_logout(request)
+#                     return self.logout_response(request)
+
+#             request.session['last_activity'] = current_time.strftime('%Y-%m-%d %H:%M:%S.%f')
+
+#         response = self.get_response(request)
+#         return response
+
+
+
 
 class AouthLogoutAutoMiddleware:
     def __init__(self, get_response):

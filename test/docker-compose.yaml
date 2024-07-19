@@ -4,8 +4,6 @@ services:
     build:
       context: ganache/
       dockerfile: Dockerfile
-    ports:
-      - 8545:8545
     volumes:
       - ganache-data:/ganache/data
     networks:
@@ -17,8 +15,7 @@ services:
     build:
       context: database/
       dockerfile: Dockerfile
-    ports:
-      - 5432:443
+      
     networks:
       - ft_transcendence_network
     volumes:
@@ -37,7 +34,7 @@ services:
       context: backend/
       dockerfile: Dockerfile
     ports:
-      - 8080:443
+      - 443:443
     networks:
       - ft_transcendence_network
     volumes:

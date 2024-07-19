@@ -19,20 +19,20 @@
     <link rel="stylesheet" href="{% static 'chats.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <title>Tournament Dashboard</title>
 </head>
 <body>
     {% csrf_token %}
     <div class="container1">
-
+        
         <div class="hero">
             <div class="cube"></div><div class="cube"></div><div class="cube"></div>
             <div class="cube"></div><div class="cube"></div><div class="cube"></div>
         </div>
         <div id="app-content">
-        <script>
-            var tournamentName = "{{ tournament_name }}";
-            if (tournamentName === "") {
+            <title>Tournament Dashboard</title>
+            <script>
+                var tournamentName = "{{ tournament_name }}";
+                if (tournamentName === "") {
                 tournamentName = localStorage.getItem('tournament_name_refresh');
             }
             function matchmakingLoop() {

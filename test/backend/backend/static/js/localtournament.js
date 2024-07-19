@@ -274,8 +274,10 @@ function initializeGameTournament() {
         ctx.fillStyle = 'white';
         ctx.fillText(player1NameT, 20, 30);
         if (player2NameT) {
-            if (player2NameT.length < 6)
+            if (player2NameT.length < 3)
                 len = 50;
+            else if (player2NameT.length < 6)
+                len = 80;
             else
                 len = player2NameT.length * 14;
             ctx.fillText(player2NameT, canvas.width -len, 30);
