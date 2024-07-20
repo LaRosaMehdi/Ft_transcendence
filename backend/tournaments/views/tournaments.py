@@ -19,66 +19,6 @@ from games.views.games import game_tournament_init
 logger = logging.getLogger(__name__)
 
 
-# @jwt_login_required
-# def redirect_spa(request, path):
-#     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-#         return JsonResponse({
-#             'status': 'success',
-#             'message': 'success',
-#             'redirectUrl': path,
-#         })
-#     else:
-#         return redirect(path)
-
-# def redirect_spa_tournament_dashboard(request, tournament_name):
-#     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-#         return JsonResponse({
-#             'status': 'success',
-#             'message': 'Tournament created successfully',
-#             'redirectUrl': tournament_name
-#         })
-#     else:
-#         return redirect('dashboardTournament', tournament_name=tournament_name)
-
-# # Create
-# @jwt_login_required
-# def tournament_generate_game(request, tournament):
-#     tournament.games.add(game_tournament_init(request, tournament, tournament.level, request.user, None))
-#     tournament.games.add(game_tournament_init(request, tournament, tournament.level, None, None))
-#     if tournament.nb_players == 8:
-#         tournament.games.add(game_tournament_init(request, tournament, tournament.level, None, None))
-#         tournament.games.add(game_tournament_init(request, tournament, tournament.level, None, None))
-#     tournament.save()
-
-
-# @jwt_login_required
-# def tournament_generate(request):
-#     if request.method == 'POST':
-#         form = generateTournamentForm(request.POST)
-#         if form.is_valid():
-#             tournament_name = form.cleaned_data['name']
-#             nb_players = form.cleaned_data['nb_players']
-#             user_alias = form.cleaned_data['user_alias']
-#             try:
-#                 if Tournament.objects.filter(name=tournament_name).exists():
-#                     messages.error(request, 'A tournament with this name already exists.', extra_tags='tournament_generate')
-#                     form.add_error('name', 'A tournament with this name already exists.')
-#                     return(redirect_spa(request, "create"))
-#                 tournament = tournament_init(request, tournament_name, nb_players)
-#                 tournament_generate_game(request, tournament)
-#                 user_update_alias(request, request.user, user_alias)
-#                 logger.info(f"Public tournament {tournament_name} created successfully!")
-#                 return redirect_spa_tournament_dashboard(request, tournament_name)
-#             except IntegrityError:
-#                 messages.error(request, 'A tournament with this name already exists.', extra_tags='tournament_generate')
-#                 form.add_error('name', 'A tournament with this name already exists.')
-#                 return(redirect_spa(request, "create"))
-#         else:
-#             messages.error(request, 'Form is not valid', extra_tags='tournament_generate')
-#             logger.error("Form is not valid")
-#         return(redirect_spa(request, "create"))
-#     return(redirect_spa(request, "create"))
-
 @jwt_login_required
 def redirect_spa(request, path, message="success"):
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
@@ -400,7 +340,9 @@ def tournament_get(request, tournament_name):
     for classement_player in classement:
         players_ranking.append({'username': classement_player.username, 'alias': classement_player.alias, 'image': '/users/media/' + str(classement_player.image), 'rank': classement.index(classement_player) + tournament.nb_players - len(classement) + 1})
 
-    # logger.debug(f"-> {tournament.name}")
+    logger.debug(f"-> {tournament.name}")
+    if tournament.name is None:
+        tournament.name = tournament_name
     response_data = {
         'name': tournament.name,
         'nb_players': tournament.nb_players,

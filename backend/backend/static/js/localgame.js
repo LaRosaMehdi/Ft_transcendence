@@ -1,4 +1,5 @@
 var end_game = false;
+
 function showConfirmation() {
     document.getElementById('confirmationModal').style.display = 'block';
 }
@@ -61,7 +62,6 @@ function initializeGame() {
         's': false
     };
 
-    let gamePaused = false;
     let savedBallPosition = { dx: 0, dy: 0 };
     let savedBallSpeed = 0;
     let scorePlayer1 = 0;
@@ -78,21 +78,21 @@ function initializeGame() {
     });
 
     function handleKeyEventsLocal(event) {
-        if (player1.keys.includes(event.key)) {
+        if (player1.keys.includes(event.key) || player2.keys.includes(event.key)) {
             event.preventDefault();
-            if (event.key === player1.keys[0] && player1.y > 0) {
-                player1.y -= player1.speed;
-            } else if (event.key === player1.keys[1] && player1.y + player1.height < canvas.height) {
-                player1.y += player1.speed;
+            if (player1.keys.includes(event.key)) {
+                if (event.key === player1.keys[0] && player1.y > 0) {
+                    player1.y -= player1.speed;
+                } else if (event.key === player1.keys[1] && player1.y + player1.height < canvas.height) {
+                    player1.y += player1.speed;
+                }
             }
-        }
-
-        if (player2.keys.includes(event.key)) {
-            event.preventDefault();
-            if (event.key === player2.keys[0] && player2.y > 0) {
-                player2.y -= player2.speed;
-            } else if (event.key === player2.keys[1] && player2.y + player2.height < canvas.height) {
-                player2.y += player2.speed;
+            if (player2.keys.includes(event.key)) {
+                if (event.key === player2.keys[0] && player2.y > 0) {
+                    player2.y -= player2.speed;
+                } else if (event.key === player2.keys[1] && player2.y + player2.height < canvas.height) {
+                    player2.y += player2.speed;
+                }
             }
         }
     }
@@ -102,29 +102,14 @@ function initializeGame() {
     function handleKeyDownLocal(event) {
         if (keysPressed.hasOwnProperty(event.key)) {
             keysPressed[event.key] = true;
-        }
-        if (event.key === ' ') {
-            gamePaused = !gamePaused;
-            if (gamePaused) {
-                // Save current ball speed and position, then stop the ball
-                savedBallSpeed = currentBallSpeed;
-                savedBallPosition.dx = ball.dx;
-                savedBallPosition.dy = ball.dy;
-                currentBallSpeed = 0;
-                ball.dx = 0;
-                ball.dy = 0;
-            } else {
-                // Restore ball speed and position
-                currentBallSpeed = savedBallSpeed;
-                ball.dx = savedBallPosition.dx;
-                ball.dy = savedBallPosition.dy;
-            }
+            event.preventDefault();
         }
     }
 
     function handleKeyUpLocal(event) {
         if (keysPressed.hasOwnProperty(event.key)) {
             keysPressed[event.key] = false;
+            event.preventDefault();
         }
     }
 
@@ -132,12 +117,10 @@ function initializeGame() {
     document.addEventListener('keyup', handleKeyUpLocal);
 
     function movePlayersLocal() {
-        if (!gamePaused) {
-            if (keysPressed['w'] && player1.y > 0) player1.y -= player1.speed;
-            if (keysPressed['s'] && player1.y + player1.height < canvas.height) player1.y += player1.speed;
-            if (keysPressed['ArrowUp'] && player2.y > 0) player2.y -= player2.speed;
-            if (keysPressed['ArrowDown'] && player2.y + player2.height < canvas.height) player2.y += player2.speed;
-        }
+        if (keysPressed['w'] && player1.y > 0) player1.y -= player1.speed;
+        if (keysPressed['s'] && player1.y + player1.height < canvas.height) player1.y += player1.speed;
+        if (keysPressed['ArrowUp'] && player2.y > 0) player2.y -= player2.speed;
+        if (keysPressed['ArrowDown'] && player2.y + player2.height < canvas.height) player2.y += player2.speed;
     }
 
     const accelerationRate = 0.01;
@@ -214,47 +197,46 @@ function initializeGame() {
         ctx.fillStyle = 'white';
         ctx.fillText(player1Name, 20, 30);
         if (player2Name) {
-            if (player2Name.length < 3)
+            let len;
+            if (player2Name.length < 3) {
                 len = 50;
-            else if (player2Name.length < 6)
+            } else if (player2Name.length < 6) {
                 len = 80;
-            else
+            } else {
                 len = player2Name.length * 14;
-            ctx.fillText(player2Name, canvas.width -len, 30);
+            }
+            ctx.fillText(player2Name, canvas.width - len, 30);
         } else {
-            ctx.fillText(player2Name, canvas.width -7 * 14, 30);
+            ctx.fillText(player2Name, canvas.width - 7 * 14, 30);
         }
-        ctx.fillText(scorePlayer1, canvas.width /2 -50, 30);
-        ctx.fillText(scorePlayer2, canvas.width /2 +50, 30);
+        ctx.fillText(scorePlayer1, canvas.width / 2 - 50, 30);
+        ctx.fillText(scorePlayer2, canvas.width / 2 + 50, 30);
     }
 
     function drawLocal() {
-        if (!gamePaused) {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'black';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.beginPath();
-            ctx.strokeStyle = 'white';
-            ctx.lineWidth = 2;
-            ctx.moveTo(canvas.width / 2, 0);
-            ctx.lineTo(canvas.width / 2, canvas.height);
-            ctx.stroke();
-            drawPlayersLocal(ctx, player1, player2);
-            drawBallLocal();
-            drawScoresLocal();
-            movePlayersLocal();
-            handleCollisionLocal();
-            if (scorePlayer1 >= 2 || scorePlayer2 >= 2 || end_game === true) {
-                endGameLocal();
-                end_game = false;
-                return;
-            }
-                       
-            ball.dx += accelerationRate * Math.sign(ball.dx);
-            ball.dy += accelerationRate * Math.sign(ball.dy);     
-            ball.x += ball.dx;
-            ball.y += ball.dy;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.beginPath();
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 2;
+        ctx.moveTo(canvas.width / 2, 0);
+        ctx.lineTo(canvas.width / 2, canvas.height);
+        ctx.stroke();
+        drawPlayersLocal(ctx, player1, player2);
+        drawBallLocal();
+        drawScoresLocal();
+        movePlayersLocal();
+        handleCollisionLocal();
+        if (scorePlayer1 >= 2 || scorePlayer2 >= 2 || end_game === true) {
+            endGameLocal();
+            end_game = false;
+            return;
         }
+        ball.dx += accelerationRate * Math.sign(ball.dx);
+        ball.dy += accelerationRate * Math.sign(ball.dy);
+        ball.x += ball.dx;
+        ball.y += ball.dy;
         requestAnimationFrame(drawLocal);
     }
 

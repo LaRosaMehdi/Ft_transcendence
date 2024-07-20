@@ -98,7 +98,6 @@ function initializeGameTournament() {
         's': false
     };
 
-    let gamePaused = false;
     let savedBallPosition = { dx: 0, dy: 0 };
     let savedBallSpeed = 0;
     let scorePlayer1 = 0;
@@ -157,23 +156,23 @@ function initializeGameTournament() {
         if (keysPressed.hasOwnProperty(event.key)) {
             keysPressed[event.key] = true;
         }
-        if (event.key === ' ') {
-            gamePaused = !gamePaused;
-            if (gamePaused) {
-                // Save current ball speed and position, then stop the ball
-                savedBallSpeed = currentBallSpeed;
-                savedBallPosition.dx = ball.dx;
-                savedBallPosition.dy = ball.dy;
-                currentBallSpeed = 0;
-                ball.dx = 0;
-                ball.dy = 0;
-            } else {
-                // Restore ball speed and position
-                currentBallSpeed = savedBallSpeed;
-                ball.dx = savedBallPosition.dx;
-                ball.dy = savedBallPosition.dy;
-            }
-        }
+        // if (event.key === ' ') {
+        //     gamePaused = !gamePaused;
+        //     if (gamePaused) {
+        //         // Save current ball speed and position, then stop the ball
+        //         savedBallSpeed = currentBallSpeed;
+        //         savedBallPosition.dx = ball.dx;
+        //         savedBallPosition.dy = ball.dy;
+        //         currentBallSpeed = 0;
+        //         ball.dx = 0;
+        //         ball.dy = 0;
+        //     } else {
+        //         // Restore ball speed and position
+        //         currentBallSpeed = savedBallSpeed;
+        //         ball.dx = savedBallPosition.dx;
+        //         ball.dy = savedBallPosition.dy;
+        //     }
+        // }
     }
 
     function handleKeyUp(event) {
@@ -290,33 +289,33 @@ function initializeGameTournament() {
     }
 
     function draw() {
-        if (!gamePaused) {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'black';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.beginPath();
-            ctx.strokeStyle = 'white';
-            ctx.lineWidth = 2;
-            ctx.moveTo(canvas.width / 2, 0);
-            ctx.lineTo(canvas.width / 2, canvas.height);
-            ctx.stroke();
-            drawPlayers(ctx, player1, player2);
-            drawBall();
-            drawScores();
-            movePlayers();
-            handleCollision();
-            if (scorePlayer1 >= 2 || scorePlayer2 >= 2 || end_game_t === true) {
-                endGame(getGameIdFromUrl());
-                end_game_t = false;
-                return;
-            }
-
-            ball.dx += accelerationRate * Math.sign(ball.dx);
-            ball.dy += accelerationRate * Math.sign(ball.dy);
-
-            ball.x += ball.dx;
-            ball.y += ball.dy;
+        // if (!gamePaused) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.beginPath();
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 2;
+        ctx.moveTo(canvas.width / 2, 0);
+        ctx.lineTo(canvas.width / 2, canvas.height);
+        ctx.stroke();
+        drawPlayers(ctx, player1, player2);
+        drawBall();
+        drawScores();
+        movePlayers();
+        handleCollision();
+        if (scorePlayer1 >= 2 || scorePlayer2 >= 2 || end_game_t === true) {
+            endGame(getGameIdFromUrl());
+            end_game_t = false;
+            return;
         }
+
+        ball.dx += accelerationRate * Math.sign(ball.dx);
+        ball.dy += accelerationRate * Math.sign(ball.dy);
+
+        ball.x += ball.dx;
+        ball.y += ball.dy;
+        // }
         requestAnimationFrame(draw);
         
     }

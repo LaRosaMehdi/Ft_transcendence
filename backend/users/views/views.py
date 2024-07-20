@@ -77,7 +77,7 @@ def update_user_stats(user):
         ).order_by('date_time')
     else:
         unprocessed_games = Game.objects.filter(
-            Q(player1=user) | Q(player2=user)
+            (Q(player1=user) | Q(player2=user)) & Q(tournament__isnull=True)
         ).order_by('date_time')
     
     # Update user stats for each unprocessed game
