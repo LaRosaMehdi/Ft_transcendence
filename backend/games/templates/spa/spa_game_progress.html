@@ -1,0 +1,33 @@
+{% load static %}
+<title>Game in Progress</title>
+<script>
+    var previousUrl2 = true;
+    var matchmakingInterval;
+
+    function matchmakingLoop() {
+        fetch('/games/check_status_user/')
+        .then(response => response.json())
+        .then(data => {
+            if (data.context !== 'ingame') {
+                stopMatchmaking_2();
+                loadPageGames('results');}
+        })
+        .catch(error => console.error('Error fetch game progress:', error));
+    }
+
+    
+    function stopMatchmaking_2() {
+        if (matchmakingInterval) {
+            //console.log("hello")
+            clearInterval(matchmakingInterval);
+            matchmakingInterval = null;
+        }
+    }
+
+    matchmakingInterval = setInterval(matchmakingLoop, 1000);
+</script>
+<div class="container1">
+    <div class="login-box">
+        <h2 style="text-align: center;">Game in Progress</h2>
+    </div>
+</div>

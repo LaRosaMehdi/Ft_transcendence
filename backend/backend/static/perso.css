@@ -1,0 +1,81 @@
+/* Style des compartiments de profil */
+.profile-section {
+    margin-bottom: 20px; /* Marge en bas de chaque section */
+    padding: 10px; /* Espacement interne des sections */
+    border: 1px solid #ccc; /* Bordure grise */
+    border-radius: 5px; /* Coins arrondis */
+}
+
+/* Style du titre de chaque section */
+.profile-section h3 {
+    margin-top: 0; /* Supprime la marge en haut */
+    color: #333; /* Couleur du texte */
+}
+
+/* Style des données du profil */
+.profile-data {
+    font-weight: bold; /* Texte en gras */
+}
+
+img {
+    width: 100px;
+    height: 100px;
+}
+
+.user-image {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    right: 0;
+    top: 0;
+    border-radius: 28%; /* Pour arrondir les coins */
+    margin-right: 10px; /* Marge à droite pour l'espacement entre les images */
+}
+
+#profileData {
+    display: none;
+    margin-top: 20px; /* Marge en haut */
+    padding: 20px; /* Espacement interne */
+    border: 2px solid #ccc; /* Bordure grise */
+    border-radius: 10px; /* Coins arrondis */
+    background: rgba(0, 0, 0, 0.5);
+}
+
+/* Style du texte de profil */
+#profileData pre {
+    font-family: 'Courier New', Courier, monospace; /* Police de caractères monospace */
+    font-size: 14px; /* Taille de police */
+    color: #333; /* Couleur du texte */
+}
+
+/* Style des boutons */
+.profile-button {
+    background-color: #007bff; /* Couleur de fond bleue */
+    color: #fff; /* Couleur du texte blanc */
+    border: none; /* Pas de bordure */
+    padding: 10px 20px; /* Espacement interne */
+    border-radius: 5px; /* Coins arrondis */
+    cursor: pointer; /* Curseur pointeur */
+    margin-top: 10px; /* Marge en haut */
+}
+
+/* Style des boutons au survol */
+.profile-button:hover {
+    background-color: #0056b3; /* Couleur de fond plus foncée */
+}
+
+/* Style des propriétés du profil */
+.profile-property {
+    margin-bottom: 10px; /* Marge en bas de chaque propriété */
+}
+
+/* Style des libellés de propriété */
+.property-label {
+    font-weight: bold; /* Texte en gras */
+    color: #03e9f4
+}
+
+/* Style des valeurs de propriété */
+.property-value {
+    color: #333; /* Couleur du texte */
+}

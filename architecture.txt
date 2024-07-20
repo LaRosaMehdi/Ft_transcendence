@@ -42,3 +42,37 @@ MatchMaking Model: - NEED TO IMPLEMENT
     Fields:
         players (Many-to-Many relationship with User model)
     This model represents match-making between two players. It records the players involved, the date and time of the match, and the status of the match (pending, in progress, completed). This model can be used to facilitate matchmaking and scheduling of games between players.
+
+
+- JwtRefreshMiddleware OK
+- reorganize the code in corresponding apps OK
+- message error when logout OK
+- login/logout form OK
+- middleware remove quueue OK
+-  and in game OK
+- settings enable desable 2factor OK
+- chnage username by smae usersane OK
+- split play and remote play OK
+- make 2fa page not accessible if not in procees OK
+
+
+
+- registration failed (not validated with twofactor, delete + block login)
+    -> if leave twofactor page, delete user
+    -> expired twofactor code
+    -> redirect the user to register page
+- login validation code expired 
+- login failed (change 6digit code)
+- Resent validation code when refresh page
+
+- tournament 
+=> Add Name field change feild numbers of people in game
+=> create tournament (tournament <name> losing <level> queue matching)
+
+- init game in play 
+
+
+- user leaves games but returns to page how to handle ?
+- INPUT FORM NOT USING FORMS
+- backwoards in game, refresh to see results
+- make root verifier entrypoint

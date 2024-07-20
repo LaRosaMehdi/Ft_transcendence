@@ -1,0 +1,24 @@
+{% load static %}
+<title>Join Tournament</title>
+<div class="container1">
+    <div class="create-join">
+        <h1 style="color: white;">Join tournament</h1>
+        <div id="join_tournament_messages">
+            <!-- error message here -->
+        </div>
+        <form id="connectTournament" action="{% url 'connectTournament' %}" method="post">
+            {% csrf_token %}
+            <div class="user-box">
+                <input type="text" id="{{ form.tournament_name.id_for_label }}" name="{{ form.tournament_name.html_name }}" placeholder="Tournament name">
+            </div>
+            <div class="user-box">
+                <input type="text" id="{{ form.user_alias.id_for_label }}" name="{{ form.user_alias.html_name }}" placeholder="Nickname">
+            </div>
+            <button type="submit">Join</button>
+        </form>
+        <button type="submit" onclick="javascript:history.go(-1);" class="button back-button"><span></span>
+            <span></span>
+            <span></span>Back
+        </button>
+    </div> 
+</div>

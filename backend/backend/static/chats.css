@@ -1,0 +1,260 @@
+/********LIVE CHAT********/
+.chat-window {
+    position:relative;
+    width: 73%; 
+    height: 20vh;
+    background-color: #0a5491;
+    color: #03a9f4;
+    border-radius: 20px;
+    padding: 10px;
+    margin-top: 12px;
+    /* overflow-y: scroll; */
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    align-items: flex-start;
+    /* left: -25%; */
+}
+
+.chat-bar {
+    width: 40%; /* Largeur de la barre de chat */
+    height: 2vh; /* Hauteur de la barre de chat, moins la marge */
+    background-color: #0a5491;
+    color: #03a9f4;
+    border-radius: 20px;
+    margin-right: 20px; /* Marge à droite pour l'espacement */
+    float: left; /* Pour placer la barre de chat à gauche */
+    /* position: absolute; */
+    visibility: visible;
+    left: 0;
+    bottom: 0;
+}
+
+.chat-bar input {
+    position: absolute;
+    width: 100%; /* Laisser de la place pour le label */
+    padding: 4px;
+    font-size: 10px;
+    color: #fff !important;
+    border: none;
+    outline: none;
+    background: #03a9f4;
+    text-decoration: none;
+    margin-top: 16.5vh;
+    left: 0;
+    bottom: 0;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.chat-bar input:focus ~ label {
+  top: 0;
+  left: 25px; /* Décalage vers la gauche */
+  color: #03e9f4; 
+  outline: none; 
+}
+
+/* Placeholder pour le champ de saisie */
+.chat-bar input::placeholder {
+  color: #fff; /* Couleur du placeholder */
+  opacity: 1;/* Opacité du placeholder */
+  outline: none;
+  padding-left: 10px;
+
+}
+
+.chat-input {
+    width: calc(100% - 20px);
+    height: calc(100% - 20px);
+    margin-top: 10px;
+    padding: 10px;
+    margin-left: 50%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: transparent;
+    color: #fff;
+}
+
+.chat-bar label {
+  margin-top: 0;
+  /*left: 50%; Centre horizontalement */
+  font-size: 17px;
+  font-weight: bold;
+  color: #03a9f4;/* Couleur initiale du label */
+  pointer-events: none;
+  transition: .5s;
+  opacity: 1; /* Rendre le label initialement visible */
+  text-decoration: none;
+}
+
+.chat-messages {
+    position: relative;
+    /* height: 99%;
+    width: 98%; */
+    overflow-y: auto;
+    /* border: 1px solid #ccc; */
+    padding: 5px;
+    margin-bottom: 2vh;
+    width: 100%;
+    font-size: 85%;
+}
+
+.chat-input-container {
+    display: flex;
+    align-items: center;
+}
+
+.send-button {
+    padding: 5px 10px;
+    background-color: #03a9f4;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    position: fixed;
+    /* bottom: -235px; */
+    right: 45%;
+}
+
+
+/***************PAGE FRIENDS*****************/
+/* 
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #36393F;
+    color: #FFFFFF;
+    padding: 20px;
+}
+
+.profile img {
+    width: 50px;
+    border-radius: 50%;
+}
+
+.profile h2 {
+    margin-top: 10px;
+}
+
+.channels h3 {
+    margin-top: 20px;
+}
+
+.channels ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.channels li {
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+}
+
+.header h1 {
+    margin-bottom: 20px;
+}
+
+.direct-messages ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.direct-messages li {
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.messages {
+    height: 300px;
+    overflow-y: auto;
+    margin-top: 20px;
+}
+
+.message {
+    background-color: #EFEFEF;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.message .user {
+    font-weight: bold;
+}
+
+.input {
+    margin-top: 20px;
+}
+
+.input input {
+    width: calc(100% - 70px);
+    padding: 10px;
+    border: 1px solid #CCCCCC;
+    border-radius: 5px;
+}
+
+.input button {
+    width: 60px;
+    padding: 10px;
+    background-color: #7289DA;
+    border: none;
+    border-radius: 5px;
+    color: #FFFFFF;
+    cursor: pointer;
+    margin-left: 10px;
+} */
+
+
+/* Styles spécifiques au chat et aux channels */
+/*Pour Page de Chat/Friends*/
+
+/* Conteneur du chat et des channels */
+.chat-container {
+    display: grid;
+    grid-template-columns: 250px 1fr; /* Barre latérale et contenu principal */
+    height: 100vh;
+  }
+  
+  /* Barre latérale */
+  .sidebar {
+    background-color: #202225;
+    color: #fff;
+    padding: 20px;
+  }
+  
+  /* Contenu principal */
+  .main-content {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Contenu du chat */
+  .chat {
+    background-color: #2f3136;
+    color: #fff;
+    padding: 20px;
+    flex-grow: 1; /* Le chat prend autant de place que possible */
+  }
+  
+  /* Liste des channels */
+  .channels {
+    background-color: #202225;
+    color: #fff;
+    padding: 20px;
+    height: calc(100vh - 100px); /* Hauteur restante moins la hauteur de la barre latérale et du chat */
+    overflow-y: auto; /* Défilement si nécessaire */
+  }
+  
+  /* Autres styles spécifiques au chat et aux channels... */
+  

@@ -1,0 +1,78 @@
+{% load static %}
+<title>Friend List</title>
+<div class="container1">
+    <div class="friends-list-page">
+        {% include 'header.html' %}
+        <h1><i class="fas fa-users"></i> Friends List</h1>
+        <div class="search-container">
+            <form id="searchFriends" action="{% url 'friend_list' %}" method="get">
+                <input type="text" placeholder="Search users..." name="search_query" value="{{ search_query }}">
+                <button type="submit"><i class="fas fa-search"></i> Search</button>
+            </form>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Picture</th>
+                    <th>Username</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for friend in friends %}
+                <tr>
+                    <td><a href="javascript:void(0);" data-username="{{ friend.username }}" aria-label="View profile of {{ friend.username }}" onclick="loadPageFriendProfile('{{ friend.username }}')">
+                        <img src="{{ friend.image_url }}" alt="Profile picture" style="width:50px;height:50px;border-radius:50%; object-fit: cover;">
+                    </a></td>
+                    <td>{{ friend.username }}</td>
+                    <td><div class="circle_status" id="status_friend_{{ friend.username }}"></div></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3">No friends added yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if search_query %}
+        <h2><i class="fas fa-search-plus"></i> Search Results</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Picture</th>
+                    <th>Username</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td><img src="{{ user.image_url }}" alt="Profile picture" style="width:50px;height:50px;border-radius:50%; object-fit: cover;"></td>
+                    <td>{{ user.username }}</td>
+                    <td><div class="circle_status" id="status_user_{{ user.username }}"></div></td>
+                    <td>
+                        <form id="AddFriends" action="{% url 'add_friend' user.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit"><i class="fas fa-user-plus"></i> Add</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">No users found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</div>
+<script>
+    friends = {{ friends|safe }};
+    users = {{ users|safe }};
+    usernames = [...friends.map(friend => friend.username), ...users.map(user => user.username)];
+    check_status_friend_list(usernames);
+</script>
+ 
