@@ -38,7 +38,7 @@ class User(AbstractBaseUser):
     password = models.CharField(max_length=100, null=True)
     image = models.ImageField(upload_to='', null=True)
 
-    is_verified = models.BooleanField(default=True)#2fa
+    is_verified = models.BooleanField(default=False)#2fa
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)  # Add this line
@@ -64,7 +64,9 @@ class User(AbstractBaseUser):
 
     validation_code = models.CharField(max_length=64, null=True, blank=True)
 
-    twofactor_enabled = models.BooleanField(default=False)##2fa
+    twofactor_enabled = models.BooleanField(default=True)##2fa
+
+    last_processed_game = models.ForeignKey('games.Game', on_delete=models.SET_NULL, null=True, blank=True, related_name='last_processed_user')
 
     objects = UserManager()
 

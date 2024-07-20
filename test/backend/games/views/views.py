@@ -29,14 +29,14 @@ def view_mode(request):
 
 @jwt_login_required
 def view_results(request):
-    context = user_get_last_game(request)
-    if context.winner == request.user:
-        request.user.wins += 1
-        request.user.elo += 100
-    elif context.draw == 0:
-        request.user.losses += 1
-        request.user.elo -= 100
-    request.user.save()
+    # context = user_get_last_game(request)
+    # if context.winner == request.user:
+    #     request.user.wins += 1
+    #     request.user.elo += 100
+    # elif context.draw == 0:
+    #     request.user.losses += 1
+    #     request.user.elo -= 100
+    # request.user.save()
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         html = render_to_string('results.html', {'game': user_get_last_game(request)}, request=request)
         return JsonResponse({'html': html})

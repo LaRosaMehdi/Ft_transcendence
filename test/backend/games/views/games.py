@@ -170,7 +170,8 @@ def get_opponent_name(request):
             if current_game.player1 == request.user:
                 opponent_name = current_game.player2.username
             else:
-                opponent_name = current_game.player1.username
+                opponent_name = current_game.player2.username
+                username = current_game.player1.username
             return JsonResponse({'status': 'success', 'username': username, 'opponent_name': opponent_name})
         else:
             return JsonResponse({'status': 'error', 'message': 'No current game found'})

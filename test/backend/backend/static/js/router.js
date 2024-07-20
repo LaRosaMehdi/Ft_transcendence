@@ -620,7 +620,7 @@ function setupGoBackButton() {
     });
 }
 
-function clean_matchmaking(){
+async function clean_matchmaking(){
     // console.log("clean_match call");
     const data = new FormData();
 
@@ -632,7 +632,7 @@ function clean_matchmaking(){
     }
 }
 
-function leaveMatchmakingQueue() {
+async function leaveMatchmakingQueue() {
     // console.log("leaveMatchmaking call");
     const data = new FormData();
     const csrfToken = localStorage.getItem('csrf_token');
@@ -666,7 +666,7 @@ function check_status(username){
         fetch(`/games/check_status_user/?username=${username}`)
         .then(response => response.json())
         .then(data => {
-            console.log("status", data.context);
+            // console.log("status", data.context);
             if (current_url.endsWith(`/users/friend-profile/${username}/`))
             {
                 if (data.context)
@@ -746,12 +746,13 @@ window.addEventListener('popstate', async function(event)
  
     if (current_url.startsWith(`/tournaments/${tournament_name_bis}`) || current_url.startsWith("/tournaments/tournament_in_progress") ){
         remove_from_waiting_queue_tournament(tournament_name_bis);
-        console.log("check2");
         end_game_t = true;
     }
-    else if ((current_url === "/matchmaking/matchmaking_remote" || current_url === "/matchmaking/matchmaking_remote/")
-        && (window.location.pathname === "/users/home" || window.location.pathname === "/users/home/")){
-    window.history.pushState(null, null, window.location.href);
+    ///matchmaking/matchmaking_remote/
+    else if ((current_url === "/matchmaking/matchmaking_remote" || current_url === "/matchmaking/matchmaking_remote/"))
+        // && (window.location.pathname === "/users/home" || window.location.pathname === "/users/home/"))
+        {
+        window.history.pushState(null, null, window.location.href);
         if (typeof handleLeaveMatchmaking === 'function') {
             clean_matchmaking();
             handleLeaveMatchmaking();
@@ -797,17 +798,16 @@ window.addEventListener('popstate', async function(event)
 window.onbeforeunload = function() {
     
     const tournament_name_refresh = localStorage.getItem('tournament_name_refresh');
-    // console.log(tournament_name_refresh);
     if (current_url === "/matchmaking/matchmaking_remote" || current_url === "/matchmaking/matchmaking_remote/") {
-        // console.log("You left the matchmaking Queue <<");
         clean_matchmaking();
         leaveMatchmakingQueue();
+        fetch('/matchmaking/matchmaking_remote/');
     }
     else if(window.location.pathname === "/matchmaking/matchmaking_remote" || window.location.pathname === "/matchmaking/matchmaking_remote/")
     {
-        // console.log("You left the matchmaking Queue <<");
         clean_matchmaking();
         leaveMatchmakingQueue();
+        fetch('/matchmaking/matchmaking_remote/');
     }
     else if (window.location.pathname.startsWith(`/tournaments`) || window.location.pathname.startsWith("/tournaments/tournament_in_progress") ){
         // console.log("debug");

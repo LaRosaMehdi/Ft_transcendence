@@ -67,9 +67,39 @@ def view_setting(request):
                 'change_2fa_form': Change2faForm()
             })
 
+def update_user_stats(user):
+    # Get all games that have not been processed yet
+    if user.last_processed_game:
+        unprocessed_games = Game.objects.filter(
+            (Q(player1=user) | Q(player2=user)) & 
+            Q(date_time__gt=user.last_processed_game.date_time)
+        ).order_by('date_time')
+    else:
+        unprocessed_games = Game.objects.filter(
+            Q(player1=user) | Q(player2=user)
+        ).order_by('date_time')
+    
+    # Update user stats for each unprocessed game
+    for game in unprocessed_games:
+        if game.winner == user:
+            user.wins += 1
+            user.elo += 100
+        elif game.draw == 0:
+            user.losses += 1
+            user.elo -= 100
+        user.last_processed_game = game
+    
+    if unprocessed_games.exists():
+        user.save()
+
+
+
 @jwt_login_required
 def view_profile(request):
+    if request.user.status == "ingame":
+        return redirect('home')
     user = request.user
+    update_user_stats(user)
     matches = Game.objects.filter((Q(player1=user) | Q(player2=user)) & Q(tournament__isnull=True)).order_by('-date_time')
 
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
@@ -80,6 +110,8 @@ def view_profile(request):
     
 @jwt_login_required
 def view_profile_friend(request, friend_user):
+    if request.user.status == "ingame":
+        return redirect('home')
     user_profile = get_object_or_404(User, username=friend_user)
     friends_user = request.user.friends.all()
     
@@ -87,6 +119,7 @@ def view_profile_friend(request, friend_user):
        if friends_user.username == friend_user:
            break
     user = request.user
+    update_user_stats(friends_user)
     matches = Game.objects.filter((Q(player1=friends_user) | Q(player2=friends_user)) & Q(tournament__isnull=True)).order_by('-date_time')
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         html = render_to_string('spa_viewProfile.html', {'current_user': user_profile, 'matches': matches, 'context': 'ajax'}, request=request)

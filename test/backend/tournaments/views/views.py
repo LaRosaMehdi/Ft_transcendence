@@ -17,6 +17,8 @@ def view_resTournoi(request):
 
 @jwt_login_required
 def view_tournament(request):
+    if request.user.status == "ingame":
+        return redirect('home')
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         html = render_to_string('spa_tournament.html', request=request)
         return JsonResponse({'html': html})
@@ -25,6 +27,8 @@ def view_tournament(request):
 
 @jwt_login_required
 def view_tournament_generate(request):
+    if request.user.status == "ingame":
+        return redirect('home')
     logger.info("DEBUG_view_tournament_generate")
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         html = render_to_string('spa_createTournament.html', {'current_user': request.user, 'form': generateTournamentForm()}, request=request)
@@ -34,6 +38,8 @@ def view_tournament_generate(request):
 
 @jwt_login_required
 def view_tournament_join(request):
+    if request.user.status == "ingame":
+        return redirect('home')
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         html = render_to_string('spa_joinTournament.html', {'current_user': request.user, 'form': ConnectTournamentForm()}, request=request)
         return JsonResponse({'html': html})
