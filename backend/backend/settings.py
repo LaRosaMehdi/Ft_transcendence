@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_cron',
     'blockchain',
     'users',
     'aouth',
@@ -48,7 +49,6 @@ INSTALLED_APPS = [
     'matchmaking',
     'smtp',
     'rest_framework',
-    # 'channels',
 	
 ]
 
@@ -93,8 +93,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'aouth.views.aouth.AouthLogoutAutoMiddleware',
-	# 'aouth.views.aouth.AouthTimeoutLogoutAutoMiddleware',
-    # 'aouth.views.twofactor.TwoFactorUnverifiedUsersAutoDeleteMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -261,6 +259,11 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': False,
         },
+        'django_crontab': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
     },
 }
 
@@ -319,3 +322,14 @@ OAUTH_REGISTER_REDIRECT_URI = os.environ.get('OAUTH_REGISTER_REDIRECT_URI')
 AOUTH_LOGIN_CLIENT_ID =  os.environ.get('AOUTH_LOGIN_CLIENT_ID')
 OAUTH_LOGIN_CLIENT_SECRET = os.environ.get('OAUTH_LOGIN_CLIENT_SECRET')
 AOUTH_LOGIN_REDIRECT_URI = os.environ.get('AOUTH_LOGIN_REDIRECT_URI')
+
+# CRON
+# ----
+
+CRON_CLASSES = [
+    'aouth.cron.CheckUserInactivityCron',
+    'aouth.cron.CheckUserUnverifiedCron'
+]
+
+TIME_ZONE = 'UTC'
+USE_TZ = True 

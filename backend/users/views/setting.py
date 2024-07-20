@@ -10,6 +10,14 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
+from django.http import JsonResponse
+from django.shortcuts import redirect
+from django.contrib import messages
+from .forms import ChangeImageForm
+from django.http import JsonResponse
+from django.shortcuts import redirect
+from django.contrib import messages
+import logging
 
 from users.models import User
 from users.views.forms import *
@@ -70,40 +78,77 @@ def setting_change_username(request):
         
     return redirect('settings')
 
-
-
 @jwt_login_required
 def setting_change_image(request):
-    errors = []
     if request.method == 'POST':
+        uploaded_file = request.FILES.get('image')
+
+        # Check if a file was uploaded
+        if not uploaded_file:
+            error_message = 'No file uploaded. Please choose a file to upload.'
+            logger.error(error_message)
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'error', 'errors': error_message})
+            messages.error(request, error_message)
+            return redirect('settings')
+
+        # Check file size
+        max_size_kb = 2048  # 2 MB in KB
+        if uploaded_file.size > max_size_kb * 1024:
+            error_message = 'File size exceeds 2 MB'
+            logger.error(error_message)
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'error', 'message': error_message})
+            messages.error(request, error_message)
+            return redirect('settings')
+
+        # Check if the uploaded image is the same as the current one
+        current_image = request.user.image
+        if current_image:
+            from io import BytesIO
+            from django.core.files.uploadedfile import InMemoryUploadedFile
+            # Read the content of both images
+            current_image_content = current_image.read()
+            uploaded_file_content = uploaded_file.read()
+            uploaded_file.seek(0)  # Reset the file pointer for further processing
+
+            if isinstance(uploaded_file, InMemoryUploadedFile) and uploaded_file_content == current_image_content:
+                success_message = 'No changes detected. The uploaded image is the same as the current one.'
+                logger.info(success_message)
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'status': 'info',
+                        'message': success_message,
+                        'image': current_image.url,
+                        'redirectUrl': 'settings',
+                    })
+                messages.info(request, success_message)
+                return redirect('settings')
+
+        # Process the form submission
         form = ChangeImageForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Image changed successfully.', extra_tags='change_image_tag')
+            success_message = 'Image changed successfully.'
+            messages.success(request, success_message, extra_tags='change_image_tag')
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({
                     'status': 'success',
-                    'message': 'Image changed successfully.',
+                    'message': success_message,
                     'image': request.user.image.url,
                     'redirectUrl': 'settings',
                 })
-            else:
-                return redirect('settings')
+            return redirect('settings')
         else:
-            for field, field_errors in form.errors.items():
-                for error in field_errors:
-                    errors.append(f'{field}: {error}')
-    if errors:
-        error_messages = ', '.join(errors)
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return JsonResponse({
-                'status': 'error',
-                'message': error_messages,
-                'image': request.user.image.url,
-                'redirectUrl': 'settings',
-            })
-    else:
-        return redirect('settings')
+            errors = [f'{field}: {error}' for field, field_errors in form.errors.items() for error in field_errors]
+            error_messages = ', '.join(errors)
+            logger.error(f"Form validation errors: {error_messages}")
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'error', 'message': error_messages})
+            messages.error(request, error_messages)
+            return redirect('settings')
+
+    return redirect('settings')
 
 @login_required
 def setting_change_password(request):

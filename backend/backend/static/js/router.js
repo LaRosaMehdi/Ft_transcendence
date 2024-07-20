@@ -815,3 +815,16 @@ window.onbeforeunload = function() {
     
     }
 }
+
+function updateLastActivity() {
+    fetch('/users/user_update_last_activity/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': localStorage.getItem('csrf_token'),
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        },
+    }).then(response => {});
+}
+
+setInterval(updateLastActivity, 20000);

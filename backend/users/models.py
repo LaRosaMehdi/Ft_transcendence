@@ -63,10 +63,12 @@ class User(AbstractBaseUser):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='offline')
 
     validation_code = models.CharField(max_length=64, null=True, blank=True)
+    validation_code_expiration = models.DateTimeField(null=True, blank=True)
 
     twofactor_enabled = models.BooleanField(default=True)##2fa
 
     last_processed_game = models.ForeignKey('games.Game', on_delete=models.SET_NULL, null=True, blank=True, related_name='last_processed_user')
+    last_activity = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     objects = UserManager()
 

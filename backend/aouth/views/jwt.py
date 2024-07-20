@@ -22,6 +22,8 @@ def jwt_login_required(view_func):
         if request.session.exists(request.session.session_key):
             access_token = request.session.get('access_token')
             if access_token:
+                request.user.status = 'online'
+                request.user.save()
                 return view_func(request, *args, **kwargs)
             else:
                 try:

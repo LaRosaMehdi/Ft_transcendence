@@ -12,6 +12,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 
 from users.models import User
 from aouth.views.jwt import jwt_login_required
@@ -72,6 +73,19 @@ def user_update_alias(request=None, user=None, new_alias=None):
         user.save()
     else:
         logger.error("Invalid arguments for user_update_alias")
+
+@csrf_exempt
+@jwt_login_required
+def user_update_last_activity(request):
+    if request.user.is_anonymous:
+        return JsonResponse({'status': 'failure'}, status=200)
+    if request.method == 'POST':
+        logger.debug(f"Updating last activity for {request.user.last_activity}")
+        request.user.last_activity = timezone.now()
+        request.user.save()
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'failure'}, status=200)
+
 
 # User security
 # -------------

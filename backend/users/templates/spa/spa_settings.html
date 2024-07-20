@@ -1,5 +1,47 @@
 {% load static %}
 {% include 'header.html' %}
+<script>
+    function displayMessage(element, message, color) {
+        const messageElement = $('<p style="color: ' + color + ';" class="error">' + message + '</p>');
+        element.append(messageElement);
+        
+        // Fade out the message after a delay
+        setTimeout(function() {
+            messageElement.fadeOut(1000, function() {
+                // Remove the message from the DOM after fading out
+                messageElement.remove();
+            });
+        }, 15000); // Time in milliseconds before starting to fade out
+    }
+
+    document.getElementById('file-upload').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const maxSizeMB = 2; // Maximum file size in MB
+        const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        let errorMessage = '';
+
+        if (file) {
+            if (file.size > maxSizeMB * 1024 * 1024) {
+                errorMessage = 'ERROR: File size exceeds 2 MB. Operation aborted.';
+                console.error(errorMessage);
+                displayMessage($('#settings_image_messages'), errorMessage, 'red');
+                event.target.value = ''; // Clear the input
+                return;
+            }
+
+            if (!validImageTypes.includes(file.type)) {
+                errorMessage = 'Invalid file type. Only JPEG, PNG, and GIF are allowed. Operation aborted.';
+                console.error(errorMessage);
+                displayMessage($('#settings_image_messages'), errorMessage, 'red');
+                event.target.value = ''; // Clear the input
+                return;
+            }
+        }
+
+        $('#settings_image_messages').empty(); // Clear previous messages if validation passes
+    });
+
+</script>        
 <title>Settings</title>
 <div class="container1">
     <div class="setting-box">    
