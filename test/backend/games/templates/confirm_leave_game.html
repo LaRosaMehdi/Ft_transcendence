@@ -1,0 +1,14 @@
+<!-- confirm_leave_game.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Confirm Leave Game</title>
+</head>
+<body>
+    <h1>Are you sure you want to leave the game?</h1>
+    <form action="/play/game/leave/confirm/" method="post">
+        {% csrf_token %}
+        <input type="submit" value="Yes, leave the game">
+    </form>
+</body>
+</html>

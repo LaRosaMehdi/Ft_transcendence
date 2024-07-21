@@ -1,0 +1,45 @@
+#pongCanvas {
+    position: relative;
+    /* Pour centrer verticalement */
+    /* left: 50%; /* Pour centrer horizontalement */
+    /* transform: translate(-50%, -50%); Pour centrer exactement */ 
+    width: 75vw; /* 75% de la largeur de la fenêtre */
+    height: 45vh; 
+    background-color: #f2f2f2; /*Couleur de fond du canvas */
+    display: flex;
+    visibility: hidden;
+}
+
+#chrono-button {
+    background-color: #0b3861; /* Bleu foncé */
+    color: #03a9f4; /* Bleu électrique */
+    border: none;
+    top: 10%;
+    justify-content: center;
+    border-radius: 20px; /* Coins arrondis */
+    padding: 15px 30px; /* Espacement interne */
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s; /* Transition fluide */
+}
+
+#chrono-button:hover {
+    background-color: #0a5491; /* Bleu foncé plus foncé au survol */
+}
+
+#chrono-button:active {
+    background-color: #0a5491; /* Bleu foncé plus foncé lors du clic */
+    color: #02a1e7; /* Bleu électrique plus clair lors du clic */
+}
+
+.container {
+    position: relative; /* Position relative pour que les éléments enfants utilisent des positions relatives à ce conteneur */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around; 
+    align-items: center;
+    width: 100%; /* Largeur maximale */
+    height: 100vh; /* Hauteur maximale */
+    /* overflow: hidden; Pour empêcher le défilement lorsque la fenêtre de chat */
+}

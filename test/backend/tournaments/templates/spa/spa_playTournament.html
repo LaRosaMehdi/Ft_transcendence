@@ -1,0 +1,45 @@
+{% load static %}
+<title>Pong Game</title>
+<body class="pong-game-page">
+    {% csrf_token %}
+    <div class="container">
+        <button id="chrono-button">1:00</button>
+        <div class="player-buttons">
+            <button class="player-button" id="play-btn">Play</button>
+        </div>
+        <canvas id="pongCanvas" width="800", height="400"></canvas>
+        
+        <div class="perso-button" style="top: 90%">
+            <button type="submit" onclick="showConfirmation()"><span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                Quit</button>
+        </div>
+        <div id="confirmationModal">
+            <div>
+                <h4>Are you sure you want to quit this game? </h4>
+                <p>Quitting automatically set your score at -1 and make your opponant the winner.</p>
+                <button id="quit_game">Yes</button>
+                <button id="confirmationModalButton" onclick="hideConfirmation()">Cancel</button>
+            </div>
+        </div>
+        <div id="noticeModalTournament">
+            <h4>Game Instructions</h4>
+            <p class="noticeText">
+                <span class="notice-line">Hello Newbies! Maybe it's your first time here. Or not<br> A Stratoshperic Pong-Game will begin. <br> </span>
+                <span class="notice-line">Here are the instructions for the Tournament: <br><br> </span>
+                <span class="notice-line">- Use the following keys to move your paddle.<br> Player1 (Left) will move with 'w' and 's'. <br> Player2 (Right) will move with 'arrowsUp' and 'arrowsDown'.<br> </span>
+                <span class="notice-line">- The objective is to hit the ball past your opponent's paddle.<br></span>
+                <span class="notice-line">- If you loose one game, you will not being able to play again so give your best.<br></span>
+                <span class="notice-line">- If you win all your games you'll access to the final and maybe win your first tournament.<br></span>
+                <span class="notice-line">- Take care. As a LOCAL tournament, if one of the participant leave, reload the page or anything suspect, everyone of the participant will be reload on the Home page.</span>
+                <span class="notice-line">- Have fun and good luck!</span>
+            </p>
+            <button id="noticeModalTournamentButton" onclick="hideNoticeTournament()">Close</button>
+        </div>
+        <button id="noticeTournament-button" class="noticeTournament-button" onclick="showNoticeTournament()">
+            <i class="fas fa-file-alt"></i>
+        </button>
+    </div>
+</body>

@@ -1,0 +1,2 @@
+* * * * * cd /usr/src/ && /usr/local/bin/python /usr/src/manage.py runcrons "aouth.cron.CheckUserInactivityCron" >> /var/log/cron_output.log 2>&1
+* * * * * cd /usr/src/ && /usr/local/bin/python /usr/src/manage.py runcrons "aouth.cron.CheckUserUnverified" >> /var/log/cron_output.log 2>&1

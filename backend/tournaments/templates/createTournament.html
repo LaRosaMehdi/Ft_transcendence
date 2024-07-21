@@ -24,12 +24,36 @@
                         <input type="text" id="{{ form.user_alias.id_for_label }}" name="{{ form.user_alias.html_name }}" placeholder="Nickname">
                     </div>
                     <div class="user-box">
-                        <p>Select numbers of players</p>
-                        <select id="{{ form.nb_players.id_for_label }}" name="{{ form.nb_players.html_name }}" style="background-color: #03e9f4; border-radius: 5px">
-                            <option value="4">4 players</option>
-                            <option value="8">8 players</option>
-                        </select>
+                        <p>Select number of players:</p>
+                        <div class="button-group">
+                            <button type="button" class="player-btn" data-value="4" onclick="selectNumberOfPlayers(this)">
+                                4 players
+                            </button>
+                            <button type="button" class="player-btn" data-value="8" onclick="selectNumberOfPlayers(this)">
+                                8 players
+                            </button>
+                        </div>
+                        <!-- Hidden input to store the selected value -->
+                        <input type="hidden" id="nb_players" name="nb_players" value="">
                     </div>
+                    
+                    <script>
+                        function selectNumberOfPlayers(button) {
+                            // Get all buttons
+                            const buttons = document.querySelectorAll('.player-btn');
+                            
+                            // Remove selected class from all buttons
+                            buttons.forEach(btn => {
+                                btn.classList.remove('selected');
+                            });
+                    
+                            // Add selected class to the clicked button
+                            button.classList.add('selected');
+                    
+                            // Update the hidden input field with the selected value
+                            document.getElementById('nb_players').value = button.getAttribute('data-value');
+                        }
+                    </script>
                     <br>
                     <button type="submit">Submit</button>
                 </form>

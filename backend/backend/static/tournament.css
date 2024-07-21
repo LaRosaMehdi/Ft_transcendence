@@ -514,3 +514,38 @@
 .dashboard-game tr {
   border-bottom: 1px solid #ddd;
 }
+/* Button Group Styling */
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+/* Default Button Styling */
+.player-btn {
+  background-color: #b0bec5; /* Grey color for unselected */
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+
+.player-btn:active {
+  transform: scale(0.98);
+}
+
+/* Selected State */
+.player-btn.selected {
+  background-color: #03e9f4; /* Light fluorescent blue for selected */
+}
+
+/* Hidden input styling */
+#nb_players {
+  display: none;
+}

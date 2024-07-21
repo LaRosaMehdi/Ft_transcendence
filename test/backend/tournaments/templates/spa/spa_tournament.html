@@ -1,0 +1,32 @@
+{% load static %}
+<title>Tournament Page</title>
+<div class="container1">
+    <div class="tournament">
+        {% include 'header.html' %}
+        <!-- <div class="logo-box">
+            <h2>Tournament</h2>
+        </div> -->
+        <div class="tournament-header">
+            <h1>Tournament</h1>
+        </div>
+        <div class="tournament-select">
+            <div class="tournament-box">
+                <button type="submit" onclick="loadPageTournament('create')" style="text-align: center;"> <span></span>
+                <span></span>
+                <span></span>
+                <span></span>Create Public Tournament</button>
+            </div>
+            <div class="tournament-box">
+                <button type="submit" onclick="loadPageTournament('join')" style="text-align: centers;"> <span></span>
+                <span></span>
+                <span></span>
+                <span></span>Join Tournament</button>
+            </div>
+            <button type="submit" onclick="loadPageUsers('home')" class="button back-button"><span></span>
+                <span></span>
+                <span></span>
+                <span></span>Home
+            </button>
+        </div>
+    </div>
+</div>

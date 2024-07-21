@@ -1,6 +1,7 @@
 all:
 	docker-compose up --build -d
-
+	docker-compose logs -f
+	
 clean:
 	@echo "Taking down the containers"
 	@ docker compose down
@@ -11,12 +12,11 @@ re:
 
 fclean:
 	@make clean
-	@echo "Removing all the containers, images, and volumes"
-	@rm -rf ./backend/blockchain_etherum/build
+	@docker system prune -f
 	@docker system prune -a -f --volumes
-	@docker system prune -a -f --volumes
+	@if [ "$(docker ps -aq)" ]; then docker stop $(docker ps -aq); fi
+	@docker volume ls -q | xargs -r docker volume rm
 	@docker network prune -f
-	@docker volume rm test_ft_transcendence_database-data
-	@docker volume rm test_ganache-data
+	@docker-compose down --rmi all -v --remove-orphans	
 
 

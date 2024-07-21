@@ -1,0 +1,34 @@
+Primary Colors:
+
+Dark Gradient Background:
+    Start Color: #141e30 - A deep navy blue.
+    End Color: #243b55 - A slightly lighter shade of navy blue.
+    These colors create a sleek and modern look for the background, setting a professional and elegant mood.
+
+Overlay and Element Backgrounds:
+    Background: rgba(0, 0, 0, 0.5) - This is a semi-transparent black used for elements like the login-box and accueil-box. It provides a sense of depth and overlay, making the foreground elements stand out against the gradient background.
+
+Text and Border Color:
+    Color: #fff (white) - Used for text and borders, offering high contrast against the darker backgrounds for readability and aesthetic appeal.
+
+Accent Colors:
+
+Interactive Elements:
+    Color: #03e9f4 - A bright cyan used for interactive text elements like labels and placeholders upon input focus or validation. This color is used to indicate interactivity and focus, guiding the user's interactions.
+    This cyan is also used for hover states on links, highlighting user interactions and enhancing the user experience by providing visual feedback.
+
+Usage in Elements:
+
+Borders and Shadows:
+    Box Shadow: rgba(0, 0, 0, 0.6) - This darker shadow adds depth to elements like login-box and accueil-box, enhancing the 3D effect on a flat design.
+
+Forms and Input Fields:
+    Inputs and labels inside the .user-box use white for their resting state and switch to cyan (#03e9f4) when active or valid, which helps in visually distinguishing the active or filled fields from others.
+    Navigation and Links:
+    Links are initially white but turn cyan on hover, which not only improves user interaction but also keeps the design vibrant and dynamic.
+
+Additional Styling Details:
+
+Fonts:
+    The use of sans-serif fonts complements the modern and clean look of the UI.
+    Text transformations (uppercase) and weight (500) in navigation links add to the structured and formal appearance of the textual content.

@@ -6,7 +6,7 @@
         <h1><i class="fas fa-users"></i> Friends List</h1>
         <div class="search-container">
             <form id="searchFriends" action="{% url 'friend_list' %}" method="get">
-                <input type="text" placeholder="Search users..." name="search_query" value="{{ search_query }}">
+                <input type="text" placeholder="Search users..." name="search_query" value="{{ search_query }}" maxlength="20">
                 <button type="submit"><i class="fas fa-search"></i> Search</button>
             </form>
         </div>
