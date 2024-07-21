@@ -77,14 +77,14 @@ def user_update_alias(request=None, user=None, new_alias=None):
 @csrf_exempt
 @jwt_login_required
 def user_update_last_activity(request):
-    if request.user.is_anonymous:
+    if request.user.is_authenticated:
         return JsonResponse({'status': 'failure'}, status=200)
     if request.method == 'POST':
-        logger.debug(f"Updating last activity for {request.user.last_activity}")
         request.user.last_activity = timezone.now()
         request.user.save()
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'failure'}, status=200)
+
 
 
 # User security

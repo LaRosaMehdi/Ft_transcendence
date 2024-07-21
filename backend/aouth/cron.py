@@ -16,7 +16,7 @@ class CheckUserInactivityCron(CronJobBase):
     def do(self):
         logger.info('Checking user inactivity and updating statuses...')
         now = timezone.now()
-        inactivity_limit = timedelta(seconds=30)
+        inactivity_limit = timedelta(seconds=600)
 
         users = User.objects.all()
 

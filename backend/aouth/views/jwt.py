@@ -19,25 +19,29 @@ logger = logging.getLogger(__name__)
 def jwt_login_required(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
-        if request.session.exists(request.session.session_key):
-            access_token = request.session.get('access_token')
-            if access_token:
-                request.user.status = 'online'
-                request.user.save()
-                return view_func(request, *args, **kwargs)
+        if request.user.is_authenticated:
+            if request.session.exists(request.session.session_key):
+                access_token = request.session.get('access_token')
+                if access_token:
+                    if request.user.status == 'offline':
+                        request.user.status = 'online'
+                        request.user.save()
+                    return view_func(request, *args, **kwargs)
+                else:
+                    try:
+                        jwt_refresh(request)
+                        access_token = request.session.get('access_token')
+                        if access_token:
+                            return view_func(request, *args, **kwargs)
+                    except SuspiciousOperation as e:
+                        messages.error(request, 'Authentication error', extra_tags='aouth_login_tag')
+                        return redirect('login')
             else:
-                try:
-                    jwt_refresh(request)
-                    access_token = request.session.get('access_token')
-                    if access_token:
-                        return view_func(request, *args, **kwargs)
-                except SuspiciousOperation as e:
-                    messages.error(request, 'Authentication error', extra_tags='aouth_login_tag')
-                    return redirect('login')
-        else:
-            messages.error(request, 'Session does not exist', extra_tags='aouth_login_tag')
-            return redirect('login')
+                messages.error(request, 'Session does not exist', extra_tags='aouth_login_tag')
+                return redirect('login')
+        return redirect('login')
     return _wrapped_view
+
 
       
 # JWT Tokens

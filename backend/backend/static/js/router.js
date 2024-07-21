@@ -816,15 +816,29 @@ window.onbeforeunload = function() {
     }
 }
 
+
 function updateLastActivity() {
-    fetch('/users/user_update_last_activity/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': localStorage.getItem('csrf_token'),
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-        },
-    }).then(response => {});
+
+    url = window.location.pathname
+    
+    if (url.startsWith("/aouth/") || url.startsWith("/login") || url.startsWith("/register") || url.startsWith("/")) {
+
+    }
+    else {
+        fetch('/users/user_update_last_activity/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': localStorage.getItem('csrf_token'),
+                'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+            },
+        }).then(response => {});
+    }
 }
 
-setInterval(updateLastActivity, 20000);
+document.addEventListener('click', updateLastActivity);
+document.addEventListener('mousemove', updateLastActivity);
+document.addEventListener('keypress', updateLastActivity);
+document.addEventListener('scroll', updateLastActivity);
+window.addEventListener('popstate', updateLastActivity);
+window.addEventListener('hashchange', updateLastActivity);	
