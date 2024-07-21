@@ -29,19 +29,6 @@ function getGameIdFromUrl() {
     return urlParts[4];
 }
 
-// function enfOfGameLoop() {
-//     fetch('/users/get_current_game/')
-//     .then(response => response.json())
-//     .then(data => {
-//         if (data.current_game === null) {
-//             let tournament_name = getTournamentNameFromUrl();
-//             window.location.href = '/tournaments/' + tournament_name + '/';
-//             return;
-//         }
-//     })
-//     .catch(error => console.error('Error:', error));
-// }
-
 function drawPlayers(ctx, player1, player2) {
     ctx.fillStyle = player1.color;
     ctx.fillRect(player1.x, player1.y, player1.width, player1.height);
@@ -55,6 +42,18 @@ function initializeGameTournament() {
     if (!canvas) {
         return;
     }
+
+    const keydownHandler = function(event) {
+        if (deactivateKeys && (event.key === ' ' || event.key === 'Enter')) {
+            event.preventDefault();
+        }
+    };
+    document.addEventListener('keydown', keydownHandler);
+
+    window.deactivateKeys = function() {
+        deactivateKeys = true;
+    };
+
     const ctx = canvas.getContext('2d');
 
     //new modfi JWT
@@ -98,22 +97,9 @@ function initializeGameTournament() {
         's': false
     };
 
-    let savedBallPosition = { dx: 0, dy: 0 };
-    let savedBallSpeed = 0;
     let scorePlayer1 = 0;
     let scorePlayer2 = 0;
 
-    let player1Chosen = false;
-    let player2Chosen = false;
-
-    function choosePlayer(player) {
-        if (player === 'player1') {
-            player1Chosen = true;
-        } else if (player === 'player2') {
-            player2Chosen = true;
-        }
-
-    }
 
     document.getElementById('play-btn').addEventListener('click', function() {
         canvas.style.visibility = 'visible';
@@ -155,29 +141,14 @@ function initializeGameTournament() {
     function handleKeyDown(event) {
         if (keysPressed.hasOwnProperty(event.key)) {
             keysPressed[event.key] = true;
+            event.preventDefault();
         }
-        // if (event.key === ' ') {
-        //     gamePaused = !gamePaused;
-        //     if (gamePaused) {
-        //         // Save current ball speed and position, then stop the ball
-        //         savedBallSpeed = currentBallSpeed;
-        //         savedBallPosition.dx = ball.dx;
-        //         savedBallPosition.dy = ball.dy;
-        //         currentBallSpeed = 0;
-        //         ball.dx = 0;
-        //         ball.dy = 0;
-        //     } else {
-        //         // Restore ball speed and position
-        //         currentBallSpeed = savedBallSpeed;
-        //         ball.dx = savedBallPosition.dx;
-        //         ball.dy = savedBallPosition.dy;
-        //     }
-        // }
     }
 
     function handleKeyUp(event) {
         if (keysPressed.hasOwnProperty(event.key)) {
             keysPressed[event.key] = false;
+            event.preventDefault();
         }
     }
 
@@ -199,8 +170,8 @@ function initializeGameTournament() {
         }
     }
 
-    const accelerationRate = 0.1;
-    const baseBallSpeed = 1;
+    const accelerationRate = 0.01;
+    const baseBallSpeed = 0.1;
     let currentBallSpeed = baseBallSpeed;
 
     const ball = {
@@ -289,7 +260,6 @@ function initializeGameTournament() {
     }
 
     function draw() {
-        // if (!gamePaused) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = 'black';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -304,7 +274,7 @@ function initializeGameTournament() {
         drawScores();
         movePlayers();
         handleCollision();
-        if (scorePlayer1 >= 2 || scorePlayer2 >= 2 || end_game_t === true) {
+        if (scorePlayer1 >= 12 || scorePlayer2 >= 12 || end_game_t === true) {
             endGame(getGameIdFromUrl());
             end_game_t = false;
             return;
@@ -315,15 +285,19 @@ function initializeGameTournament() {
 
         ball.x += ball.dx;
         ball.y += ball.dy;
-        // }
         requestAnimationFrame(draw);
-        
     }
     
     function endGame(gameId) {
         const player1Score = scorePlayer1;
         const player2Score = scorePlayer2;
         const tournament_name = getTournamentNameFromUrl();
+
+        window.reactivateKeys = function() {
+            deactivateKeys = false;
+        };
+        window.reactivateKeys();
+
 
         // console.log(scorePlayer1, scorePlayer2);
         const obj = {

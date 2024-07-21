@@ -120,7 +120,8 @@ def view_profile_friend(request, friend_user):
        if friends_user.username == friend_user:
            break
     user = request.user
-    update_user_stats(friends_user)
+    if user_profile.status != 'ingame':
+        update_user_stats(user_profile)
     matches = Game.objects.filter((Q(player1=friends_user) | Q(player2=friends_user)) & Q(tournament__isnull=True)).order_by('-date_time')
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         html = render_to_string('spa_viewProfile.html', {'current_user': user_profile, 'matches': matches, 'context': 'ajax'}, request=request)

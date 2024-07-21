@@ -2,7 +2,7 @@
 <title>Twofactor Authentification</title>
 <div class="container1">
     <div class="login-box">
-        <h2>2 Facture Authentication</h2>
+        <h2>2 Factor Authentication</h2>
         <p style="color: white;">Please enter the 6 digit code sent to you by mail</p>        
         <form method="post" id="twoFactorAouth" action="{% url 'twofactor_oauth' %}">
             {% csrf_token %}

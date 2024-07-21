@@ -26,10 +26,24 @@ function drawPlayersLocal(ctx, player1, player2) {
     ctx.fillRect(player2.x, player2.y, player2.width, player2.height);
 }
 
+
+
+
 function initializeGame() {
     const canvas = document.getElementById('pongCanvas');
     if (!canvas) return;
 
+    const keydownHandler = function(event) {
+        if (deactivateKeys && (event.key === ' ' || event.key === 'Enter')) {
+            event.preventDefault();
+        }
+    };
+    document.addEventListener('keydown', keydownHandler);
+
+    window.deactivateKeys = function() {
+        deactivateKeys = true;
+    };
+    
     const ctx = canvas.getContext('2d');
 
     const player1Name = localStorage.getItem('username');
@@ -62,8 +76,6 @@ function initializeGame() {
         's': false
     };
 
-    let savedBallPosition = { dx: 0, dy: 0 };
-    let savedBallSpeed = 0;
     let scorePlayer1 = 0;
     let scorePlayer2 = 0;
 
@@ -73,12 +85,16 @@ function initializeGame() {
     });
 
     document.getElementById('quit_game_local').addEventListener('click', function() {
+        scorePlayer1 = 0;
+        scorePlayer2 = 0;
         end_game = true;
         endGameLocal();
     });
 
+    // Gestion des événements keydown pour le mouvement
     function handleKeyEventsLocal(event) {
-        if (player1.keys.includes(event.key) || player2.keys.includes(event.key)) {
+        const relevantKeys = ['w', 's', 'ArrowUp', 'ArrowDown'];
+        if (relevantKeys.includes(event.key)) {
             event.preventDefault();
             if (player1.keys.includes(event.key)) {
                 if (event.key === player1.keys[0] && player1.y > 0) {
@@ -99,6 +115,7 @@ function initializeGame() {
 
     document.addEventListener('keydown', handleKeyEventsLocal);
 
+    // Gestion des événements keydown pour enregistrer l'état des touches
     function handleKeyDownLocal(event) {
         if (keysPressed.hasOwnProperty(event.key)) {
             keysPressed[event.key] = true;
@@ -106,6 +123,7 @@ function initializeGame() {
         }
     }
 
+    // Gestion des événements keyup pour réinitialiser l'état des touches
     function handleKeyUpLocal(event) {
         if (keysPressed.hasOwnProperty(event.key)) {
             keysPressed[event.key] = false;
@@ -116,6 +134,7 @@ function initializeGame() {
     document.addEventListener('keydown', handleKeyDownLocal);
     document.addEventListener('keyup', handleKeyUpLocal);
 
+    // Mouvement des joueurs basé sur l'état des touches
     function movePlayersLocal() {
         if (keysPressed['w'] && player1.y > 0) player1.y -= player1.speed;
         if (keysPressed['s'] && player1.y + player1.height < canvas.height) player1.y += player1.speed;
@@ -228,7 +247,7 @@ function initializeGame() {
         drawScoresLocal();
         movePlayersLocal();
         handleCollisionLocal();
-        if (scorePlayer1 >= 2 || scorePlayer2 >= 2 || end_game === true) {
+        if (scorePlayer1 >= 12 || scorePlayer2 >= 12 || end_game === true) {
             endGameLocal();
             end_game = false;
             return;
@@ -243,6 +262,12 @@ function initializeGame() {
     function endGameLocal() {
         const player1Score = scorePlayer1;
         const player2Score = scorePlayer2;
+
+        window.reactivateKeys = function() {
+            deactivateKeys = false;
+        };
+        window.reactivateKeys();
+
 
         const obj = {
             method: 'POST',
