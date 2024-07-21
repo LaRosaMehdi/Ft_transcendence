@@ -1,1 +1,0 @@
-# from smtp.views import *
