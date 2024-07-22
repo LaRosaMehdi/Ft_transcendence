@@ -4,6 +4,7 @@ from datetime import timedelta
 from users.models import User
 from aouth.views import user_update_status
 import logging
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +23,7 @@ class CheckUserInactivityCron(CronJobBase):
 
         for user in users:
             try:
-                if user.username != 'root':
+                if user.username != settings.DJANGO_ADMIN_USER:
                     if now - user.last_activity > inactivity_limit and user.status != 'offline':
                         logger.info(f"User {user.username} is inactive. Updating status to offline.")
                         user.status = 'offline'
@@ -46,7 +47,7 @@ class CheckUserUnverifiedCron(CronJobBase):
 
         for user in users:
             try:
-                if user.username != 'root':
+                if user.username != settings.DJANGO_ADMIN_USER:
                     if user.is_verified is False and now - user.validation_code_expiration > unverified_limit:
                         logger.info(f"User {user.username} is unverified. Deleting user.")
                         user.delete()

@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.http import HttpResponseForbidden
 from django.template.loader import render_to_string
+from django.conf import settings
 
 from users.views.forms import *
 from aouth.views.jwt import jwt_login_required
@@ -63,7 +64,7 @@ def friend_list(request):
 def add_friend(request, user_id):
     if request.method == "POST":
         friend = get_object_or_404(User, pk=user_id)
-        if friend.username == 'root' or friend == request.user:
+        if friend.username == settings.DJANGO_ADMIN_USER or friend == request.user:
             return HttpResponseForbidden("You cannot add this user as a friend.")
         if friend not in request.user.friends.all():
             request.user.friends.add(friend)
