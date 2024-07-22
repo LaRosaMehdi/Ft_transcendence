@@ -36,7 +36,7 @@
                 <h2>Change Image</h2>
                 <form id="Set_image" method="post" enctype="multipart/form-data" action="{% url 'setting_change_image' %}">
                     {% csrf_token %}
-                    <img id="image" src="{{ current_user.image.url }}" style="width: 100px; height: 100px;">
+                    <img id="image" src="{{ current_user.image.url }}" style="width: 100px; height: 100px; object-fit: cover;">
                     <div class="form-group">
                         <label for="file-upload" class="custom-file-upload">
                             Choose File
@@ -108,7 +108,7 @@
                     <h2>Change Image</h2>
                     <form id="Set_image" method="post" enctype="multipart/form-data" action="{% url 'setting_change_image' %}">
                         {% csrf_token %}
-                        <img id="image" src="{{ current_user.image.url }}" style="width: 100px; height: 100px;">
+                        <img id="image" src="{{ current_user.image.url }}" style="width: 100px; height: 100px; object-fit: cover;">
                         <div class="form-group">
                             <label for="file-upload" class="custom-file-upload">
                                 Choose File
